@@ -1,9 +1,9 @@
-# Açaíra --- Supabase Architecture
+# Ver-o-Preço --- Supabase Architecture
 
 ## 1. Purpose
 
 This document defines how Supabase is used as the backend platform for
-Açaíra.
+Ver-o-Preço.
 
 Supabase provides:
 
@@ -39,6 +39,32 @@ Use Supabase Auth for:
 - Session management.
 
 The frontend must never implement its own authentication system.
+
+### 3.1 Auth implementation
+
+The auth module lives in `src/features/auth/` and follows these decisions:
+
+- Credentials are submitted through Server Actions and validated on both the
+  client (inline feedback) and the server (source of truth).
+- Supabase sessions are refreshed in `proxy.ts` (Next.js 16 replaced
+  `middleware.ts` with `proxy.ts`). Protected pages also call `requireUser`
+  on the server, so route protection never depends only on the proxy.
+- E-mail confirmation and password recovery links land on
+  `/auth/callback`, which exchanges the PKCE code for a session.
+- Registration sends `display_name` as user metadata. The `profiles` table
+  remains owned by the `profile` module.
+- Password reset requires the temporary session created by the recovery
+  link; without it, the reset page shows an expired-link state.
+
+Supabase Dashboard → Authentication → URL Configuration must include:
+
+```text
+Site URL:      <NEXT_PUBLIC_SITE_URL>
+Redirect URLs: <NEXT_PUBLIC_SITE_URL>/auth/callback
+```
+
+`NEXT_PUBLIC_SITE_URL` is optional in local development; when it is not
+set, the request host is used to build the redirect links.
 
 ## 4. Profiles
 
@@ -86,31 +112,36 @@ them.
 
 ## 6. Products
 
-Suggested structure:
+Implemented in `migrations/0003_products.sql` as the public read domain.
+Listing creation and seller mutations belong to the `listings` module, documented
+in [listings.md](./listings.md).
 
 ```text
 products
 ├── id
-├── seller_id
-├── category_id
+├── seller_id          → profiles(id)
+├── category_id        → categories(id)
 ├── title
 ├── description
-├── price
-├── condition
-├── location
-├── contact_phone
-├── contact_email
-├── status
+├── price              numeric(12, 2)
+├── condition          new | like_new | excellent | good
+├── city
+├── neighborhood       nullable
+├── status             draft | active | paused | sold | removed
 ├── created_at
 └── updated_at
 ```
 
-The exact schema should be finalized during the Products/Listings
-implementation phase.
+`city` and `neighborhood` are stored separately; the UI renders
+`City - Neighborhood`. Contact phone/e-mail are intentionally not part of the
+public read model — contact happens through chat.
+
+`categories` holds the reference data (`slug`, `name`, `sort_order`) and is
+publicly readable. `category_listing_counts` is a `security_invoker` view that
+exposes active product counts per category, so the catalog never fetches every
+product to render a badge.
 
 ## 7. Product Status
-
-Suggested statuses:
 
 ```text
 draft
@@ -120,7 +151,9 @@ sold
 removed
 ```
 
-Only `active` products should appear in the public marketplace.
+Only `active` products appear in the public marketplace. Public queries always
+filter by `status = 'active'`; RLS enforces the same rule server-side, so the
+status sent by a client is never trusted.
 
 ## 8. Product Images
 
@@ -128,29 +161,43 @@ Use:
 
 ```text
 product_images
+├── id
+├── product_id         → products(id) ON DELETE CASCADE
+├── storage_path
+├── alt_text
+├── sort_order
+├── is_primary
+└── created_at
 ```
 
-Suggested fields:
+Images live in the public `product-images` bucket. Uploads are restricted to
+the seller's own folder (`<auth.uid()>/...`); reads are public because the
+catalog is public. A partial unique index guarantees at most one primary image
+per product.
 
-```text
-id
-product_id
-storage_path
-sort_order
-is_primary
-created_at
+Image sets are replaced through `replace_product_images(UUID, JSONB)` from
+`migrations/0004_listing_images.sql`. The function runs as
+`SECURITY INVOKER`, re-checks ownership and replaces delete/insert inside a
+single transaction, so the listing never reaches a state without a primary
+image. The listings service validates uploaded paths and files before calling
+it; see [listings.md](./listings.md).
+
+### Applying the products schema
+
+```bash
+# Apply the schema with the Supabase SQL editor or psql.
+psql "$DATABASE_URL" -f migrations/0003_products.sql
+
+# Listings image replacement (after 0003).
+psql "$DATABASE_URL" -f migrations/0004_listing_images.sql
+
+# Development seed (requires at least one profile).
+psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
 
-Product images should be stored in Supabase Storage.
-
-Recommended conceptual bucket:
-
-```text
-product-images
-```
-
-The exact public/private strategy must follow the final product
-requirements.
+The seed is idempotent and attaches demo listings to the oldest profile. It
+uses local images under `public/products/` so the catalog works without
+uploading files to Storage.
 
 ## 9. Storage
 

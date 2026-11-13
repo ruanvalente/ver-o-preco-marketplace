@@ -1,6 +1,6 @@
 ## 1. Objetivo
 
-Estabelecer a base técnica do Açaíra antes da implementação das features de negócio.
+Estabelecer a base técnica do Ver-o-Preço antes da implementação das features de negócio.
 
 Este plano prepara Next.js, React, TypeScript, Tailwind CSS, shadcn/ui e Supabase, além da estrutura feature-first, padrões de qualidade, ambiente, layout responsivo e infraestrutura compartilhada.
 

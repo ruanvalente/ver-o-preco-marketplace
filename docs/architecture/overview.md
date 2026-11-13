@@ -1,11 +1,11 @@
-# Açaíra --- Architecture Overview
+# Ver-o-Preço --- Architecture Overview
 
 ## 1. Purpose
 
-This document describes the high-level architecture of the Açaíra
+This document describes the high-level architecture of the Ver-o-Preço
 marketplace.
 
-Açaíra is a regional marketplace initially focused on Pará, Brazil. The
+Ver-o-Preço is a regional marketplace initially focused on Pará, Brazil. The
 platform allows users to browse products publicly and, after
 authentication, publish listings, manage favorites, and communicate with
 sellers through real-time chat.
@@ -270,7 +270,7 @@ These may become independent future modules.
 
 ## 12. Architectural Principle
 
-Açaíra should evolve as a collection of cohesive modules rather than as
+Ver-o-Preço should evolve as a collection of cohesive modules rather than as
 a monolithic application.
 
 Each module should be independently understandable, testable, and

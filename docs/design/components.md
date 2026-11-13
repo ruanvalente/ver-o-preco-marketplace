@@ -1,6 +1,6 @@
 ## 1. Objetivo
 
-Este documento define as regras para criação, organização, composição e reutilização dos componentes visuais do Açaíra.
+Este documento define as regras para criação, organização, composição e reutilização dos componentes visuais do Ver-o-Preço.
 
 Ele complementa o `DESIGN.md` e deve ser utilizado em conjunto com:
 
@@ -1120,7 +1120,7 @@ Antes de criar:
 
 # 42. Regra final
 
-A regra principal do sistema de componentes do Açaíra é:
+A regra principal do sistema de componentes do Ver-o-Preço é:
 
 > **Componentes compartilhados devem ser genéricos; componentes de feature devem conhecer o domínio.**
 

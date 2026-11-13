@@ -1,0 +1,478 @@
+/**
+ * Ver-o-Preço — Tailwind CSS v4 theme configuration
+ * -------------------------------------------------------------
+ * Tailwind v4 é configurado através de CSS (`@theme`), não através de um
+ * arquivo `tailwind.config.ts`. Este arquivo é a fonte única de verdade dos
+ * tokens de design e é importado pelo `globals.css`.
+ *
+ * Regras:
+ * - Componentes devem consumir tokens semânticos (ex.: `bg-primary`,
+ *   `text-muted-foreground`, `bg-surface-container`), nunca cores fixas.
+ * - Valores da paleta vêm do DESIGN.md.
+ */
+
+/* =============================================================
+   1. Semantic tokens — light theme
+   ============================================================= */
+:root {
+  /* --- shadcn/ui core ---------------------------------------- */
+  --background: #faf8ff;
+  --foreground: #131b2e;
+
+  --card: #ffffff;
+  --card-foreground: #131b2e;
+
+  --popover: #ffffff;
+  --popover-foreground: #131b2e;
+
+  /* Primary — Açaí Vibrante (ações e conversões) */
+  --primary: #6c1d6e;
+  --primary-foreground: #ffffff;
+  --primary-hover: #541456;
+  --primary-strong: #500054;
+  --primary-muted: #f8eef9;
+
+  /* Secondary — Verde Floresta (credibilidade) */
+  --secondary: #3c6658;
+  --secondary-foreground: #ffffff;
+  --secondary-strong: #0d3b2e;
+  --secondary-muted: #e6f4f0;
+
+  /* Neutrals */
+  --muted: #f2f3ff;
+  --muted-foreground: #50434d;
+
+  --accent: #f2f3ff;
+  --accent-foreground: #131b2e;
+
+  /* Feedback */
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+
+  /* Borders, focus and overlays */
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #6c1d6e;
+  --overlay: rgb(15 23 42 / 0.4);
+
+  /* Status tokens (never rely on color alone) */
+  --success: #059669;
+  --success-strong: #047857;
+  --success-foreground: #ffffff;
+  --success-surface: #ecfdf5;
+
+  --warning: #d97706;
+  --warning-strong: #b45309;
+  --warning-foreground: #ffffff;
+  --warning-surface: #fffbeb;
+
+  --danger: #dc2626;
+  --danger-foreground: #ffffff;
+  --danger-surface: #fef2f2;
+
+  --featured: #6c1d6e;
+  --featured-surface: #faf5ff;
+
+  /* --- Material Design 3 surface roles ----------------------- */
+  --surface: #faf8ff;
+  --surface-dim: #d2d9f4;
+  --surface-bright: #faf8ff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f2f3ff;
+  --surface-container: #eaedff;
+  --surface-container-high: #e2e7ff;
+  --surface-container-highest: #dae2fd;
+  --surface-variant: #dae2fd;
+  --surface-tint: #8f3e8f;
+
+  --on-surface: #131b2e;
+  --on-surface-variant: #50434d;
+  --on-background: #131b2e;
+
+  --inverse-surface: #283044;
+  --inverse-on-surface: #eef0ff;
+
+  --outline: #82737e;
+  --outline-variant: #d4c1ce;
+
+  /* --- Material Design 3 brand roles ------------------------- */
+  --on-primary: #ffffff;
+  --primary-container: #6c1d6e;
+  --on-primary-container: #e88ce3;
+  --inverse-primary: #ffaaf8;
+
+  --primary-fixed: #ffd6f8;
+  --primary-fixed-dim: #ffaaf8;
+  --on-primary-fixed: #37003a;
+  --on-primary-fixed-variant: #732475;
+
+  --on-secondary: #ffffff;
+  --secondary-container: #beedd9;
+  --on-secondary-container: #426d5d;
+
+  --secondary-fixed: #beedd9;
+  --secondary-fixed-dim: #a3d0be;
+  --on-secondary-fixed: #002117;
+  --on-secondary-fixed-variant: #234e40;
+
+  --tertiary: #003220;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #004b32;
+  --on-tertiary-container: #29c48b;
+
+  --tertiary-fixed: #6ffbbe;
+  --tertiary-fixed-dim: #4edea3;
+  --on-tertiary-fixed: #002113;
+  --on-tertiary-fixed-variant: #005236;
+
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+
+  /* --- Charts ------------------------------------------------ */
+  --chart-1: #6c1d6e;
+  --chart-2: #3c6658;
+  --chart-3: #004b32;
+  --chart-4: #d97706;
+  --chart-5: #8f3e8f;
+
+  /* --- Sidebar ----------------------------------------------- */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #131b2e;
+  --sidebar-primary: #6c1d6e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2f3ff;
+  --sidebar-accent-foreground: #131b2e;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #6c1d6e;
+}
+
+/* =============================================================
+   2. Semantic tokens — dark theme
+   ============================================================= */
+.dark {
+  --background: #0f1222;
+  --foreground: #eef0ff;
+
+  --card: #171a2c;
+  --card-foreground: #eef0ff;
+
+  --popover: #1b1e31;
+  --popover-foreground: #eef0ff;
+
+  --primary: #ffaaf8;
+  --primary-foreground: #37003a;
+  --primary-hover: #ffd6f8;
+  --primary-strong: #ffd6f8;
+  --primary-muted: #2b1030;
+
+  --secondary: #a3d0be;
+  --secondary-foreground: #002117;
+  --secondary-strong: #beedd9;
+  --secondary-muted: #10281f;
+
+  --muted: #22263a;
+  --muted-foreground: #cbbfc9;
+
+  --accent: #272b40;
+  --accent-foreground: #eef0ff;
+
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+
+  --border: #2f3450;
+  --input: #2f3450;
+  --ring: #ffaaf8;
+  --overlay: rgb(0 0 0 / 0.6);
+
+  --success: #4edea3;
+  --success-strong: #6ffbbe;
+  --success-foreground: #002113;
+  --success-surface: #052e22;
+
+  --warning: #fbbf24;
+  --warning-strong: #fcd34d;
+  --warning-foreground: #3b2600;
+  --warning-surface: #33260a;
+
+  --danger: #ffb4ab;
+  --danger-foreground: #690005;
+  --danger-surface: #3a1214;
+
+  --featured: #ffaaf8;
+  --featured-surface: #2b1030;
+
+  --surface: #0f1222;
+  --surface-dim: #0b0e1a;
+  --surface-bright: #1b1e31;
+  --surface-container-lowest: #0b0e1a;
+  --surface-container-low: #171a2c;
+  --surface-container: #1b1e31;
+  --surface-container-high: #22263a;
+  --surface-container-highest: #2a2e44;
+  --surface-variant: #2a2e44;
+  --surface-tint: #ffaaf8;
+
+  --on-surface: #eef0ff;
+  --on-surface-variant: #cbbfc9;
+  --on-background: #eef0ff;
+
+  --inverse-surface: #eef0ff;
+  --inverse-on-surface: #283044;
+
+  --outline: #9b8c96;
+  --outline-variant: #453a43;
+
+  --on-primary: #ffffff;
+  --primary-container: #732475;
+  --on-primary-container: #ffd6f8;
+  --inverse-primary: #6c1d6e;
+
+  --on-secondary: #ffffff;
+  --secondary-container: #234e40;
+  --on-secondary-container: #beedd9;
+
+  --tertiary: #4edea3;
+  --on-tertiary: #002113;
+  --tertiary-container: #005236;
+  --on-tertiary-container: #6ffbbe;
+
+  --error: #ffb4ab;
+  --on-error: #690005;
+  --error-container: #93000a;
+  --on-error-container: #ffdad6;
+
+  --chart-1: #ffaaf8;
+  --chart-2: #a3d0be;
+  --chart-3: #4edea3;
+  --chart-4: #fbbf24;
+  --chart-5: #e88ce3;
+
+  --sidebar: #171a2c;
+  --sidebar-foreground: #eef0ff;
+  --sidebar-primary: #ffaaf8;
+  --sidebar-primary-foreground: #37003a;
+  --sidebar-accent: #22263a;
+  --sidebar-accent-foreground: #eef0ff;
+  --sidebar-border: #2f3450;
+  --sidebar-ring: #ffaaf8;
+}
+
+/* =============================================================
+   3. Tailwind utilities generated from the semantic tokens
+   ============================================================= */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-muted: var(--primary-muted);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-strong: var(--secondary-strong);
+  --color-secondary-muted: var(--secondary-muted);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
+
+  --color-success: var(--success);
+  --color-success-strong: var(--success-strong);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-surface: var(--success-surface);
+
+  --color-warning: var(--warning);
+  --color-warning-strong: var(--warning-strong);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-surface: var(--warning-surface);
+
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-surface: var(--danger-surface);
+
+  --color-featured: var(--featured);
+  --color-featured-surface: var(--featured-surface);
+
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
+  --color-surface-tint: var(--surface-tint);
+
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-on-background: var(--on-background);
+
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-inverse-primary: var(--inverse-primary);
+
+  --color-primary-fixed: var(--primary-fixed);
+  --color-primary-fixed-dim: var(--primary-fixed-dim);
+  --color-on-primary-fixed: var(--on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--on-primary-fixed-variant);
+
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+
+  --color-secondary-fixed: var(--secondary-fixed);
+  --color-secondary-fixed-dim: var(--secondary-fixed-dim);
+  --color-on-secondary-fixed: var(--on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--on-secondary-fixed-variant);
+
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+
+  --color-tertiary-fixed: var(--tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--tertiary-fixed-dim);
+  --color-on-tertiary-fixed: var(--on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--on-tertiary-fixed-variant);
+
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Typography family — Geist is loaded in src/app/layout.tsx */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* =============================================================
+   4. Static scales — typography, radius, spacing, elevation
+   ============================================================= */
+@theme {
+  /* --- Typography -------------------------------------------- */
+  --text-headline-xl: 2.5rem;
+  --text-headline-xl--line-height: 3rem;
+  --text-headline-xl--font-weight: 700;
+  --text-headline-xl--letter-spacing: -0.03em;
+
+  --text-headline-xl-mobile: 1.75rem;
+  --text-headline-xl-mobile--line-height: 2.125rem;
+  --text-headline-xl-mobile--font-weight: 700;
+  --text-headline-xl-mobile--letter-spacing: -0.02em;
+
+  --text-headline-lg: 1.875rem;
+  --text-headline-lg--line-height: 2.375rem;
+  --text-headline-lg--font-weight: 600;
+  --text-headline-lg--letter-spacing: -0.02em;
+
+  --text-headline-lg-mobile: 1.5rem;
+  --text-headline-lg-mobile--line-height: 1.875rem;
+  --text-headline-lg-mobile--font-weight: 600;
+  --text-headline-lg-mobile--letter-spacing: -0.015em;
+
+  --text-headline-md: 1.375rem;
+  --text-headline-md--line-height: 1.75rem;
+  --text-headline-md--font-weight: 600;
+  --text-headline-md--letter-spacing: -0.01em;
+
+  --text-headline-sm: 1.125rem;
+  --text-headline-sm--line-height: 1.5rem;
+  --text-headline-sm--font-weight: 600;
+
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.625rem;
+
+  --text-body-md: 0.875rem;
+  --text-body-md--line-height: 1.375rem;
+
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.125rem;
+
+  --text-price-display: 1.25rem;
+  --text-price-display--line-height: 1.625rem;
+  --text-price-display--font-weight: 700;
+  --text-price-display--letter-spacing: -0.02em;
+
+  --text-label-md: 0.875rem;
+  --text-label-md--line-height: 1.25rem;
+  --text-label-md--font-weight: 500;
+
+  --text-label-sm: 0.75rem;
+  --text-label-sm--line-height: 1rem;
+  --text-label-sm--font-weight: 500;
+  --text-label-sm--letter-spacing: 0.01em;
+
+  --text-badge-label: 0.6875rem;
+  --text-badge-label--line-height: 0.875rem;
+  --text-badge-label--font-weight: 600;
+  --text-badge-label--letter-spacing: 0.02em;
+
+  /* --- Radius ------------------------------------------------ */
+  /* Inputs/buttons 8px · cards 12px · dialogs 16px · sheets 24px */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* --- Spacing ----------------------------------------------- */
+  --spacing-gutter: 1rem;
+  --spacing-gutter-desktop: 1.5rem;
+
+  --spacing-margin: 1rem;
+  --spacing-margin-tablet: 1.5rem;
+  --spacing-margin-desktop: 2rem;
+
+  /* --- Elevation (DESIGN.md — shadcn-style) ------------------ */
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-card-hover: 0 4px 6px -1px rgb(15 23 42 / 0.08);
+  --shadow-popover: 0 10px 15px -3px rgb(15 23 42 / 0.08);
+  --shadow-modal: 0 24px 48px -12px rgb(15 23 42 / 0.18);
+}

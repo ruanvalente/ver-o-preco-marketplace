@@ -1,8 +1,8 @@
-# Açaíra --- Modules Architecture
+# Ver-o-Preço --- Modules Architecture
 
 ## 1. Purpose
 
-This document defines the responsibilities and boundaries of the Açaíra
+This document defines the responsibilities and boundaries of the Ver-o-Preço
 application modules.
 
 The project follows a **feature/module-first architecture**.
@@ -150,6 +150,13 @@ src/features/listings/
 A user can only modify listings they own.
 
 This must be enforced by Supabase RLS.
+
+### Implementation
+
+The module is implemented in `src/features/listings/`; flow, consistency rules,
+RLS and Storage policies are documented in
+[listings.md](./listings.md). The `sold` status is reserved — there is no
+"mark as sold" action yet.
 
 ### Suggested Components
 

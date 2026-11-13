@@ -7,7 +7,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-4">
+    <main className="flex flex-1 flex-col items-center justify-center px-4">
       <div className="text-center">
         <h1 className="text-2xl font-semibold">Algo deu errado</h1>
         <p className="mt-2 text-muted-foreground">

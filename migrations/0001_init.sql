@@ -1,2 +1,2 @@
--- Açaíra initial migration placeholder
+-- Ver-o-Preço initial migration placeholder
 -- Add schema as features are implemented

@@ -59,7 +59,116 @@ A estrutura final deve seguir `docs/architecture/supabase.md` e as migrations ex
 
 ## 6. Storage
 
-Bucket para avatar/perfil conforme convenção do projeto.
+### Bucket de avatar/perfil
+
+Implemente o armazenamento e gerenciamento de avatar/perfil utilizando o **Supabase Storage**, respeitando integralmente as convenções e a arquitetura já existentes no projeto.
+
+#### Bucket
+
+O bucket já foi criado e deve ser utilizado:
+
+`veropreco/avatar/profile`
+
+**Não crie um novo bucket.**
+
+Antes de implementar, analise o projeto para identificar:
+
+- convenções existentes para arquivos e uploads;
+- estrutura de serviços/lib/utilitários relacionados ao Supabase;
+- padrões de autenticação e autorização;
+- convenções de nomenclatura;
+- tratamento de erros;
+- componentes/hooks existentes que possam ser reutilizados;
+- políticas/RLS já utilizadas no Storage;
+- padrão utilizado para persistência de URLs ou paths no banco de dados.
+
+#### Supabase
+
+Caso seja necessário consultar, validar ou alterar recursos do Supabase, utilize a **skill do Supabase via CLI** e siga as convenções já adotadas pelo projeto.
+
+Não substitua configurações existentes nem crie uma segunda abordagem para integração com o Supabase.
+
+#### Regras de armazenamento
+
+O avatar deve ser armazenado dentro do bucket existente, seguindo uma estrutura de path consistente e segura por usuário.
+
+Priorize uma estrutura semelhante a:
+
+`<user-id>/avatar.<extensão>`
+
+ou outra convenção equivalente caso o projeto já possua um padrão definido.
+
+Evite utilizar o nome original enviado pelo usuário como parte do path do arquivo.
+
+Considere:
+
+- formatos de imagem suportados;
+- tamanho máximo do arquivo;
+- validação do MIME type;
+- substituição de avatar existente;
+- remoção do avatar anterior quando necessário;
+- tratamento de upload duplicado;
+- nomes de arquivos previsíveis e consistentes;
+- segurança e isolamento entre usuários.
+
+#### Segurança
+
+Garanta que um usuário só possa:
+
+- fazer upload do próprio avatar;
+- substituir o próprio avatar;
+- remover o próprio avatar;
+- acessar arquivos conforme as regras de visibilidade definidas pelo projeto.
+
+Não implemente permissões excessivamente abertas apenas para fazer o fluxo funcionar.
+
+Se forem necessárias policies do Supabase Storage, analise primeiro as policies existentes e implemente apenas as alterações necessárias.
+
+#### Integração com o perfil
+
+Analise como o perfil do usuário é persistido atualmente.
+
+Caso o projeto armazene o path/URL do avatar no banco, siga o modelo existente em vez de criar uma nova estrutura.
+
+Evite duplicar informações que possam ser derivadas do Storage.
+
+#### Implementação
+
+Antes de alterar o código:
+
+1. Analise a estrutura atual do projeto.
+2. Identifique os pontos responsáveis por autenticação, perfil e Supabase.
+3. Identifique as convenções existentes para Storage.
+4. Verifique o bucket `veropreco/avatar/profile`.
+5. Verifique as policies necessárias.
+6. Reutilize abstrações existentes sempre que possível.
+7. Implemente a solução seguindo o padrão arquitetural atual.
+
+Após a implementação:
+
+- valide o fluxo de upload;
+- valide a substituição do avatar;
+- valide a remoção;
+- valide os cenários de erro;
+- execute os testes existentes relacionados à funcionalidade;
+- execute lint/typecheck/build conforme os scripts disponíveis no projeto.
+
+### Critérios de aceite
+
+A implementação será considerada concluída quando:
+
+- [ ] O bucket existente `veropreco/avatar/profile` for utilizado.
+- [ ] Nenhum bucket adicional for criado.
+- [ ] O path do arquivo seguir a convenção do projeto.
+- [ ] O usuário não puder manipular o avatar de outro usuário.
+- [ ] Upload, substituição e remoção funcionarem corretamente.
+- [ ] Validação de tipo e tamanho do arquivo estiver implementada conforme os padrões do projeto.
+- [ ] Policies do Supabase estiverem adequadas ao fluxo.
+- [ ] O perfil refletir corretamente o avatar armazenado.
+- [ ] Não houver duplicação desnecessária de lógica ou integração com Supabase.
+- [ ] Testes, lint, typecheck e build existentes continuarem passando.
+
+**Importante:** não assuma a estrutura do projeto. Primeiro inspecione o código e siga as convenções existentes. Se houver uma implementação semelhante no projeto, use-a como referência antes de criar uma nova abstração.
 
 Regras:
 
