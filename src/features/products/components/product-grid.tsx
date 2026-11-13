@@ -5,13 +5,22 @@ import { ProductCard } from "./product-card"
 
 type ProductGridProps = {
   products: ProductSummary[]
+  favoriteProductIds?: string[]
+  favoriteRedirectTo?: string
   className?: string
 }
 
 /**
  * Grade responsiva de produtos do catálogo.
  */
-export function ProductGrid({ products, className }: ProductGridProps) {
+export function ProductGrid({
+  products,
+  favoriteProductIds = [],
+  favoriteRedirectTo,
+  className,
+}: ProductGridProps) {
+  const favorites = new Set(favoriteProductIds)
+
   return (
     <ul
       className={cn(
@@ -21,7 +30,12 @@ export function ProductGrid({ products, className }: ProductGridProps) {
     >
       {products.map((product) => (
         <li key={product.id} className="flex">
-          <ProductCard product={product} className="w-full" />
+          <ProductCard
+            product={product}
+            isFavorite={favorites.has(product.id)}
+            favoriteRedirectTo={favoriteRedirectTo}
+            className="w-full"
+          />
         </li>
       ))}
     </ul>

@@ -9,6 +9,7 @@ type ContactSellerCtaProps = {
   productId: string
   productTitle: string
   isAuthenticated: boolean
+  isFavorite?: boolean
 }
 
 /**
@@ -22,6 +23,7 @@ export function ContactSellerCta({
   productId,
   productTitle,
   isAuthenticated,
+  isFavorite = false,
 }: ContactSellerCtaProps) {
   return (
     <div className="space-y-3">
@@ -53,6 +55,8 @@ export function ContactSellerCta({
         <FavoriteButton
           productId={productId}
           productTitle={productTitle}
+          isFavorite={isFavorite}
+          redirectTo={`/products/${productId}`}
           className="border-border bg-card hover:bg-accent"
         />
       </div>

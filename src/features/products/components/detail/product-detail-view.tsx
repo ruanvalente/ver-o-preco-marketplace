@@ -17,6 +17,8 @@ import { SellerCard } from "./seller-card"
 type ProductDetailViewProps = {
   product: ProductDetail
   relatedProducts: ProductSummary[]
+  favoriteProductIds?: string[]
+  isFavorite?: boolean
   isAuthenticated: boolean
 }
 
@@ -29,6 +31,8 @@ type ProductDetailViewProps = {
 export function ProductDetailView({
   product,
   relatedProducts,
+  favoriteProductIds = [],
+  isFavorite = false,
   isAuthenticated,
 }: ProductDetailViewProps) {
   return (
@@ -98,6 +102,7 @@ export function ProductDetailView({
             <ContactSellerCta
               productId={product.id}
               productTitle={product.title}
+              isFavorite={isFavorite}
               isAuthenticated={isAuthenticated}
             />
           </div>
@@ -106,6 +111,7 @@ export function ProductDetailView({
 
       <RelatedProducts
         products={relatedProducts}
+        favoriteProductIds={favoriteProductIds}
         categoryName={product.category.name}
         categorySlug={product.category.slug}
       />

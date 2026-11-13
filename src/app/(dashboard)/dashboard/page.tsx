@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 import { connection } from "next/server"
-import { ArrowRight, Plus } from "lucide-react"
+import { ArrowRight, Heart, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -60,6 +60,12 @@ async function DashboardContent() {
               <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link href="/favorites">
+              <Heart aria-hidden="true" className="size-4" />
+              Meus favoritos
+            </Link>
+          </Button>
           <Button asChild variant="ghost">
             <Link href="/profile">Meu perfil</Link>
           </Button>
@@ -67,10 +73,10 @@ async function DashboardContent() {
       </section>
 
       <section className="space-y-4 rounded-xl border bg-card p-6">
-        <h2 className="text-lg font-semibold">Área do usuário em construção</h2>
+        <h2 className="text-lg font-semibold">Conversas em desenvolvimento</h2>
         <p className="text-sm text-muted-foreground">
-          Em breve você vai gerenciar favoritos e conversas por aqui. Enquanto
-          isso, explore o marketplace ou saia da sua conta.
+          Em breve você poderá conversar com vendedores por aqui. Enquanto isso,
+          explore os anúncios disponíveis.
         </p>
         <LogoutButton />
       </section>

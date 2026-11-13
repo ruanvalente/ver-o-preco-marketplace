@@ -6,6 +6,7 @@ import { ProductGrid } from "../product-grid"
 
 type RelatedProductsProps = {
   products: ProductSummary[]
+  favoriteProductIds?: string[]
   categoryName: string
   categorySlug: string
 }
@@ -18,6 +19,7 @@ type RelatedProductsProps = {
  */
 export function RelatedProducts({
   products,
+  favoriteProductIds = [],
   categoryName,
   categorySlug,
 }: RelatedProductsProps) {
@@ -49,7 +51,11 @@ export function RelatedProducts({
         </Link>
       </div>
 
-      <ProductGrid products={products} className="mt-6" />
+      <ProductGrid
+        products={products}
+        favoriteProductIds={favoriteProductIds}
+        className="mt-6"
+      />
     </section>
   )
 }

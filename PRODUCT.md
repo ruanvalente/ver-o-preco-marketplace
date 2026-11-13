@@ -40,13 +40,13 @@ Shipped or in progress:
 - Accounts: email/password registration, login, logout, password recovery and reset, session handling, protected routes.
 - Profile: display name, avatar, phone, location.
 - Listings: create, edit, delete, publish, pause, mark as sold; multiple images with primary image, reordering and removal; validation on client and server.
-- Favorites: add and remove a product as favorite. The favorites list screen is not built yet.
+- Favorites: add and remove products, and view the user's saved products in a protected favorites list.
 - Dashboard: minimal authenticated shell today; the full overview, metrics and quick actions are planned.
 
 Committed for the MVP but not yet implemented:
 
 - In-platform chat tied to a listing: text and image messages, conversation list, read state, unread count, online status, typing indicator, Supabase Realtime.
-- Favorites list page and the complete dashboard.
+- The complete dashboard.
 
 Deliberately out of MVP scope: payments, shipping, escrow, reviews and seller ratings, delivery tracking, ads, subscription plans, recommendation engines, moderation and reporting, admin.
 

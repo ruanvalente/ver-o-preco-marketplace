@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { connection } from "next/server"
-import { UserRound } from "lucide-react"
+import { Heart, UserRound } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -49,18 +49,27 @@ export async function MarketplaceAccountArea() {
     "Minha conta"
 
   return (
-    <Link
-      href="/dashboard"
-      className="flex min-h-11 items-center gap-2 rounded-full pr-2 pl-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-    >
-      <Avatar size="default" className="size-9">
-        <AvatarFallback className="bg-primary-muted text-xs font-semibold text-primary">
-          {getInitials(displayName)}
-        </AvatarFallback>
-      </Avatar>
-      <span className="hidden max-w-32 truncate text-sm font-medium text-foreground xl:inline">
-        {displayName}
-      </span>
-    </Link>
+    <>
+      <Link
+        href="/favorites"
+        aria-label="Meus favoritos"
+        className="hidden size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
+      >
+        <Heart aria-hidden="true" className="size-5" />
+      </Link>
+      <Link
+        href="/dashboard"
+        className="flex min-h-11 items-center gap-2 rounded-full pr-2 pl-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      >
+        <Avatar size="default" className="size-9">
+          <AvatarFallback className="bg-primary-muted text-xs font-semibold text-primary">
+            {getInitials(displayName)}
+          </AvatarFallback>
+        </Avatar>
+        <span className="hidden max-w-32 truncate text-sm font-medium text-foreground xl:inline">
+          {displayName}
+        </span>
+      </Link>
+    </>
   )
 }

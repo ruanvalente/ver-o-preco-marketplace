@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { connection } from "next/server"
 import { Suspense } from "react"
 import { ArrowLeft } from "lucide-react"
 
@@ -13,6 +14,7 @@ import {
 } from "@/features/products/services/products.service"
 import { formatPrice } from "@/features/products/utils/format"
 import { getCurrentUser } from "@/features/auth/services/session.service"
+import { getFavoriteProductIds } from "@/features/favorites/services/favorites.service"
 
 type ProductDetailPageProps = {
   params: Promise<{ id: string }>
@@ -50,6 +52,7 @@ export async function generateMetadata({
 }
 
 async function ProductDetailContent({ params }: ProductDetailPageProps) {
+  await connection()
   const { id } = await params
   const result = await getProductById(id)
 
@@ -66,11 +69,21 @@ async function ProductDetailContent({ params }: ProductDetailPageProps) {
     getRelatedProducts(product.category.id, product.id),
     getCurrentUser(),
   ])
+  const relatedProducts = relatedResult.ok ? relatedResult.data : []
+  const favoriteIdsResult = await getFavoriteProductIds([
+    product.id,
+    ...relatedProducts.map((relatedProduct) => relatedProduct.id),
+  ])
 
   return (
     <ProductDetailView
       product={product}
-      relatedProducts={relatedResult.ok ? relatedResult.data : []}
+      relatedProducts={relatedProducts}
+      favoriteProductIds={favoriteIdsResult.ok ? favoriteIdsResult.data : []}
+      isFavorite={
+        favoriteIdsResult.ok &&
+        favoriteIdsResult.data.includes(product.id)
+      }
       isAuthenticated={Boolean(user)}
     />
   )
