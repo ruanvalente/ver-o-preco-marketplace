@@ -16,7 +16,7 @@ import {
   ShieldUser,
   Store,
   UserPlus,
-} from "lucide-react"
+} from "lucide-react";
 
 import type {
   LandingFeature,
@@ -24,28 +24,27 @@ import type {
   LandingLink,
   LandingPole,
   LandingStep,
-} from "../types/landing.types"
+} from "../types/landing.types";
 
 export const landingNavItems: LandingLink[] = [
   { label: "Início", href: "#inicio" },
   { label: "Experiência", href: "#experiencia" },
   { label: "Como funciona", href: "#como-funciona" },
   { label: "Segurança", href: "#seguranca" },
-  { label: "Polos no Pará", href: "#polos" },
   { label: "Suporte", href: "#suporte" },
-]
+];
 
 export const heroTrustItems = [
   "Taxa zero",
   "100% seguro",
   "Suporte regional",
-] as const
+] as const;
 
 export const finalCtaTrustItems = [
   "Cadastro grátis",
   "Sem taxa",
   "Suporte regional",
-] as const
+] as const;
 
 export const painPoints: LandingFeature[] = [
   {
@@ -72,7 +71,7 @@ export const painPoints: LandingFeature[] = [
     tone: "danger",
     link: { label: "Veja como resolvemos", href: "#solucao" },
   },
-]
+];
 
 export const valuePropositions: LandingFeature[] = [
   {
@@ -99,7 +98,7 @@ export const valuePropositions: LandingFeature[] = [
     tone: "muted",
     badge: { label: "Perto de você", tone: "muted" },
   },
-]
+];
 
 export const technologyFeatures: LandingFeature[] = [
   {
@@ -150,7 +149,7 @@ export const technologyFeatures: LandingFeature[] = [
     tone: "secondary",
     badge: { label: "Em breve", tone: "muted" },
   },
-]
+];
 
 export const howItWorksSteps: LandingStep[] = [
   {
@@ -177,7 +176,7 @@ export const howItWorksSteps: LandingStep[] = [
       "Escolha um ponto movimentado da sua região e finalize a negociação pessoalmente.",
     icon: Handshake,
   },
-]
+];
 
 export const securityFeatures: LandingFeature[] = [
   {
@@ -201,7 +200,7 @@ export const securityFeatures: LandingFeature[] = [
     icon: MessageSquareWarning,
     tone: "muted",
   },
-]
+];
 
 export const regionalPoles: LandingPole[] = [
   { name: "Belém", status: "Ativo", listings: 248 },
@@ -210,7 +209,7 @@ export const regionalPoles: LandingPole[] = [
   { name: "Marituba", status: "Em expansão", listings: 57 },
   { name: "Santarém", status: "Em expansão", listings: 42 },
   { name: "Marabá", status: "Em expansão", listings: 31 },
-]
+];
 
 export const footerColumns: LandingFooterColumn[] = [
   {
@@ -228,7 +227,6 @@ export const footerColumns: LandingFooterColumn[] = [
       { label: "Explorar produtos", href: "/" },
       { label: "Como comprar", href: "#como-funciona" },
       { label: "Chat seguro", href: "#seguranca" },
-      { label: "Polos no Pará", href: "#polos" },
     ],
   },
   {
@@ -250,10 +248,10 @@ export const footerColumns: LandingFooterColumn[] = [
       { label: "Central de ajuda", href: "#suporte" },
     ],
   },
-]
+];
 
 export const footerLegalLinks: LandingLink[] = [
   { label: "Privacidade", href: "/privacy" },
   { label: "Termos de uso", href: "/terms" },
   { label: "Política de cookies", href: "/cookies" },
-]
+];

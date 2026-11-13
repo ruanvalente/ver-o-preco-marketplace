@@ -11,6 +11,7 @@ const { fromMock, getPublicUrlMock } = vi.hoisted(() => ({
 
 vi.mock("next/cache", () => ({
   cacheLife: vi.fn(),
+  cacheTag: vi.fn(),
 }))
 
 vi.mock("@/lib/supabase/public", () => ({

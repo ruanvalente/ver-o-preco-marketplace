@@ -122,7 +122,7 @@ describe("ProductsCatalog", () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole("link", { name: "Anunciar produto" }),
-    ).toHaveAttribute("href", "/register")
+    ).toHaveAttribute("href", "/listings/new")
   })
 
   it("oferece retorno quando a página pedida não existe", async () => {

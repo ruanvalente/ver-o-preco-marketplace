@@ -113,7 +113,8 @@ them.
 ## 6. Products
 
 Implemented in `migrations/0003_products.sql` as the public read domain.
-Listing creation and seller mutations belong to the `listings` module.
+Listing creation and seller mutations belong to the `listings` module, documented
+in [listings.md](./listings.md).
 
 ```text
 products
@@ -174,11 +175,21 @@ the seller's own folder (`<auth.uid()>/...`); reads are public because the
 catalog is public. A partial unique index guarantees at most one primary image
 per product.
 
+Image sets are replaced through `replace_product_images(UUID, JSONB)` from
+`migrations/0004_listing_images.sql`. The function runs as
+`SECURITY INVOKER`, re-checks ownership and replaces delete/insert inside a
+single transaction, so the listing never reaches a state without a primary
+image. The listings service validates uploaded paths and files before calling
+it; see [listings.md](./listings.md).
+
 ### Applying the products schema
 
 ```bash
 # Apply the schema with the Supabase SQL editor or psql.
 psql "$DATABASE_URL" -f migrations/0003_products.sql
+
+# Listings image replacement (after 0003).
+psql "$DATABASE_URL" -f migrations/0004_listing_images.sql
 
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql

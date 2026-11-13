@@ -1,13 +1,12 @@
-import { FinalCtaSection } from "./final-cta-section"
-import { HeroSection } from "./hero-section"
-import { HowItWorksSection } from "./how-it-works-section"
-import { LandingFooter } from "./landing-footer"
-import { LandingHeader } from "./landing-header"
-import { PainPointsSection } from "./pain-points-section"
-import { RegionalPolesSection } from "./regional-poles-section"
-import { SecuritySection } from "./security-section"
-import { TechnologySection } from "./technology-section"
-import { ValuePropositionSection } from "./value-proposition-section"
+import { FinalCtaSection } from "./final-cta-section";
+import { HeroSection } from "./hero-section";
+import { HowItWorksSection } from "./how-it-works-section";
+import { LandingFooter } from "./landing-footer";
+import { LandingHeader } from "./landing-header";
+import { PainPointsSection } from "./pain-points-section";
+import { SecuritySection } from "./security-section";
+import { TechnologySection } from "./technology-section";
+import { ValuePropositionSection } from "./value-proposition-section";
 
 export function LandingPage() {
   return (
@@ -21,11 +20,10 @@ export function LandingPage() {
         <TechnologySection />
         <HowItWorksSection />
         <SecuritySection />
-        <RegionalPolesSection />
         <FinalCtaSection />
       </main>
 
       <LandingFooter />
     </div>
-  )
+  );
 }

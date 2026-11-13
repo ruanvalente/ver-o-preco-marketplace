@@ -62,7 +62,7 @@ export function MarketplaceHeader() {
               asChild
               className="hidden h-11 rounded-full px-4 sm:inline-flex"
             >
-              <Link href="/register">
+              <Link href="/listings/new">
                 <Plus aria-hidden="true" className="size-4" />
                 Anunciar produto
               </Link>

@@ -1,1531 +1,344 @@
-# DESIGN.md — Ver-o-Preço Design System
-
-## 1. Purpose
-
-This document is the visual source of truth for the Ver-o-Preço marketplace.
-
-Ver-o-Preço is a regional marketplace initially focused on Pará, Brazil. Its visual identity should communicate:
-
-- Regional identity;
-- Trust;
-- Simplicity;
-- Accessibility;
-- Modern technology;
-- Community;
-- Ease of buying and selling.
-
-The interface may take conceptual inspiration from marketplaces such as OLX and Mercado Livre, but must not reproduce their visual identity, layouts, components, copy, or interaction patterns.
-
-The design should feel like a **modern Brazilian marketplace with a subtle Pará/Amazon identity**.
-
+---
+name: Ver-o-Preço
+description: Regional Pará marketplace — precise, calm, quietly regional.
+colors:
+  acai-ink: "#6C1D6E"
+  acai-ink-deep: "#541456"
+  acai-mist: "#F8EEF9"
+  forest-calm: "#3C6658"
+  forest-deep: "#0D3B2E"
+  forest-mist: "#E6F4F0"
+  lavender-paper: "#FAF8FF"
+  surface-white: "#FFFFFF"
+  lavender-wash: "#F2F3FF"
+  midnight-slate: "#131B2E"
+  ash-plum: "#50434D"
+  hairline: "#E2E8F0"
+  success-green: "#059669"
+  warning-amber: "#D97706"
+  danger-red: "#BA1A1A"
+typography:
+  display:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2.5rem"
+    fontWeight: 700
+    lineHeight: "3rem"
+    letterSpacing: "-0.03em"
+  headline:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.875rem"
+    fontWeight: 600
+    lineHeight: "2.375rem"
+    letterSpacing: "-0.02em"
+  headline-small:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 600
+    lineHeight: "1.5rem"
+    letterSpacing: "0em"
+  title:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 600
+    lineHeight: "1.75rem"
+    letterSpacing: "-0.01em"
+  body:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: "1.625rem"
+    letterSpacing: "0em"
+  body-small:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: "1.375rem"
+    letterSpacing: "0em"
+  label:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 500
+    lineHeight: "1rem"
+    letterSpacing: "0.01em"
+  price:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 700
+    lineHeight: "1.625rem"
+    letterSpacing: "-0.02em"
+  badge:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.6875rem"
+    fontWeight: 600
+    lineHeight: "0.875rem"
+    letterSpacing: "0.02em"
+rounded:
+  sm: "4px"
+  md: "8px"
+  lg: "10px"
+  xl: "12px"
+  2xl: "16px"
+  3xl: "24px"
+  full: "9999px"
+spacing:
+  xs: "4px"
+  sm: "8px"
+  md: "16px"
+  lg: "24px"
+  xl: "32px"
+  gutter: "16px"
+  gutter-desktop: "24px"
+components:
+  button-primary:
+    backgroundColor: "{colors.acai-ink}"
+    textColor: "{colors.surface-white}"
+    typography: "{typography.label}"
+    rounded: "{rounded.md}"
+    padding: "0 16px"
+    height: "36px"
+  button-primary-hover:
+    backgroundColor: "{colors.acai-ink-deep}"
+  button-secondary:
+    backgroundColor: "{colors.forest-calm}"
+    textColor: "{colors.surface-white}"
+    typography: "{typography.label}"
+    rounded: "{rounded.md}"
+    padding: "0 16px"
+    height: "36px"
+  button-outline:
+    backgroundColor: "{colors.lavender-paper}"
+    textColor: "{colors.midnight-slate}"
+    typography: "{typography.label}"
+    rounded: "{rounded.md}"
+    padding: "0 16px"
+    height: "36px"
+  button-ghost:
+    textColor: "{colors.midnight-slate}"
+    typography: "{typography.label}"
+    rounded: "{rounded.md}"
+    padding: "0 16px"
+    height: "36px"
+  input-field:
+    backgroundColor: "transparent"
+    textColor: "{colors.midnight-slate}"
+    typography: "{typography.body-small}"
+    rounded: "{rounded.md}"
+    padding: "0 12px"
+    height: "36px"
+  card-product:
+    backgroundColor: "{colors.surface-white}"
+    textColor: "{colors.midnight-slate}"
+    rounded: "{rounded.xl}"
+    padding: "0"
+  badge-status:
+    backgroundColor: "{colors.acai-mist}"
+    textColor: "{colors.acai-ink}"
+    typography: "{typography.badge}"
+    rounded: "{rounded.full}"
+    padding: "2px 10px"
+    height: "22px"
+  nav-header:
+    backgroundColor: "{colors.surface-white}"
+    textColor: "{colors.midnight-slate}"
+    height: "72px"
+    padding: "0 24px"
+  search-hero:
+    backgroundColor: "{colors.surface-white}"
+    textColor: "{colors.midnight-slate}"
+    rounded: "{rounded.2xl}"
+    padding: "8px"
 ---
 
-# 2. Design Principles
+# Design System: Ver-o-Preço
 
-## 2.1 Simple
+## Overview
 
-The user should understand the purpose of every screen immediately.
+**Creative North Star: "Açaí Modernism"**
 
-Avoid:
+The system takes the pigment of the region — açaí plum, forest green, lavender-white paper — and applies it with modernist discipline: a clean grotesque, measured spacing, one-pixel borders, and soft shadows that appear only as a response to state. Nothing performs "Amazon". The region lives in color temperature, naming, and microcopy, never in ornament.
 
-- Excessive decoration;
-- Unnecessary animations;
-- Complex navigation;
-- Excessive cards;
-- Dense information;
-- Unnecessary modal dialogs.
+Calm and precise. Density is medium: product imagery leads, metadata recedes to 12–13px, and the price carries the only persistent color emphasis. Purple marks action, brand, and price; forest green carries credibility and positive state. Components feel engineered rather than decorated — 8px controls, 12px cards, a 3px focus ring. Gradient is rationed to three places: two low-opacity blurred orbs behind hero content, the soft tinted auth info panels, and the single saturated seller CTA panel (Forest Deep → Açaí Ink Deep).
 
-Prefer:
+Trust comes from clarity: visible borders, explicit labels, honest empty and error states, and no visual claim the product cannot back — no "verified" badge, no invented ratings. The system is mobile-first; every composition is designed at 375px before it earns a desktop grid.
 
-- Clear hierarchy;
-- Short labels;
-- Familiar interactions;
-- Progressive disclosure;
-- Strong visual grouping.
+The product has one commercial obligation: the seller never pays to sell. That promise is carried by a plain, unhedged sentence in the interface — never by a badge, a starburst, or a countdown. It is also the reason the system stays quiet everywhere except one place: the seller CTA panel, where the only saturated gradient in the product is allowed. Voice rises once, and only for the person the product is trying to acquire.
 
----
+**Key Characteristics:**
+- Açaí plum as the single action and brand accent; forest green as credibility, never a second primary.
+- Lavender-tinted neutrals instead of pure gray, with white cards separated by 1px borders.
+- Geist grotesque with tight headline tracking and comfortable body leading.
+- 8px controls, 12px cards, 16px panels, full-round badges and action pills.
+- Shadows as state, not decoration.
+- Regional identity carried by pigment and microcopy, not illustration.
+- One saturated moment: the seller CTA. Everything else stays paper.
 
-## 2.2 Regional Without Being Stereotypical
+## Colors
 
-The regional identity should be present primarily through:
-
-- Color;
-- Naming;
-- Microcopy;
-- Subtle visual references;
-- Photography when appropriate.
-
-Avoid turning the interface into a decorative representation of Pará.
-
-The product should look like a professional technology platform first and a regional product second.
-
----
-
-## 2.3 Trustworthy
-
-Marketplace users need confidence when interacting with sellers.
-
-The design should communicate:
-
-- Transparency;
-- Clear pricing;
-- Seller identity;
-- Product information;
-- Safe interactions;
-- Predictable behavior.
-
-Avoid visual patterns that resemble gambling, aggressive advertising, or low-trust marketplaces.
-
----
-
-## 2.4 Mobile First
-
-The primary experience must work exceptionally well on mobile.
-
-Design from the smallest practical viewport upward.
-
-Desktop layouts should enhance the experience rather than define it.
-
----
-
-## 2.5 Accessible
-
-Accessibility is part of the visual system.
-
-Every component should consider:
-
-- Color contrast;
-- Keyboard navigation;
-- Focus visibility;
-- Semantic structure;
-- Screen readers;
-- Touch targets;
-- Error messages;
-- Reduced motion.
-
-Target WCAG 2.2 AA whenever practical.
-
----
-
-# 3. Brand Concept
-
-## 3.1 Name
-
-Working product name:
-
-**Ver-o-Preço**
-
-The name is a tribute to Ver-o-Peso, the iconic market of Belém, adapted with "preço" to reinforce the marketplace proposition.
-
-The name should be presented as a modern technology brand rather than as a literal representation of the market or its products.
-
----
-
-## 3.2 Brand Personality
-
-Ver-o-Preço should feel:
-
-- Local;
-- Friendly;
-- Reliable;
-- Modern;
-- Practical;
-- Approachable;
-- Human.
-
-Avoid:
-
-- Corporate coldness;
-- Excessive luxury;
-- Childish visuals;
-- Excessive Amazon clichés;
-- Visual noise.
-
----
-
-# 4. Visual Direction
-
-The visual language combines:
-
-```text
-Amazon/Pará identity
-        +
-Modern marketplace
-        +
-Clean SaaS interface
-```
-
-The resulting UI should use:
-
-- Deep greens;
-- Açaí-inspired purples;
-- Warm neutral surfaces;
-- Dark neutral text;
-- Restrained borders;
-- Soft elevation;
-- Rounded but not excessively rounded components.
-
----
-
-# 5. Color System
-
-The color system should be implemented through semantic design tokens.
-
-Do not hard-code colors inside feature components.
-
-Use CSS variables/Tailwind tokens.
-
-## 5.1 Primary — Amazon Green
-
-Primary green represents:
-
-- Nature;
-- Pará;
-- Trust;
-- Growth;
-- Action.
-
-Suggested base:
-
-```text
-Primary 500: #0F766E
-```
-
-Recommended semantic usage:
-
-```text
-primary
-primary-foreground
-primary-hover
-primary-active
-primary-muted
-```
-
-The exact production values may be adjusted during visual validation.
-
----
-
-## 5.2 Secondary — Açaí Purple
-
-Purple provides the regional identity associated with açaí.
-
-Suggested base:
-
-```text
-Secondary 500: #6B21A8
-```
-
-Use purple selectively for:
-
-- Secondary actions;
-- Highlights;
-- Category accents;
-- Marketplace branding;
-- Decorative emphasis.
-
-Do not use purple for every interactive element.
-
----
-
-## 5.3 Pará-Inspired Green
-
-A deeper green can be used for strong brand moments.
-
-Suggested:
-
-```text
-Green 700: #166534
-```
-
-Use for:
-
-- Brand accents;
-- Positive states;
-- Seller status;
-- Important marketplace indicators.
-
----
-
-## 5.4 Backgrounds
-
-Prefer warm neutral backgrounds rather than pure white everywhere.
-
-Suggested conceptual hierarchy:
-
-```text
-Background
-Surface
-Surface Elevated
-Surface Muted
-Border
-```
-
-Example direction:
-
-```text
-Background: warm neutral
-Surface: white
-Surface Muted: soft neutral
-Border: neutral gray
-```
-
-The exact values should be defined as design tokens and validated for contrast.
-
----
-
-## 5.5 Semantic Colors
-
-Use semantic tokens:
-
-```text
-success
-warning
-destructive
-info
-```
-
-Suggested direction:
-
-```text
-Success  → green
-Warning  → amber
-Error    → red
-Info     → blue
-```
-
-Semantic colors should not replace the brand palette.
-
----
-
-# 6. Color Usage Rules
-
-## Do
-
-- Use green for primary actions.
-- Use purple as a secondary brand accent.
-- Use neutral backgrounds to create hierarchy.
-- Use semantic colors only for semantic meaning.
-- Maintain WCAG contrast.
-
-## Do Not
-
-- Use green and purple everywhere simultaneously.
-- Use saturated gradients as the primary visual language.
-- Use color as the only indicator of status.
-- Create rainbow-like category interfaces.
-- Use brand colors for destructive actions.
-
----
-
-# 7. Typography
-
-Typography should prioritize readability.
-
-Preferred approach:
-
-```text
-Font family:
-Inter / Geist / system sans-serif
-```
-
-The final font should be selected based on Next.js and project configuration.
-
-## Type Scale
-
-Use a restrained hierarchy:
-
-```text
-Display
-H1
-H2
-H3
-H4
-Body Large
-Body
-Body Small
-Caption
-Label
-```
-
-Recommended principles:
-
-- Strong headings;
-- Comfortable body line-height;
-- Short labels;
-- Avoid extremely thin font weights;
-- Avoid excessive uppercase text.
-
----
-
-# 8. Typography Hierarchy
-
-### Page title
-
-Used for:
-
-- Dashboard;
-- Product pages;
-- Main sections.
-
-### Section title
-
-Used for:
-
-- Product sections;
-- Dashboard widgets;
-- Related products.
-
-### Body
-
-Used for:
-
-- Product descriptions;
-- Explanations;
-- Forms.
-
-### Caption
-
-Used for:
-
-- Timestamps;
-- Metadata;
-- Secondary information.
-
----
-
-# 9. Spacing
-
-Use a consistent spacing scale.
-
-Prefer Tailwind's spacing system.
-
-Conceptual scale:
-
-```text
-4
-8
-12
-16
-20
-24
-32
-40
-48
-64
-80
-96
-```
-
-Avoid arbitrary values unless they solve a documented design requirement.
-
----
-
-# 10. Border Radius
-
-Use moderate rounding.
-
-Recommended semantic tokens:
-
-```text
-radius-sm
-radius-md
-radius-lg
-radius-xl
-```
-
-General direction:
-
-```text
-Inputs      → md
-Buttons     → md
-Cards       → lg
-Dialogs     → lg/xl
-Avatars     → full
-Badges      → full
-```
-
-Avoid making every component extremely rounded.
-
----
-
-# 11. Elevation
-
-The UI should use subtle elevation.
-
-Prefer:
-
-- Borders;
-- Surface contrast;
-- Small shadows.
-
-Avoid heavy shadows.
-
-Cards should generally feel integrated with the page rather than floating dramatically.
-
----
-
-# 12. Layout
-
-## 12.1 Container
-
-Use a consistent responsive container.
-
-Conceptual behavior:
-
-```text
-Mobile:
-full width + horizontal padding
-
-Tablet:
-constrained content
-
-Desktop:
-max-width container
-
-Large desktop:
-preserve readable content width
-```
-
-Avoid extremely wide content areas for forms and reading-heavy screens.
-
----
-
-# 13. Grid
-
-Marketplace product grids should adapt by viewport.
-
-Conceptual behavior:
-
-```text
-Mobile      → 1–2 columns
-Tablet      → 2–3 columns
-Desktop     → 3–5 columns
-Large       → 4–6 columns depending on available width
-```
-
-The exact number should be determined by product card readability rather than arbitrary breakpoints.
-
----
-
-# 14. Responsive Breakpoints
-
-Use Tailwind's standard responsive system unless the product demonstrates a real need for custom breakpoints.
-
-Design around:
-
-```text
-Mobile
-sm
-md
-lg
-xl
-2xl
-```
-
-Do not design separate desktop and mobile applications.
-
-Build responsive components.
-
----
-
-# 15. Navigation
-
-## Public Navigation
-
-Desktop:
-
-```text
-Logo
-Search
-Categories
-Favorites
-Login / Account
-Sell
-```
-
-Mobile:
-
-```text
-Logo
-Search
-Menu / Account
-```
-
-The mobile header should prioritize search and product discovery.
-
----
-
-# 16. Authenticated Navigation
-
-Authenticated users should have access to:
-
-```text
-Dashboard
-Explore
-My Listings
-Favorites
-Messages
-Profile
-Settings
-```
-
-Desktop can use a sidebar.
-
-Mobile should use:
-
-- Bottom navigation where appropriate;
-- Drawer;
-- Compact header navigation.
-
-Do not force desktop sidebars into narrow mobile screens.
-
----
-
-# 17. Marketplace Home
-
-The public marketplace should prioritize product discovery.
-
-Suggested hierarchy:
-
-```text
-Header
-↓
-Search
-↓
-Categories
-↓
-Featured / Recent Listings
-↓
-Filters
-↓
-Product Grid
-```
-
-The home screen should not be dominated by marketing content.
-
-The marketplace itself is the main product.
-
----
-
-# 18. Search
-
-Search is a primary interaction.
-
-Requirements:
-
-- Easy to find;
-- Large enough touch target;
-- Clear focus state;
-- Search icon;
-- Clear/reset action when applicable.
-
-On mobile, search should remain accessible without requiring excessive navigation.
-
----
-
-# 19. Filters
-
-Desktop:
-
-- Inline or sidebar filters.
-
-Mobile:
-
-- Filter drawer/sheet.
-
-Filters may include:
-
-```text
-Category
-Price
-Condition
-Location
-Sort
-```
-
-Do not overwhelm users with filters that do not improve marketplace discovery.
-
----
-
-# 20. Product Card
-
-The product card is one of the most important components.
-
-It should prioritize:
-
-```text
-Image
-Title
-Price
-Location
-Condition
-Favorite
-```
-
-Optional:
-
-```text
-Seller
-Timestamp
-```
-
-Recommended hierarchy:
-
-```text
-┌───────────────────────┐
-│                       │
-│      Product Image    │
-│                       │
-├───────────────────────┤
-│ Product title         │
-│ R$ 1.250,00           │
-│ Location · Condition  │
-│                       │
-└───────────────────────┘
-```
-
-Do not place the entire product description inside the card.
-
----
-
-# 21. Product Details
-
-The product page should have a clear hierarchy:
-
-```text
-Gallery
-↓
-Title
-↓
-Price
-↓
-Condition / Location
-↓
-Description
-↓
-Seller
-↓
-Contact / Chat
-↓
-Related products
-```
-
-The primary action should be obvious.
-
-For authenticated users:
-
-**Conversar com vendedor**
-
-For unauthenticated users:
-
-**Entrar para conversar**
-
----
-
-# 22. Seller Information
-
-Seller information should communicate trust without exposing unnecessary private data.
-
-Show:
-
-- Display name;
-- Avatar;
-- Location;
-- Online/offline state;
-- Basic profile information.
-
-Email and phone should not automatically dominate the product page.
-
-Chat should be the primary contact mechanism.
-
----
-
-# 23. Online Status
-
-Use a small status indicator.
-
-Example:
-
-```text
-● Online
-○ Offline
-```
-
-Do not rely only on color.
-
-Use text or accessible labels.
-
-The indicator should be subtle rather than visually dominant.
-
----
-
-# 24. Chat Design
-
-The chat should feel familiar and lightweight.
-
-## Conversation List
-
-Show:
-
-- Avatar;
-- Name;
-- Product context;
-- Last message;
-- Timestamp;
-- Unread count;
-- Online status.
-
-## Chat Window
-
-Structure:
-
-```text
-Header
-Product Context
-Message List
-Message Composer
-```
-
----
-
-# 25. Message Bubbles
-
-Messages should clearly distinguish:
-
-```text
-Own message
-Other user's message
-```
-
-Use subtle background differences rather than highly saturated colors.
-
-Messages should support:
-
-- Text;
-- Images;
-- Timestamp;
-- Read status.
-
----
-
-# 26. Chat Image Messages
-
-Image messages should:
-
-- Show preview;
-- Preserve aspect ratio;
-- Open larger when selected;
-- Show loading state;
-- Show upload failure state.
-
-Avoid displaying massive images that break the conversation layout.
-
----
-
-# 27. Dashboard
-
-The dashboard should be task-oriented.
-
-Suggested structure:
-
-```text
-Welcome / Summary
-↓
-Quick Actions
-↓
-Listing Metrics
-↓
-Recent Listings
-↓
-Recent Conversations
-```
-
-Important actions:
-
-- Anunciar produto;
-- Ver meus anúncios;
-- Ver mensagens.
-
-Avoid turning the dashboard into an analytics-heavy system during the MVP.
-
----
-
-# 28. Listing Creation
-
-The listing form should be simple and progressive.
-
-Recommended sections:
-
-```text
-Basic information
-Images
-Pricing
-Category
-Condition
-Location
-Contact preferences
-Preview
-```
-
-Use clear validation.
-
-Do not create extremely long forms without grouping.
-
----
-
-# 29. Image Upload UX
-
-The upload area should clearly communicate:
-
-- Accepted formats;
-- Maximum file size;
-- Number of images;
-- Upload progress;
-- Primary image;
-- Reordering;
-- Removal.
-
-Example:
-
-```text
-[ + Adicionar fotos ]
-
-Arraste ou selecione imagens
-```
-
-On mobile, use the device's native image selection experience where possible.
-
----
-
-# 30. Forms
-
-Forms should use:
-
-- Explicit labels;
-- Helpful descriptions;
-- Inline validation;
-- Error messages;
-- Loading states;
-- Success feedback.
-
-Never rely solely on placeholder text as the field label.
-
----
-
-# 31. Buttons
-
-Button hierarchy:
+A cool botanical pair — açaí plum and forest green — resting on lavender-white paper, with a narrow semantic family for status.
 
 ### Primary
-
-Main action.
-
-Example:
-
-```text
-Anunciar produto
-Conversar com vendedor
-Salvar alterações
-```
+- **Açaí Ink** (#6C1D6E): primary actions, the brand tile and wordmark, prices, active navigation, selected states, and the "published" listing badge. It is the only color allowed to fill a button at default weight.
+- **Açaí Ink Deep** (#541456): opaque hover and pressed companion for cases where a translucent fill would reveal a noisy surface.
+- **Açaí Mist** (#F8EEF9): tinted container for selected filters, empty-state icon tiles, and active status badges.
 
 ### Secondary
+- **Forest Calm** (#3C6658): credibility accents — category icons, trust checks, secondary buttons, chart series.
+- **Forest Deep** (#0D3B2E): high-contrast green for text on mint surfaces and deep brand moments.
+- **Forest Mist** (#E6F4F0): positive and credibility surface tint.
 
-Alternative action.
+### Neutral
+- **Lavender Paper** (#FAF8FF): page background; the violet cast keeps white cards legible without gray mud.
+- **Surface White** (#FFFFFF): cards, the header, and catalog surfaces. Overlays sit on Lavender Paper instead, so they read as the page lifted rather than a new object.
+- **Lavender Wash** (#F2F3FF): muted blocks, skeletons, and the hover fill for ghost controls. One step deeper than the page, never a second background.
+- **Midnight Slate** (#131B2E): primary text and headings; never pure black.
+- **Ash Plum** (#50434D): secondary text, metadata, placeholders, captions.
+- **Hairline** (#E2E8F0): every 1px border and divider; inputs share it. Named for the job, not the hue — it is a line, not a surface.
 
-### Ghost
+### Status
+- **Success Green** (#059669) on success surface (#ECFDF5): sold state, confirmations, trust checks.
+- **Warning Amber** (#D97706) on warning surface (#FFFBEB): paused listings, expiring states.
+- **Danger Red** (#BA1A1A): destructive actions and validation errors; the softer `--danger` (#DC2626) is the alias used inside forms.
 
-Low-emphasis actions.
+**The One Accent Rule.** Purple owns action and brand; green owns credibility and success. They never compete at equal weight on one screen — if a view needs both, one becomes a 10% tint or an icon.
 
-### Destructive
+**The Quiet Surface Rule.** Backgrounds stay lavender-neutral or white. No saturated full-bleed color blocks behind content; brand color enters through text, icons, borders, and small fills. The seller CTA is the single sanctioned exception, and it stays a contained 16px-radius panel rather than a page background.
 
-Actions such as:
+**Dark theme.** A complete `.dark` token set exists in `src/app/theme.css`, but no theme provider or switcher is mounted. Treat dark mode as reserved, not shipped; if it ships, it must be driven by those tokens rather than one-off colors.
 
-```text
-Excluir anúncio
-Remover conta
-```
+## Typography
 
-Destructive actions must use semantic destructive styling rather than brand purple/green.
+**Display Font:** Geist (with ui-sans-serif, system-ui, sans-serif)
+**Body Font:** Geist (same stack)
+**Label/Mono Font:** Geist Mono for code, IDs, and technical metadata only.
 
----
+**Character:** A neutral contemporary grotesque that keeps the product looking like software, not a market flyer. Personality comes from tight headline tracking and the plum price line, not from a decorative face.
 
-# 32. Cards
+### Hierarchy
+- **Display** (700, 2.5rem/3rem, −0.03em; 1.75rem/2.125rem on mobile): home and landing hero headlines only.
+- **Headline** (600, 1.875rem/2.375rem, −0.02em; 1.5rem on mobile): page titles and major section openers.
+- **Title** (600, 1.375rem/1.75rem, −0.01em): card group titles and dialog titles.
+- **Body** (400, 1rem/1.625rem): descriptions and form copy; keep line length around 65–75ch.
+- **Body Small** (400, 0.875rem/1.375rem): dense metadata, helper text, compact rows.
+- **Label** (500, 0.75rem/1rem, +0.01em): control labels, navigation, small actions.
+- **Price** (700, 1.25rem/1.625rem, −0.02em): every price, always in Açaí Ink.
+- **Badge** (600, 0.6875rem/0.875rem, +0.02em): status and condition pills; sentence case, never all caps.
 
-Cards should be used when grouping related information.
+**The Tight Headline Rule.** Tracking tightens as type grows (−0.02 to −0.03em on headline and display). Body text never drops below 13px, and no user-facing copy is set in all caps.
 
-Good use cases:
+**The Price Rule.** A price is the loudest element in a product card after the image: 20px, bold, plum, tabular where the font allows. Never grey a price to de-emphasize it.
 
-- Product cards;
-- Seller summary;
-- Dashboard metrics;
-- Conversation previews;
-- Listing management.
+## Layout
 
-Do not put every piece of content inside a card.
+The container is `max-w-[1320px]` with 16px mobile gutters, 24px from `sm`, and 32px from `lg`. Reading and form surfaces narrow to `max-w-2xl`–`max-w-5xl` instead of stretching. The public header is sticky at 72px with a second search row below 768px; the category row lives inside the header block.
 
----
+Product cards form a 1-column grid below 640px, 2 at `sm`, 3 at `lg`, and 4 at `xl`, with 16px gaps and a 4:3 image. Sections stack with 56–64px of vertical air (`space-y-14/16`, `py-12/16/20`); marketing heroes breathe more than task screens.
 
-# 33. Empty States
+Task screens — dashboard, listings, forms — are narrower and denser: 16–24px between cards, 24px card padding, actions in a single wrapping row. Mobile filters move into a right sheet at 75% width; desktop filters stay inline. No layout is a shrunken desktop: navigation collapses into a sheet, search takes its own row, and touch targets grow to 44px.
 
-Every major collection needs an intentional empty state.
-
-Examples:
-
-### Favorites
-
-```text
-Você ainda não salvou nenhum produto.
-```
-
-### Listings
-
-```text
-Você ainda não publicou nenhum anúncio.
-```
-
-### Messages
-
-```text
-Suas conversas aparecerão aqui.
-```
-
-Empty states should include an optional action when useful.
-
----
-
-# 34. Loading States
-
-Prefer skeletons for content-heavy interfaces.
-
-Examples:
-
-- Product grid skeleton;
-- Product detail skeleton;
-- Conversation list skeleton;
-- Dashboard cards skeleton.
-
-Avoid blocking spinners for entire pages when partial content can be displayed.
-
----
-
-# 35. Error States
-
-Errors should be:
-
-- Clear;
-- Human-readable;
-- Actionable.
-
-Example:
-
-```text
-Não foi possível carregar os anúncios.
-
-Tente novamente.
-```
-
-Do not expose:
-
-- SQL errors;
-- Supabase internals;
-- Stack traces;
-- Internal IDs.
-
----
-
-# 36. Toasts
-
-Use toasts for short-lived feedback.
-
-Good:
-
-```text
-Produto salvo.
-Anúncio publicado.
-Produto adicionado aos favoritos.
-```
-
-Do not use toasts as the only way to communicate critical errors.
-
----
-
-# 37. Modals and Drawers
-
-Use dialogs for:
-
-- Confirmation;
-- Focused actions;
-- Small forms.
-
-Use drawers/sheets for:
-
-- Mobile filters;
-- Mobile navigation;
-- Contextual panels.
-
-Avoid nested modal flows.
-
----
-
-# 38. Icons
-
-Use a consistent icon library compatible with the project's UI system.
-
-Icons should:
-
-- Have consistent stroke weight;
-- Include accessible labels when needed;
-- Not replace important text;
-- Be used consistently.
-
-Do not use emojis as interface icons.
-
----
-
-# 39. Images
-
-Marketplace imagery should be the visual focus.
-
-Product images should:
-
-- Preserve aspect ratio;
-- Use appropriate object-fit behavior;
-- Avoid unnecessary cropping;
-- Use optimized Next.js image handling where appropriate.
-
-Use neutral placeholders when no image exists.
-
----
-
-# 40. Motion
-
-Motion should be subtle.
-
-Use animation for:
-
-- Opening/closing dialogs;
-- Drawer transitions;
-- Loading feedback;
-- Small interaction feedback.
-
-Avoid:
-
-- Excessive page transitions;
-- Continuous animations;
-- Distracting hover effects.
-
-Respect:
-
-```text
-prefers-reduced-motion
-```
-
----
-
-# 41. Accessibility
-
-Every interactive component must support:
-
-- Keyboard navigation;
-- Visible focus;
-- Appropriate ARIA where necessary;
-- Semantic HTML;
-- Screen-reader labels;
-- Sufficient contrast.
-
-Touch targets should generally be at least approximately 44×44px.
-
-Do not use color as the only indication of:
-
-- Online state;
-- Error;
-- Success;
-- Selected state.
-
----
-
-# 42. Dark Mode
-
-Dark mode may be introduced after the core light theme is stable.
-
-If implemented, dark mode must use semantic tokens rather than replacing colors individually throughout components.
-
-The purple/green identity should remain recognizable without becoming excessively saturated.
-
----
-
-# 43. Design Tokens
-
-The design system should be expressed through semantic tokens.
-
-Conceptual structure:
-
-```text
-colors/
-├── background
-├── foreground
-├── primary
-├── secondary
-├── muted
-├── accent
-├── destructive
-├── border
-└── ring
-```
-
-And:
-
-```text
-spacing
-radius
-typography
-shadow
-breakpoints
-```
-
-Components should consume semantic tokens rather than hard-coded visual values.
-
----
-
-# 44. Component Architecture
-
-Use shadcn/ui as the foundation for generic UI primitives.
-
-Recommended relationship:
-
-```text
-shadcn/ui
-    ↓
-Shared UI primitives
-    ↓
-Feature components
-    ↓
-Pages
-```
-
-Example:
-
-```text
-Button
-  ↓
-ChatSendButton
-  ↓
-ChatComposer
-  ↓
-ChatPage
-```
-
-Feature components should compose primitives rather than recreate them.
-
----
-
-# 45. Feature UI Organization
-
-Feature-specific UI should live inside the feature.
-
-Example:
-
-```text
-features/products/
-├── components/
-│   ├── product-card.tsx
-│   ├── product-grid.tsx
-│   ├── product-gallery.tsx
-│   └── product-filters.tsx
-```
-
-Do not move these components to the global UI directory simply because they are visually reusable.
-
----
-
-# 46. States as Part of Design
-
-Every component should consider:
-
-```text
-default
-hover
-focus
-active
-disabled
-loading
-empty
-error
-success
-```
-
-Data-driven components should also consider:
-
-```text
-no data
-partial data
-long content
-missing image
-slow network
-permission denied
-```
-
----
-
-# 47. Content and Microcopy
-
-The language should be:
-
-- Brazilian Portuguese;
-- Clear;
-- Friendly;
-- Direct;
-- Human.
-
-Avoid overly corporate terminology.
-
-Prefer:
-
-```text
-Anunciar produto
-```
-
-instead of:
-
-```text
-Criar novo listing
-```
-
-Prefer:
-
-```text
-Conversar com vendedor
-```
-
-instead of:
-
-```text
-Iniciar sessão de comunicação
-```
-
-Technical terminology should not appear in user-facing interfaces.
-
----
-
-# 48. Regional Microcopy
-
-Regional references should be subtle.
-
-Possible examples:
-
-```text
-Encontre o que você procura.
-Venda o que está parado.
-
-Tem algo para vender?
-Anuncie no Ver-o-Preço.
-
-Achou o que queria?
-Converse com o vendedor.
-```
-
-Avoid forcing regional expressions into every screen.
-
----
-
-# 49. Marketplace Trust Patterns
-
-Use visual cues such as:
-
-- Seller profile;
-- Account information;
-- Listing date;
-- Location;
-- Product condition;
-- Clear price;
-- Online status;
-- Report action where applicable.
-
-Do not visually imply that a seller is verified unless there is an actual verification system.
-
----
-
-# 50. Responsive Chat
-
-Desktop:
-
-```text
-┌────────────────┬──────────────────────────┐
-│ Conversations  │ Chat                     │
-│                │                          │
-│ Seller A       │ Messages                 │
-│ Seller B       │                          │
-│ Seller C       │                          │
-│                │ Composer                 │
-└────────────────┴──────────────────────────┘
-```
-
-Mobile:
-
-```text
-Conversation List
-        ↓
-Chat
-        ↓
-Full viewport
-```
-
-Use route-based or state-based navigation appropriate to Next.js.
-
----
-
-# 51. Responsive Product Details
-
-Desktop:
-
-```text
-┌─────────────────────┬─────────────────────┐
-│                     │ Product information │
-│ Gallery             │ Price               │
-│                     │ Seller              │
-│                     │ Contact             │
-└─────────────────────┴─────────────────────┘
-```
-
-Mobile:
-
-```text
-Gallery
-↓
-Title
-↓
-Price
-↓
-Information
-↓
-Seller
-↓
-Primary action
-```
-
-The primary action should remain easy to reach.
-
----
-
-# 52. Design Anti-Patterns
-
-Avoid:
-
-- Excessive gradients;
-- Glassmorphism as the default visual language;
-- Huge rounded cards;
-- Excessive shadows;
-- Tiny text;
-- Dense dashboards;
-- Excessive badges;
-- Too many colors;
-- Long forms;
-- Desktop-first layouts;
-- Generic AI-generated SaaS aesthetics;
-- Unnecessary decorative illustrations;
-- Emoji-based UI icons.
-
----
-
-# 53. Visual Quality Checklist
-
-Before considering a UI feature complete:
-
-```text
-[ ] Visual hierarchy is clear
-[ ] Typography is consistent
-[ ] Spacing follows tokens
-[ ] Colors use semantic tokens
-[ ] Brand identity is subtle and consistent
-[ ] Mobile layout works
-[ ] Tablet layout works
-[ ] Desktop layout works
-[ ] Loading state exists
-[ ] Empty state exists
-[ ] Error state exists
-[ ] Focus state exists
-[ ] Accessibility reviewed
-[ ] Touch targets are adequate
-[ ] No horizontal overflow
-[ ] No unnecessary visual noise
-```
-
----
-
-# 54. Design Review Checklist
-
-Before merging a significant visual change, verify:
-
-### Brand
-
-- Does it feel like Ver-o-Preço?
-- Is the Pará/Açaí identity present without being excessive?
-
-### UX
-
-- Is the primary action obvious?
-- Can a new user understand the screen immediately?
-
-### Responsive
-
-- Does mobile receive the same quality of attention as desktop?
-
-### Accessibility
-
-- Can the feature be used with keyboard navigation?
-- Is contrast sufficient?
-- Are states understandable without color alone?
-
-### Consistency
-
-- Are existing components reused?
-- Are tokens used instead of arbitrary values?
-
-### Performance
-
-- Are images optimized?
-- Are unnecessary client components avoided?
-
----
-
-# 55. Source of Truth
-
-This file is the source of truth for visual and interaction design.
-
-When implementing UI:
-
-```text
-AGENTS.md
-    ↓
-DESIGN.md
-    ↓
-Feature Plan
-    ↓
-Implementation
-```
-
-If an existing component conflicts with the design system, prefer updating the component systematically rather than introducing a one-off variation.
-
----
-
-# 56. Final Design Direction
-
-Ver-o-Preço should look like:
-
-> A modern, trustworthy and simple Brazilian marketplace with a subtle Pará/Açaí visual identity.
-
-The design should balance:
-
-```text
-Regional identity
-        +
-Modern technology
-        +
-Marketplace usability
-        +
-Accessibility
-        +
-Simplicity
-```
-
-The visual system must remain coherent as the product grows from MVP into additional modules.
+Breakpoints follow Tailwind defaults: 640, 768, 1024, 1280, 1536. Large screens cap content rather than adding a fifth product column.
+
+## Elevation & Depth
+
+The system is border-led and tonally layered: depth at rest comes from a 1px Hairline border plus a lavender-to-white surface shift. Shadows are a state response, not decoration — cards sit nearly flat and lift only on hover; overlays and floating previews get the only pronounced shadows. There is no glassmorphism; the header's translucent white exists to keep content legible while scrolling, not as an effect.
+
+### Shadow Vocabulary
+- **card** (`0 1px 2px 0 rgb(15 23 42 / 0.05)`): catalog cards, feature tiles, brand tile, hero search shell.
+- **card-hover** (`0 4px 6px -1px rgb(15 23 42 / 0.08)`): pointer hover on cards and feature tiles.
+- **popover** (`0 10px 15px -3px rgb(15 23 42 / 0.08)`): floating previews such as the landing chat card.
+- **modal** (`0 24px 48px -12px rgb(15 23 42 / 0.18)`): the deepest elevation in the system, currently only the landing phone mockup.
+- **Overlays** use Tailwind's `shadow-lg`, which sits between `card-hover` and `modal`. Keep it that way until a real popover or modal surface needs the deeper tokens.
+
+The base `Card` primitive still defaults to Tailwind's `shadow-sm`; catalog and management cards override it with `card`.
+
+**The Resting Border Rule.** If a surface needs a shadow to be understood at rest, it needs a border instead. Shadows may only intensify with state: hover, open, dragging.
+
+## Shapes
+
+Corners are moderate and role-based: 8px for controls (buttons, inputs, textareas), 12px for cards and image frames, 16px for panels and the hero search shell, and full round for badges, avatars, category pills, and the header action. Dialogs use 10px; sheets are square-edged side panels. Nothing is clipped, cut, or skewed; the only non-rectangular geometry is the circle used for avatars, status dots, and the two blurred brand orbs.
+
+Borders are always 1px Hairline; dashed borders are reserved for empty states. Icon tiles are 48–56px squares — 16px radius in empty and error states, 12px in secondary contexts — holding a 20–28px Lucide icon. Pills are earned by badges, category links, and the header CTA — not by cards or inputs.
+
+## Components
+
+### Buttons
+- **Shape:** 8px radius; 36px default height, 32px small, 40px large, 44px for the header CTA and hero actions.
+- **Primary:** Açaí Ink fill, white label, 16px horizontal padding, 14px medium label, 8px icon gap. Hover applies 90% of the fill; the deep-plum token exists for opaque surfaces.
+- **Outline:** Hairline border on the page background, Midnight Slate label, extra-small shadow; hover shifts to the accent fill.
+- **Ghost:** no fill at rest; hover paints Lavender Wash. Used for tertiary listing actions — Publicar, Pausar, Ver anúncio.
+- **Destructive:** Danger Red fill, white label; never brand purple or green.
+- **Focus:** 3px ring at 50% ring opacity plus a ring-colored border; keyboard focus is never removed.
+- **Disabled:** 50% opacity, pointer events off.
+
+### Badges and Chips
+- **Style:** full round, 11px semibold, 2px × 10px padding, 1px border when a status tone is used.
+- **Status mapping:** draft → muted fill with Ash Plum text; active → Açaí Mist with plum text; paused → warning surface with deep amber text; sold → success surface with deep green text; removed → red tint with red text. The label always names the state, so color is never the only signal.
+- **Condition badge:** white at 95% with backdrop blur over the product image, top-left; the favorite control sits top-right.
+
+### Cards
+- **Corner Style:** 12px for product cards and image frames; 16px for panels, empty states, and management cards.
+- **Background:** Surface White on Lavender Paper.
+- **Shadow Strategy:** `card` at rest, `card-hover` on hover.
+- **Border:** 1px Hairline.
+- **Internal Padding:** 16px for product cards (the image bleeds to the edge), 20–24px for panels.
+- **Product card:** 4:3 image, condition pill and favorite button overlaid, then a 16px body with a 20px plum price, an 18px semibold title clamped to two lines, a 12px location · seller line, and a 12px recency line pushed to the bottom. The image scales 3% on hover, motion-safe only.
+
+### Inputs and Fields
+- **Style:** 36px tall, 8px radius, transparent fill on white, 1px Hairline, 12px horizontal padding; 16px text on mobile to avoid iOS zoom, 14px from `md`.
+- **Focus:** ring-colored border plus the 3px focus ring; no glow. The header search uses a 20% ring on `focus-within` instead of 50%.
+- **Error:** destructive border and a 20% destructive ring via `aria-invalid`; the message sits below the field, never only in a toast.
+- **Labels:** always visible; a placeholder is never the label.
+- **Textarea:** 96px minimum height, 12px × 8px padding, identical border and focus treatment, and vertical resize left available — listing descriptions are long and people paste text.
+
+### Navigation
+- **Header:** sticky, 72px, white at 95% with backdrop blur, 1px bottom border. The brand tile is 40px, 12px radius, Açaí Ink with a Store glyph, followed by the wordmark in plum.
+- **Composition:** location selector (desktop only) → centered search capped at `max-w-xl` → account area → primary "Anunciar produto" pill → mobile menu sheet. The header search is a 44px pill with a circular icon submit button. Below `md`, search moves to its own row; below `lg`, location moves into the menu.
+- **Category row:** a full-round pill row that scrolls horizontally on mobile and wraps on desktop; the active category is an Açaí Mist pill with plum text, the rest are Ash Plum text that fills on hover. "Meus anúncios" is a forest-green text pill with a plus glyph, separated by a 1px divider.
+
+### Search Bar (signature)
+- **Shape:** 16px radius shell on Surface White with the card shadow and 8px padding.
+- **Composition:** query field, 1px vertical dividers, location select with a plum pin, category select with a forest-green grid icon, and a primary submit button. Each segment is 48px tall; on mobile the segments stack inside the shell.
+- **Behavior:** a real GET form that writes `q`, `location`, and `category` into the catalog URL, keeping search state shareable and server-rendered.
+
+### Empty States
+- **Shape:** 16px radius, dashed Hairline, white fill, centered, 64px vertical padding.
+- **Composition:** a 56px icon tile in Açaí Mist with a 28px plum icon, an 18px semibold headline, one sentence of Ash Plum guidance, then a primary action and an outline escape hatch. Copy distinguishes "no listings yet" from "no results for these filters".
+
+### Overlays (Dialog and Sheet)
+- **Dialog:** 10px radius, 24px padding, `max-w-lg` from `sm` and `calc(100% - 32px)` below it, `shadow-lg` over a 50% black scrim, on the Lavender Paper background rather than white; enters with fade and a 95% scale over 200ms. Reserved for a focused decision — a confirmation, a destructive action, a short form.
+- **Sheet:** square-edged, full-height, 75% width capped at 384px from `sm`, 1px inner border, `shadow-lg` on the Lavender Paper background; enters in 500ms and exits in 300ms. Used for mobile filters, the mobile menu, and panels that should slide over the page rather than interrupt it.
+- **Both:** Radix focus trap, Escape and scrim dismissal, close control top-right, and a title always present even when visually hidden. No nested overlays — if a dialog needs another, the flow is wrong.
+
+### Loading States
+- **Skeletons:** `animate-pulse` on Lavender Wash, `rounded-md` by default and reshaped to match the block they replace. They mirror the final layout — same grid, same card heights — so nothing shifts when data lands.
+- **Spinners:** only inside buttons and toasts for sub-second actions. A page that will take longer shows a skeleton, never a spinner.
+- **Never:** a blank screen, a zero-count flash, or "Nenhum anúncio" while the query is still running.
+
+### Motion
+State transitions run 200ms with Tailwind's standard ease; sheets enter at 500ms and exit at 300ms, dialogs at 200ms. Only transform and opacity animate; continuous motion is limited to the skeleton pulse and loading spinners. Hover lift is 2px at most and image zoom is 3%, both gated behind `motion-safe`. The pulse and the spinners are the only ungated animation left — wrap them in `motion-safe` when those components are next touched.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** use Açaí Ink for primary actions, prices, the wordmark, and active states — one accent per view.
+- **Do** use Forest Calm and its mists for credibility, positive state, and secondary emphasis.
+- **Do** build depth with a 1px Hairline border and a surface tone shift before reaching for a shadow.
+- **Do** keep controls at 8px, cards at 12px, panels at 16px, and pills for badges, category links, and the header CTA.
+- **Do** keep the 3px focus ring visible on every interactive element.
+- **Do** let product imagery lead at 4:3 with `object-cover` and descriptive alt text.
+- **Do** write microcopy in Brazilian Portuguese, sentence case, direct: "Anunciar produto", "Conversar com vendedor", "Nenhum anúncio encontrado".
+- **Do** name the state in text as well as color — status badges, errors, online/offline.
+- **Do** state the seller promise in plain, unhedged text — "sem comissão sobre a venda" is a commitment, never a claim with an asterisk.
+- **Do** respect `prefers-reduced-motion` and keep touch targets at 44px on mobile.
+
+### Don't:
+- **Don't** treat forest green as a second primary or place purple and green at equal weight in one view.
+- **Don't** use gradients as a general language, or add glassmorphism and heavy shadows; gradient is limited to the hero orbs, the soft auth info panels, and the single seller CTA panel.
+- **Don't** round cards into pills or exceed 16px on standard cards and panels.
+- **Don't** drop body text below 13px, set user-facing copy in all caps, or use thin weights.
+- **Don't** use color alone for status, error, or selection.
+- **Don't** use emojis as interface icons; Lucide at a consistent stroke is the icon system.
+- **Don't** imply verification, ratings, or guarantees the product does not have.
+- **Don't** reproduce OLX or Mercado Livre layouts, components, copy, or identity.
+- **Don't** show raw Supabase or database errors; translate them into human, actionable messages.
+- **Don't** put saturated full-bleed color blocks behind content or color every card.
+- **Don't** add a second saturated gradient panel; the seller CTA is the only one in the product.

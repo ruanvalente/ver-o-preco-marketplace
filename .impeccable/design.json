@@ -1,0 +1,483 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T13:46:11.035Z",
+  "title": "Design System: Ver-o-Preço",
+  "extensions": {
+    "colorMeta": {
+      "acai-ink": {
+        "role": "primary",
+        "displayName": "Açaí Ink",
+        "canonical": "oklch(39.3% 0.1486 326.9)",
+        "tonalRamp": [
+          "#150715",
+          "#3C143C",
+          "#642666",
+          "#8C3F8D",
+          "#B061B1",
+          "#CF89CF",
+          "#E8B6E7",
+          "#FDE6FC"
+        ]
+      },
+      "acai-ink-deep": {
+        "role": "primary",
+        "displayName": "Açaí Ink Deep",
+        "canonical": "oklch(32.9% 0.1258 326.7)",
+        "tonalRamp": [
+          "#140814",
+          "#391839",
+          "#602C61",
+          "#864687",
+          "#AA67AA",
+          "#C98EC9",
+          "#E3BAE3",
+          "#FAE8FA"
+        ]
+      },
+      "acai-mist": {
+        "role": "primary",
+        "displayName": "Açaí Mist",
+        "canonical": "oklch(96.0% 0.0180 323.0)",
+        "tonalRamp": [
+          "#0E0D0E",
+          "#2A252A",
+          "#484149",
+          "#686069",
+          "#89808A",
+          "#ABA3AB",
+          "#CDC7CE",
+          "#F0EDF0"
+        ]
+      },
+      "forest-calm": {
+        "role": "secondary",
+        "displayName": "Forest Calm",
+        "canonical": "oklch(47.5% 0.0527 170.7)",
+        "tonalRamp": [
+          "#080F0C",
+          "#172C25",
+          "#2A4C41",
+          "#436D5F",
+          "#648E7F",
+          "#8BAFA2",
+          "#B7D0C7",
+          "#E6F1ED"
+        ]
+      },
+      "forest-deep": {
+        "role": "secondary",
+        "displayName": "Forest Deep",
+        "canonical": "oklch(31.7% 0.0544 170.2)",
+        "tonalRamp": [
+          "#080F0C",
+          "#162C25",
+          "#294C40",
+          "#426D5E",
+          "#638E7F",
+          "#8AB0A2",
+          "#B6D1C6",
+          "#E6F2ED"
+        ]
+      },
+      "forest-mist": {
+        "role": "secondary",
+        "displayName": "Forest Mist",
+        "canonical": "oklch(95.6% 0.0157 177.1)",
+        "tonalRamp": [
+          "#0C0E0D",
+          "#232927",
+          "#3D4644",
+          "#5A6663",
+          "#7A8783",
+          "#9EA9A6",
+          "#C4CCC9",
+          "#ECEFEE"
+        ]
+      },
+      "lavender-paper": {
+        "role": "neutral",
+        "displayName": "Lavender Paper",
+        "canonical": "oklch(98.3% 0.0095 299.2)",
+        "tonalRamp": [
+          "#0D0D0F",
+          "#272729",
+          "#444348",
+          "#636267",
+          "#848288",
+          "#A6A5AA",
+          "#CAC9CD",
+          "#EFEEF1"
+        ]
+      },
+      "surface-white": {
+        "role": "neutral",
+        "displayName": "Surface White",
+        "canonical": "oklch(100.0% 0.0000 89.9)",
+        "tonalRamp": [
+          "#0E0D0B",
+          "#282725",
+          "#454441",
+          "#646360",
+          "#848381",
+          "#A7A6A3",
+          "#CAC9C7",
+          "#EFEEEB"
+        ]
+      },
+      "midnight-slate": {
+        "role": "neutral",
+        "displayName": "Midnight Slate",
+        "canonical": "oklch(22.5% 0.0391 266.0)",
+        "tonalRamp": [
+          "#0B0D12",
+          "#222732",
+          "#3C4456",
+          "#596379",
+          "#79849B",
+          "#9CA6BB",
+          "#C3CAD9",
+          "#EBEEF5"
+        ]
+      },
+      "ash-plum": {
+        "role": "neutral",
+        "displayName": "Ash Plum",
+        "canonical": "oklch(40.0% 0.0239 334.1)",
+        "tonalRamp": [
+          "#0F0C0E",
+          "#2B252A",
+          "#4B4048",
+          "#6C5E68",
+          "#8D7F89",
+          "#AEA1AB",
+          "#CFC6CD",
+          "#F1EDF0"
+        ]
+      },
+      "success-green": {
+        "role": "status",
+        "displayName": "Success Green",
+        "canonical": "oklch(59.6% 0.1274 163.2)",
+        "tonalRamp": [
+          "#011109",
+          "#00301F",
+          "#015137",
+          "#017551",
+          "#1B9A6E",
+          "#60BB93",
+          "#9ED9BC",
+          "#DCF6E8"
+        ]
+      },
+      "warning-amber": {
+        "role": "status",
+        "displayName": "Warning Amber",
+        "canonical": "oklch(66.6% 0.1574 58.3)",
+        "tonalRamp": [
+          "#190800",
+          "#3E1D00",
+          "#673500",
+          "#934E01",
+          "#C26A05",
+          "#E38F4A",
+          "#F7BB8E",
+          "#FEEADC"
+        ]
+      },
+      "danger-red": {
+        "role": "status",
+        "displayName": "Danger Red",
+        "canonical": "oklch(50.6% 0.1927 27.7)",
+        "tonalRamp": [
+          "#1E0403",
+          "#510003",
+          "#840107",
+          "#B61A1A",
+          "#DE473E",
+          "#FB796C",
+          "#FEB4AA",
+          "#FFE9E6"
+        ]
+      },
+      "lavender-wash": {
+        "role": "neutral",
+        "displayName": "Lavender Wash",
+        "canonical": "oklch(96.7% 0.0160 282.3)",
+        "tonalRamp": [
+          "#0D0D0F",
+          "#26272C",
+          "#43434B",
+          "#61626C",
+          "#82838D",
+          "#A4A5AE",
+          "#C8C9D0",
+          "#EEEEF1"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(92.9% 0.0126 255.5)",
+        "tonalRamp": [
+          "#0C0D0F",
+          "#25272B",
+          "#40444A",
+          "#5E636A",
+          "#7F848B",
+          "#A2A6AD",
+          "#C6CACE",
+          "#EDEFF1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home and landing hero headlines only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles and major section openers."
+      },
+      "headline-small": {
+        "displayName": "Headline Small",
+        "purpose": "Product card titles, dialog headings, compact section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card group titles and dialog titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions, form copy and reading text at 65–75ch."
+      },
+      "body-small": {
+        "displayName": "Body Small",
+        "purpose": "Dense metadata, helper text and compact rows."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Control labels, navigation and small actions."
+      },
+      "price": {
+        "displayName": "Price",
+        "purpose": "Every price, always in Açaí Ink."
+      },
+      "badge": {
+        "displayName": "Badge",
+        "purpose": "Status and condition pills; sentence case, never all caps."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px 0 rgb(15 23 42 / 0.05)",
+        "purpose": "Catalog cards, feature tiles, brand tile, hero search shell."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 4px 6px -1px rgb(15 23 42 / 0.08)",
+        "purpose": "Pointer hover on cards and feature tiles."
+      },
+      {
+        "name": "popover",
+        "value": "0 10px 15px -3px rgb(15 23 42 / 0.08)",
+        "purpose": "Floating previews such as the landing chat card."
+      },
+      {
+        "name": "modal",
+        "value": "0 24px 48px -12px rgb(15 23 42 / 0.18)",
+        "purpose": "The deepest elevation in the system, currently only the landing phone mockup."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for state transitions."
+      },
+      {
+        "name": "state-fast",
+        "value": "200ms",
+        "purpose": "Hover, focus and dialog transitions."
+      },
+      {
+        "name": "state-slow",
+        "value": "300ms",
+        "purpose": "Sheet exit and larger surface changes."
+      },
+      {
+        "name": "sheet-enter",
+        "value": "500ms",
+        "purpose": "Sheet entrance."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "2xl",
+        "value": "1536px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single filled action on a view: publishing, saving, sending.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\">Anunciar produto</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:0;border-radius:var(--radius-md,8px);background:var(--primary,#6C1D6E);color:var(--primary-foreground,#FFFFFF);font-family:inherit;font-size:14px;font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background-color .2s ease,box-shadow .2s ease;}\n.ds-btn-primary:hover{background:var(--primary-hover,#541456);}\n.ds-btn-primary:active{background:var(--primary-strong,#500054);}\n.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "The alternative action: escape hatches and secondary paths.",
+      "html": "<button type=\"button\" class=\"ds-btn-outline\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>Explorar produtos</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:1px solid var(--border,#E2E8F0);border-radius:var(--radius-md,8px);background:var(--background,#FAF8FF);color:var(--foreground,#131B2E);font-family:inherit;font-size:14px;font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background-color .2s ease,color .2s ease,box-shadow .2s ease;}\n.ds-btn-outline svg{flex:none;}\n.ds-btn-outline:hover{background:var(--accent,#F2F3FF);color:var(--accent-foreground,#131B2E);}\n.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Low-emphasis row action, used for listing management.",
+      "html": "<button type=\"button\" class=\"ds-btn-ghost\">Ver anúncio</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:0;border-radius:var(--radius-md,8px);background:transparent;color:var(--foreground,#131B2E);font-family:inherit;font-size:14px;font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background-color .2s ease;}\n.ds-btn-ghost:hover{background:var(--accent,#F2F3FF);color:var(--accent-foreground,#131B2E);}\n.ds-btn-ghost:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Visible label above a 36px input; focus is a ring, never a glow.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">E-mail</span><input class=\"ds-input\" type=\"email\" placeholder=\"voce@email.com\" /></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;width:100%;max-width:320px;font-family:inherit;}\n.ds-field-label{font-size:12px;font-weight:500;line-height:1rem;letter-spacing:.01em;color:var(--foreground,#131B2E);}\n.ds-input{height:36px;width:100%;padding:0 12px;border:1px solid var(--input,#E2E8F0);border-radius:var(--radius-md,8px);background:transparent;color:var(--foreground,#131B2E);font-family:inherit;font-size:14px;line-height:1.4;transition:border-color .2s ease,box-shadow .2s ease;}\n.ds-input::placeholder{color:var(--muted-foreground,#50434D);}\n.ds-input:focus-visible{outline:none;border-color:var(--ring,#6C1D6E);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "card-product",
+      "description": "The catalog unit: image first, plum price, two-line title, quiet metadata.",
+      "html": "<article class=\"ds-card\">\n  <div class=\"ds-card-media\" role=\"img\" aria-label=\"Foto do produto\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10.3\"/><path d=\"m2 2 20 20\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/></svg></div>\n  <span class=\"ds-card-badge\">Usado</span>\n  <button class=\"ds-card-fav\" type=\"button\" aria-label=\"Salvar nos favoritos\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg></button>\n  <div class=\"ds-card-body\">\n    <p class=\"ds-card-price\">R$ 1.250,00</p>\n    <h3 class=\"ds-card-title\">Bicicleta aro 29 em bom estado</h3>\n    <p class=\"ds-card-meta\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg><span>Belém</span><span aria-hidden=\"true\">•</span><span>Ana</span></p>\n  </div>\n</article>",
+      "css": ".ds-card{position:relative;display:flex;flex-direction:column;width:100%;max-width:300px;overflow:hidden;border:1px solid var(--border,#E2E8F0);border-radius:var(--radius-xl,12px);background:var(--card,#FFFFFF);color:var(--foreground,#131B2E);font-family:inherit;box-shadow:var(--shadow-card,0 1px 2px 0 rgb(15 23 42 / .05));transition:box-shadow .2s ease;}\n.ds-card:hover{box-shadow:var(--shadow-card-hover,0 4px 6px -1px rgb(15 23 42 / .08));}\n.ds-card-media{display:grid;place-items:center;aspect-ratio:4/3;background:var(--muted,#F2F3FF);color:var(--muted-foreground,#50434D);}\n.ds-card-badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:var(--radius-full,9999px);background:var(--card,#FFFFFF);color:var(--foreground,#131B2E);font-size:11px;font-weight:600;line-height:1;letter-spacing:.02em;}\n.ds-card-fav{position:absolute;top:8px;right:8px;display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid var(--border,#E2E8F0);border-radius:var(--radius-full,9999px);background:var(--card,#FFFFFF);color:var(--muted-foreground,#50434D);cursor:pointer;transition:color .2s ease;}\n.ds-card-fav:hover{color:var(--primary,#6C1D6E);}\n.ds-card-fav:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}\n.ds-card-body{padding:16px;}\n.ds-card-price{margin:0 0 6px;color:var(--primary,#6C1D6E);font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-.02em;}\n.ds-card-title{display:-webkit-box;margin:0 0 8px;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:18px;font-weight:600;line-height:1.35;}\n.ds-card-meta{display:flex;align-items:center;gap:6px;margin:0;color:var(--muted-foreground,#50434D);font-size:12px;line-height:1.2;}\n.ds-card-meta svg{flex:none;}"
+    },
+    {
+      "name": "Status Badges",
+      "kind": "chip",
+      "refersTo": "badge-status",
+      "description": "State is always named in text; tone reinforces it, never carries it alone.",
+      "html": "<div class=\"ds-badge-row\"><span class=\"ds-badge ds-badge-active\">Publicado</span><span class=\"ds-badge ds-badge-paused\">Pausado</span><span class=\"ds-badge ds-badge-sold\">Vendido</span></div>",
+      "css": ".ds-badge-row{display:flex;flex-wrap:wrap;gap:8px;font-family:inherit;}\n.ds-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid transparent;border-radius:var(--radius-full,9999px);font-family:inherit;font-size:11px;font-weight:600;line-height:1;letter-spacing:.02em;white-space:nowrap;}\n.ds-badge-active{background:var(--primary-muted,#F8EEF9);color:var(--primary,#6C1D6E);border-color:color-mix(in srgb,var(--primary,#6C1D6E) 20%,transparent);}\n.ds-badge-paused{background:var(--warning-surface,#FFFBEB);color:var(--warning-strong,#B45309);border-color:color-mix(in srgb,var(--warning,#D97706) 20%,transparent);}\n.ds-badge-sold{background:var(--success-surface,#ECFDF5);color:var(--success-strong,#047857);border-color:color-mix(in srgb,var(--success,#059669) 20%,transparent);}"
+    },
+    {
+      "name": "Marketplace Header",
+      "kind": "nav",
+      "refersTo": "nav-header",
+      "description": "Sticky 72px header: brand tile, pill search, account area, one filled CTA.",
+      "html": "<header class=\"ds-header\">\n  <span class=\"ds-brand\"><span class=\"ds-brand-tile\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7\"/><path d=\"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8\"/><path d=\"M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4\"/><path d=\"M2 7h20\"/><path d=\"M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7\"/></svg></span><span class=\"ds-brand-name\">Ver-o-Preço</span></span>\n  <form class=\"ds-header-search\" role=\"search\">\n    <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>\n    <input type=\"search\" placeholder=\"Buscar no Ver-o-Preço\" aria-label=\"Buscar no marketplace\" />\n    <button type=\"submit\" aria-label=\"Buscar\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg></button>\n  </form>\n  <button class=\"ds-header-cta\" type=\"button\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>Anunciar produto</button>\n</header>",
+      "css": ".ds-header{display:flex;align-items:center;gap:16px;height:72px;padding:0 24px;border-bottom:1px solid var(--border,#E2E8F0);background:color-mix(in srgb,var(--card,#FFFFFF) 95%,transparent);font-family:inherit;}\n.ds-brand{display:inline-flex;align-items:center;gap:10px;flex:none;}\n.ds-brand-tile{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-xl,12px);background:var(--primary,#6C1D6E);color:var(--primary-foreground,#FFFFFF);box-shadow:var(--shadow-card,0 1px 2px 0 rgb(15 23 42 / .05));}\n.ds-brand-name{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--primary,#6C1D6E);white-space:nowrap;}\n.ds-header-search{display:flex;align-items:center;gap:8px;flex:1;min-width:0;max-width:480px;height:44px;margin:0 auto;padding:0 6px 0 12px;border:1px solid var(--border,#E2E8F0);border-radius:var(--radius-full,9999px);background:var(--background,#FAF8FF);color:var(--muted-foreground,#50434D);transition:border-color .2s ease,box-shadow .2s ease;}\n.ds-header-search:focus-within{border-color:var(--ring,#6C1D6E);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 20%,transparent);}\n.ds-header-search input{flex:1;min-width:0;border:0;background:transparent;color:var(--foreground,#131B2E);font-family:inherit;font-size:14px;outline:none;}\n.ds-header-search input::placeholder{color:var(--muted-foreground,#50434D);}\n.ds-header-search button{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:var(--radius-full,9999px);background:var(--primary,#6C1D6E);color:var(--primary-foreground,#FFFFFF);cursor:pointer;}\n.ds-header-cta{display:inline-flex;align-items:center;gap:6px;flex:none;height:44px;padding:0 16px;border:0;border-radius:var(--radius-full,9999px);background:var(--primary,#6C1D6E);color:var(--primary-foreground,#FFFFFF);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .2s ease;}\n.ds-header-cta:hover{background:var(--primary-hover,#541456);}\n.ds-header-cta:focus-visible,.ds-header-search button:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}\n@media (max-width:760px){.ds-header-search{display:none;}}"
+    },
+    {
+      "name": "Hero Search Bar",
+      "kind": "custom",
+      "refersTo": "search-hero",
+      "description": "The signature search: one shell, three segments, real GET state in the URL.",
+      "html": "<form class=\"ds-hero-search\" role=\"search\" aria-label=\"Buscar produtos no marketplace\">\n  <div class=\"ds-hero-seg\">\n    <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>\n    <input type=\"search\" placeholder=\"O que você está procurando hoje?\" aria-label=\"O que você está procurando?\" />\n  </div>\n  <span class=\"ds-hero-divider\" aria-hidden=\"true\"></span>\n  <div class=\"ds-hero-seg ds-hero-seg-select\">\n    <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>\n    <select aria-label=\"Localização\"><option>Belém</option><option>Ananindeua</option><option>Castanhal</option></select>\n  </div>\n  <span class=\"ds-hero-divider\" aria-hidden=\"true\"></span>\n  <div class=\"ds-hero-seg ds-hero-seg-select\">\n    <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"/></svg>\n    <select aria-label=\"Categoria\"><option>Todas</option><option>Eletrônicos</option><option>Móveis</option></select>\n  </div>\n  <button class=\"ds-hero-submit\" type=\"submit\">Buscar agora</button>\n</form>",
+      "css": ".ds-hero-search{display:flex;align-items:center;gap:4px;width:100%;max-width:820px;padding:8px;border:1px solid var(--border,#E2E8F0);border-radius:var(--radius-2xl,16px);background:var(--card,#FFFFFF);font-family:inherit;box-shadow:var(--shadow-card,0 1px 2px 0 rgb(15 23 42 / .05));}\n.ds-hero-seg{display:flex;align-items:center;gap:8px;flex:1;min-width:0;height:48px;padding:0 12px;border-radius:var(--radius-xl,12px);color:var(--muted-foreground,#50434D);}\n.ds-hero-seg svg{flex:none;}\n.ds-hero-seg input,.ds-hero-seg select{flex:1;min-width:0;border:0;background:transparent;color:var(--foreground,#131B2E);font-family:inherit;font-size:14px;outline:none;}\n.ds-hero-seg input::placeholder{color:var(--muted-foreground,#50434D);}\n.ds-hero-seg select{appearance:none;font-weight:500;cursor:pointer;}\n.ds-hero-seg:focus-within{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 20%,transparent);}\n.ds-hero-divider{flex:none;width:1px;height:32px;background:var(--border,#E2E8F0);}\n.ds-hero-submit{display:inline-flex;align-items:center;justify-content:center;flex:none;height:48px;padding:0 20px;border:0;border-radius:var(--radius-full,9999px);background:var(--primary,#6C1D6E);color:var(--primary-foreground,#FFFFFF);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background-color .2s ease;}\n.ds-hero-submit:hover{background:var(--primary-hover,#541456);}\n.ds-hero-submit:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}\n@media (max-width:640px){.ds-hero-search{flex-direction:column;align-items:stretch;}.ds-hero-divider{width:100%;height:1px;}.ds-hero-submit{height:44px;border-radius:var(--radius-xl,12px);}}"
+    },
+    {
+      "name": "Empty State",
+      "kind": "custom",
+      "description": "A dashed panel that names the absence, explains it and offers one next step.",
+      "html": "<div class=\"ds-empty\">\n  <span class=\"ds-empty-tile\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14\"/><path d=\"m7.5 4.27 9 5.15\"/><polyline points=\"3.29 7 12 12 20.71 7\"/><line x1=\"12\" x2=\"12\" y1=\"22\" y2=\"12\"/><circle cx=\"18.5\" cy=\"15.5\" r=\"2.5\"/><path d=\"M20.27 17.27 22 19\"/></svg></span>\n  <h2>Nenhum anúncio encontrado</h2>\n  <p>Tente ajustar a busca, a categoria ou a faixa de preço para encontrar mais anúncios.</p>\n  <div class=\"ds-empty-actions\">\n    <button class=\"ds-empty-primary\" type=\"button\">Limpar filtros</button>\n    <button class=\"ds-empty-outline\" type=\"button\">Voltar para o início</button>\n  </div>\n</div>",
+      "css": ".ds-empty{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:560px;padding:56px 24px;border:1px dashed var(--border,#E2E8F0);border-radius:var(--radius-2xl,16px);background:var(--card,#FFFFFF);text-align:center;font-family:inherit;}\n.ds-empty-tile{display:grid;place-items:center;width:56px;height:56px;border-radius:var(--radius-2xl,16px);background:var(--primary-muted,#F8EEF9);color:var(--primary,#6C1D6E);}\n.ds-empty h2{margin:6px 0 0;font-size:18px;font-weight:600;line-height:1.4;color:var(--foreground,#131B2E);}\n.ds-empty p{max-width:42ch;margin:0;font-size:14px;line-height:1.6;color:var(--muted-foreground,#50434D);}\n.ds-empty-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:10px;}\n.ds-empty-primary,.ds-empty-outline{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 16px;border-radius:var(--radius-md,8px);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .2s ease;}\n.ds-empty-primary{border:0;background:var(--primary,#6C1D6E);color:var(--primary-foreground,#FFFFFF);}\n.ds-empty-primary:hover{background:var(--primary-hover,#541456);}\n.ds-empty-outline{border:1px solid var(--border,#E2E8F0);background:var(--background,#FAF8FF);color:var(--foreground,#131B2E);}\n.ds-empty-outline:hover{background:var(--accent,#F2F3FF);}\n.ds-empty-primary:focus-visible,.ds-empty-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}"
+    },
+    {
+      "name": "Dialog",
+      "kind": "custom",
+      "description": "Focused decision on a 50% scrim: 10px panel, modal shadow, one primary and one escape.",
+      "html": "<div class=\"ds-dialog-scrim\">\n  <div class=\"ds-dialog\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"ds-dialog-title\">\n    <button class=\"ds-dialog-close\" type=\"button\" aria-label=\"Fechar\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button>\n    <h2 class=\"ds-dialog-title\" id=\"ds-dialog-title\">Excluir este anúncio?</h2>\n    <p class=\"ds-dialog-desc\">O anúncio sai do catálogo e não pode ser recuperado. As conversas continuam disponíveis.</p>\n    <div class=\"ds-dialog-actions\">\n      <button class=\"ds-dialog-outline\" type=\"button\">Cancelar</button>\n      <button class=\"ds-dialog-danger\" type=\"button\">Excluir anúncio</button>\n    </div>\n  </div>\n</div>",
+      "css": ".ds-dialog-scrim{display:grid;place-items:center;width:100%;padding:16px;background:color-mix(in srgb,#000 50%,transparent);font-family:inherit;}\n.ds-dialog{position:relative;display:flex;flex-direction:column;gap:16px;width:100%;max-width:420px;padding:24px;border:1px solid var(--border,#E2E8F0);border-radius:var(--radius-lg,10px);background:var(--background,#FAF8FF);color:var(--foreground,#131B2E);box-shadow:0 10px 15px -3px rgb(0 0 0 / .1),0 4px 6px -4px rgb(0 0 0 / .1);}\n.ds-dialog-close{position:absolute;top:16px;right:16px;display:grid;place-items:center;width:24px;height:24px;padding:0;border:0;border-radius:var(--radius-sm,4px);background:transparent;color:var(--muted-foreground,#50434D);cursor:pointer;opacity:.7;transition:opacity .2s ease;}\n.ds-dialog-close:hover{opacity:1;}\n.ds-dialog-close:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ring,#6C1D6E);}\n.ds-dialog-title{margin:0;font-size:18px;font-weight:600;line-height:1.35;letter-spacing:-.01em;}\n.ds-dialog-desc{margin:0;font-size:14px;line-height:1.55;color:var(--muted-foreground,#50434D);}\n.ds-dialog-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:8px;}\n.ds-dialog-outline,.ds-dialog-danger{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 16px;border-radius:var(--radius-md,8px);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .2s ease;}\n.ds-dialog-outline{border:1px solid var(--border,#E2E8F0);background:var(--background,#FAF8FF);color:var(--foreground,#131B2E);}\n.ds-dialog-outline:hover{background:var(--accent,#F2F3FF);}\n.ds-dialog-danger{border:0;background:var(--destructive,#BA1A1A);color:#fff;}\n.ds-dialog-danger:hover{background:color-mix(in srgb,var(--destructive,#BA1A1A) 90%,#000);}\n.ds-dialog-outline:focus-visible,.ds-dialog-danger:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring,#6C1D6E) 50%,transparent);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Açaí Modernism",
+    "overview": "The system takes the pigment of the region — açaí plum, forest green, lavender-white paper — and applies it with modernist discipline: a clean grotesque, measured spacing, one-pixel borders, and soft shadows that appear only as a response to state. Nothing performs \"Amazon\". The region lives in color temperature, naming, and microcopy, never in ornament.\n\nCalm and precise. Density is medium: product imagery leads, metadata recedes to 12–13px, and the price carries the only persistent color emphasis. Purple marks action, brand, and price; forest green carries credibility and positive state. Components feel engineered rather than decorated — 8px controls, 12px cards, a 3px focus ring. Gradient is rationed to three places: two low-opacity blurred orbs behind hero content, the soft tinted auth info panels, and the single saturated seller CTA panel (Forest Deep → Açaí Ink Deep).\n\nTrust comes from clarity: visible borders, explicit labels, honest empty and error states, and no visual claim the product cannot back — no \"verified\" badge, no invented ratings. The system is mobile-first; every composition is designed at 375px before it earns a desktop grid.\n\nThe product has one commercial obligation: the seller never pays to sell. That promise is carried by a plain, unhedged sentence in the interface — never by a badge, a starburst, or a countdown. It is also the reason the system stays quiet everywhere except one place: the seller CTA panel, where the only saturated gradient in the product is allowed. Voice rises once, and only for the person the product is trying to acquire.",
+    "keyCharacteristics": [
+      "Açaí plum as the single action and brand accent; forest green as credibility, never a second primary.",
+      "Lavender-tinted neutrals instead of pure gray, with white cards separated by 1px borders.",
+      "Geist grotesque with tight headline tracking and comfortable body leading.",
+      "8px controls, 12px cards, 16px panels, full-round badges and action pills.",
+      "Shadows as state, not decoration.",
+      "Regional identity carried by pigment and microcopy, not illustration.",
+      "One saturated moment: the seller CTA. Everything else stays paper."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Purple owns action and brand; green owns credibility and success. They never compete at equal weight on one screen — if a view needs both, one becomes a 10% tint or an icon.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quiet Surface Rule",
+        "body": "Backgrounds stay lavender-neutral or white. No saturated full-bleed color blocks behind content; brand color enters through text, icons, borders, and small fills. The seller CTA is the single sanctioned exception, and it stays a contained 16px-radius panel rather than a page background.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tight Headline Rule",
+        "body": "Tracking tightens as type grows (−0.02 to −0.03em on headline and display). Body text never drops below 13px, and no user-facing copy is set in all caps.",
+        "section": "typography"
+      },
+      {
+        "name": "The Price Rule",
+        "body": "A price is the loudest element in a product card after the image: 20px, bold, plum, tabular where the font allows. Never grey a price to de-emphasize it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Resting Border Rule",
+        "body": "If a surface needs a shadow to be understood at rest, it needs a border instead. Shadows may only intensify with state: hover, open, dragging.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Açaí Ink for primary actions, prices, the wordmark, and active states — one accent per view.",
+      "Do use Forest Calm and its mists for credibility, positive state, and secondary emphasis.",
+      "Do build depth with a 1px Hairline border and a surface tone shift before reaching for a shadow.",
+      "Do keep controls at 8px, cards at 12px, panels at 16px, and pills for badges, category links, and the header CTA.",
+      "Do keep the 3px focus ring visible on every interactive element.",
+      "Do let product imagery lead at 4:3 with object-cover and descriptive alt text.",
+      "Do write microcopy in Brazilian Portuguese, sentence case, direct: “Anunciar produto”, “Conversar com vendedor”, “Nenhum anúncio encontrado”.",
+      "Do name the state in text as well as color — status badges, errors, online/offline.",
+      "Do state the seller promise in plain, unhedged text — “sem comissão sobre a venda” is a commitment, never a claim with an asterisk.",
+      "Do respect prefers-reduced-motion and keep touch targets at 44px on mobile."
+    ],
+    "donts": [
+      "Don't treat forest green as a second primary or place purple and green at equal weight in one view.",
+      "Don't use gradients as a general language, or add glassmorphism and heavy shadows; gradient is limited to the hero orbs, the soft auth info panels, and the single seller CTA panel.",
+      "Don't round cards into pills or exceed 16px on standard cards and panels.",
+      "Don't drop body text below 13px, set user-facing copy in all caps, or use thin weights.",
+      "Don't use color alone for status, error, or selection.",
+      "Don't use emojis as interface icons; Lucide at a consistent stroke is the icon system.",
+      "Don't imply verification, ratings, or guarantees the product does not have.",
+      "Don't reproduce OLX or Mercado Livre layouts, components, copy, or identity.",
+      "Don't show raw Supabase or database errors; translate them into human, actionable messages.",
+      "Don't put saturated full-bleed color blocks behind content or color every card.",
+      "Don't add a second saturated gradient panel; the seller CTA is the only one in the product."
+    ]
+  }
+}

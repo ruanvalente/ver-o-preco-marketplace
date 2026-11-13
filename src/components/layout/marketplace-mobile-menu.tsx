@@ -136,7 +136,7 @@ export function MarketplaceMobileMenu({
           <div className="grid gap-2 border-t border-border pt-5">
             <SheetClose asChild>
               <Link
-                href="/register"
+                href="/listings/new"
                 className={cn(
                   buttonVariants({ variant: "default", size: "lg" }),
                   "h-11 w-full rounded-full",
@@ -149,7 +149,7 @@ export function MarketplaceMobileMenu({
 
             <SheetClose asChild>
               <Link
-                href="/dashboard"
+                href="/listings"
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
                   "h-11 w-full rounded-full",
