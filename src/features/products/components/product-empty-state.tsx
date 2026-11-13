@@ -46,7 +46,7 @@ export function ProductEmptyState({
           </Button>
         ) : (
           <Button asChild>
-            <Link href="/register">Anunciar produto</Link>
+            <Link href="/listings/new">Anunciar produto</Link>
           </Button>
         )}
 

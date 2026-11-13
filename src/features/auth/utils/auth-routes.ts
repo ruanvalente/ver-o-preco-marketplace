@@ -4,7 +4,11 @@ import { DEFAULT_AUTH_REDIRECT, safeRedirectPath } from "./auth-redirect";
  * Rotas que exigem sessão. Novas áreas autenticadas devem ser adicionadas
  * aqui conforme os módulos forem implementados.
  */
-export const PROTECTED_PATH_PREFIXES = ["/dashboard", "/profile"] as const;
+export const PROTECTED_PATH_PREFIXES = [
+  "/dashboard",
+  "/profile",
+  "/listings",
+] as const;
 
 /**
  * Rotas de entrada de autenticação. Um usuário já autenticado não precisa

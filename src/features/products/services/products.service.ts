@@ -1,4 +1,4 @@
-import { cacheLife } from "next/cache"
+import { cacheLife, cacheTag } from "next/cache"
 
 import { getPublicSupabaseClient } from "@/lib/supabase/public"
 
@@ -81,6 +81,7 @@ export async function getProductCategories(): Promise<
 > {
   "use cache"
   cacheLife("hours")
+  cacheTag("products")
 
   try {
     const supabase = getPublicSupabaseClient()
@@ -114,6 +115,7 @@ export async function getProductCategories(): Promise<
 export async function getActiveProductCount(): Promise<ServiceResult<number>> {
   "use cache"
   cacheLife("minutes")
+  cacheTag("products")
 
   try {
     const supabase = getPublicSupabaseClient()
@@ -137,6 +139,7 @@ export async function getRecentProducts(
 ): Promise<ServiceResult<ProductSummary[]>> {
   "use cache"
   cacheLife("minutes")
+  cacheTag("products")
 
   try {
     const supabase = getPublicSupabaseClient()
@@ -169,6 +172,7 @@ export async function getProducts(
 ): Promise<ServiceResult<ProductPage>> {
   "use cache"
   cacheLife("minutes")
+  cacheTag("products")
 
   try {
     const supabase = getPublicSupabaseClient()
@@ -280,6 +284,7 @@ export async function getProductById(
 ): Promise<ServiceResult<ProductDetail | null>> {
   "use cache"
   cacheLife("minutes")
+  cacheTag("products")
 
   if (!UUID_PATTERN.test(id)) {
     return { ok: true, data: null }
@@ -323,6 +328,7 @@ export async function getRelatedProducts(
 ): Promise<ServiceResult<ProductSummary[]>> {
   "use cache"
   cacheLife("minutes")
+  cacheTag("products")
 
   if (!categoryId || !UUID_PATTERN.test(categoryId)) {
     return { ok: true, data: [] }

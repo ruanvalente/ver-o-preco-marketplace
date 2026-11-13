@@ -1,8 +1,4 @@
-import {
-  Handshake,
-  MessageSquareLock,
-  ShieldCheck,
-} from "lucide-react"
+import { Handshake, MessageSquareLock, ShieldCheck } from "lucide-react";
 
 import type {
   FooterColumn,
@@ -10,7 +6,7 @@ import type {
   PopularSearch,
   SellStep,
   TrustItem,
-} from "../types/marketplace.types"
+} from "../types/marketplace.types";
 
 /**
  * Conteúdo estático de apresentação da home do marketplace.
@@ -25,7 +21,7 @@ export const marketplacePolos: MarketplacePolo[] = [
   { value: "santarem", label: "Santarém e Oeste do Pará" },
   { value: "maraba", label: "Marabá e Sudeste do Pará" },
   { value: "salinas", label: "Salinópolis e Costa Atlântica" },
-]
+];
 
 export const popularSearches: PopularSearch[] = [
   { label: "iPhone 15", query: "iphone 15" },
@@ -33,7 +29,7 @@ export const popularSearches: PopularSearch[] = [
   { label: "Mesa de escritório", query: "mesa de escritório" },
   { label: "Bicicleta aro 29", query: "bicicleta aro 29" },
   { label: "Geladeira Frost Free", query: "geladeira frost free" },
-]
+];
 
 export const sellSteps: SellStep[] = [
   {
@@ -48,7 +44,7 @@ export const sellSteps: SellStep[] = [
     title: "Negocie pelo chat",
     description: "Converse com quem está perto e combine a entrega.",
   },
-]
+];
 
 export const trustItems: TrustItem[] = [
   {
@@ -72,7 +68,7 @@ export const trustItems: TrustItem[] = [
     icon: MessageSquareLock,
     tone: "secondary",
   },
-]
+];
 
 export const marketplaceFooterColumns: FooterColumn[] = [
   {
@@ -82,7 +78,6 @@ export const marketplaceFooterColumns: FooterColumn[] = [
       { label: "Sobre o Ver-o-Preço", href: "/about" },
       { label: "Como funciona", href: "/about#como-funciona" },
       { label: "Segurança", href: "/about#seguranca" },
-      { label: "Polos no Pará", href: "/about#polos" },
     ],
   },
   {
@@ -103,20 +98,10 @@ export const marketplaceFooterColumns: FooterColumn[] = [
       { label: "Minha conta", href: "/dashboard" },
     ],
   },
-  {
-    title: "Polos atendidos (PA)",
-    links: [
-      { label: "Belém", href: "/products?location=belem" },
-      { label: "Ananindeua", href: "/products?location=ananindeua" },
-      { label: "Castanhal", href: "/products?location=castanhal" },
-      { label: "Santarém", href: "/products?location=santarem" },
-      { label: "Marabá", href: "/products?location=maraba" },
-    ],
-  },
-]
+];
 
 export const marketplaceFooterLegalLinks = [
   { label: "Privacidade", href: "/privacy" },
   { label: "Termos de uso", href: "/terms" },
   { label: "Política de cookies", href: "/cookies" },
-] as const
+] as const;

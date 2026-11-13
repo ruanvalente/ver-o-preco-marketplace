@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Suspense } from "react"
 import { connection } from "next/server"
+import { ArrowRight, Plus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { LogoutButton } from "@/features/auth/components/logout-button"
 import { requireUser } from "@/features/auth/services/session.service"
@@ -40,10 +43,34 @@ async function DashboardContent() {
       </header>
 
       <section className="space-y-4 rounded-xl border bg-card p-6">
+        <h2 className="text-lg font-semibold">Seus anúncios</h2>
+        <p className="text-sm text-muted-foreground">
+          Crie, edite, publique e pause os produtos que você está vendendo.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild>
+            <Link href="/listings/new">
+              <Plus aria-hidden="true" className="size-4" />
+              Criar anúncio
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/listings">
+              Meus anúncios
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="ghost">
+            <Link href="/profile">Meu perfil</Link>
+          </Button>
+        </div>
+      </section>
+
+      <section className="space-y-4 rounded-xl border bg-card p-6">
         <h2 className="text-lg font-semibold">Área do usuário em construção</h2>
         <p className="text-sm text-muted-foreground">
-          Em breve você vai gerenciar seus anúncios, favoritos e conversas por
-          aqui. Enquanto isso, explore o marketplace ou saia da sua conta.
+          Em breve você vai gerenciar favoritos e conversas por aqui. Enquanto
+          isso, explore o marketplace ou saia da sua conta.
         </p>
         <LogoutButton />
       </section>

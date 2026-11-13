@@ -151,6 +151,13 @@ A user can only modify listings they own.
 
 This must be enforced by Supabase RLS.
 
+### Implementation
+
+The module is implemented in `src/features/listings/`; flow, consistency rules,
+RLS and Storage policies are documented in
+[listings.md](./listings.md). The `sold` status is reserved — there is no
+"mark as sold" action yet.
+
 ### Suggested Components
 
 ```text
