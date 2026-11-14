@@ -39,6 +39,8 @@ describe("auth redirects", () => {
     it("identifica rotas protegidas", () => {
       expect(isProtectedPath("/dashboard")).toBe(true);
       expect(isProtectedPath("/dashboard/anuncios")).toBe(true);
+      expect(isProtectedPath("/messages")).toBe(true);
+      expect(isProtectedPath("/messages/123e4567-e89b-12d3-a456-426614174000")).toBe(true);
       expect(isProtectedPath("/")).toBe(false);
       expect(isProtectedPath("/login")).toBe(false);
     });

@@ -90,6 +90,13 @@ updated_at
 
 The profile ID should reference the authenticated user's ID.
 
+`migrations/0009_profile_auth_sync.sql` creates a profile after every insert to
+`auth.users` and backfills existing users without one. It copies only
+user-provided display metadata (`display_name` and `municipality`); that metadata
+must never be used for authorization. The trigger function is `SECURITY
+DEFINER`, owned by `postgres`, and uses an empty `search_path` with fully
+qualified table names.
+
 ## 5. Database Entities
 
 Initial database entities:
@@ -197,6 +204,15 @@ psql "$DATABASE_URL" -f migrations/0005_favorites.sql
 # Public profile avatars and owner-scoped Storage policies (after 0005).
 psql "$DATABASE_URL" -f migrations/0006_profile_avatars.sql
 
+# Listing-scoped chat, RLS, private image storage and Realtime (after 0006).
+psql "$DATABASE_URL" -f migrations/0007_chat.sql
+
+# Break the chat/product RLS dependency cycle (after 0007).
+psql "$DATABASE_URL" -f migrations/0008_chat_rls_recursion_fix.sql
+
+# Create and backfill profiles for Supabase Auth users (after 0008).
+psql "$DATABASE_URL" -f migrations/0009_profile_auth_sync.sql
+
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
@@ -231,9 +247,11 @@ Do not make the private `veropreco` bucket public to serve avatars.
 
 ### Chat Images
 
-Must be protected according to conversation membership.
-
-Do not make private chat images publicly accessible by default.
+The private `chat-images` bucket limits uploads to 5 MB and JPEG, PNG or WebP.
+Object paths use `<conversation_id>/<auth.uid()>/<uuid>.<extension>`. Storage
+policies grant read access only to conversation participants and restrict
+uploads/deletion to the authenticated participant's own folder. The browser
+uses short-lived signed URLs; the bucket must never be made public.
 
 ## 10. Row Level Security
 
@@ -328,6 +346,22 @@ messages
 A conversation should not exist independently from its product context
 in the MVP.
 
+`migrations/0007_chat.sql` implements conversations with a buyer, seller and
+product. A unique `(product_id, buyer_id)` constraint reuses one conversation
+per buyer and listing. The `get_or_create_conversation` function derives the
+seller from an active listing and runs as the caller, so RLS remains in force.
+Participants can still read their product context after its status changes.
+The `get_chat_conversations` function returns a bounded, participant-scoped
+inbox summary including the latest message and unread count.
+
+`migrations/0008_chat_rls_recursion_fix.sql` replaces the product participant
+policy's inline query of `conversations` with a narrowly scoped boolean helper.
+The helper is owned by `postgres`, runs with a fixed `search_path` and
+`row_security = off`, and returns only whether the current authenticated user
+participates in a conversation for that product. This breaks the recursive RLS
+dependency while preserving participant-only access to inactive listing
+context; it does not grant users direct table access.
+
 ## 13. Message Model
 
 Suggested fields:
@@ -351,7 +385,10 @@ text
 image
 ```
 
-Additional types can be added later.
+Text is plain text (up to 2,000 characters); an image message stores only a
+private Storage path. RLS ties `sender_id` to the authenticated user and the
+conversation, and the read-state trigger permits recipients to set `read_at`
+once without changing message content.
 
 ## 14. File Upload Security
 
@@ -510,6 +547,11 @@ Subscribe only to relevant events
 
 Unsubscribe when the component or route no longer requires the
 subscription.
+
+Migration `0007_chat.sql` adds only `public.messages` to
+`supabase_realtime`. The application subscribes to messages for one
+`conversation_id` and uses private `conversation:<uuid>` channels for
+participant-only presence and typing broadcasts.
 
 ## 23. Security Checklist
 

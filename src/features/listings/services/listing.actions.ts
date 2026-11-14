@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 
 import { requireUser } from "@/features/auth/services/session.service"
 
-import { validateListingForm } from "../schemas/listing.schemas"
+import { isListingId, validateListingForm } from "../schemas/listing.schemas"
 import type { ListingActionState } from "../types/listing.types"
 import { validateListingImagesForUser } from "./listing-image.service"
 import {
@@ -21,6 +21,7 @@ function revalidateListingViews(listingId?: string) {
   revalidatePath("/")
   revalidatePath("/products")
   revalidatePath("/listings")
+  revalidatePath("/dashboard")
 
   if (listingId) {
     revalidatePath(`/products/${listingId}`)
@@ -133,23 +134,25 @@ function parseStatusIntent(value: FormDataEntryValue | null): ListingStatusInten
  * do Supabase. A página traduz o código em uma mensagem segura e acionável.
  */
 export async function updateListingStatusAction(formData: FormData) {
-  const user = await requireUser("/listings")
+  const returnTo =
+    formData.get("returnTo") === "/dashboard" ? "/dashboard" : "/listings"
+  const user = await requireUser(returnTo)
   const listingId = formData.get("listingId")
   const intent = parseStatusIntent(formData.get("intent"))
 
   if (typeof listingId !== "string" || !intent) {
-    redirect("/listings?error=invalid")
+    redirect(`${returnTo}?error=invalid`)
   }
 
   if (intent === "delete") {
     const result = await deleteListing(user.id, listingId)
 
     if (!result.ok) {
-      redirect("/listings?error=delete")
+      redirect(`${returnTo}?error=delete`)
     }
 
     revalidateListingViews(listingId)
-    redirect("/listings?deleted=1")
+    redirect(`${returnTo}?deleted=1`)
   }
 
   const result =
@@ -158,9 +161,14 @@ export async function updateListingStatusAction(formData: FormData) {
       : await pauseListing(user.id, listingId)
 
   if (!result.ok) {
-    redirect(`/listings?error=${intent}`)
+    const listingParam = isListingId(listingId)
+      ? `&listingId=${encodeURIComponent(listingId)}`
+      : ""
+    redirect(`${returnTo}?error=${intent}${listingParam}`)
   }
 
   revalidateListingViews(listingId)
-  redirect(`/listings?updated=${intent === "publish" ? "published" : "paused"}`)
+  redirect(
+    `${returnTo}?updated=${intent === "publish" ? "published" : "paused"}`,
+  )
 }

@@ -1,12 +1,13 @@
 import type { ReactNode } from "react"
 
-import { MainHeader } from "@/components/layout"
+import { MarketplaceFooter, MarketplaceHeader } from "@/components/layout"
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-1 flex-col">
-      <MainHeader />
+      <MarketplaceHeader />
       {children}
+      <MarketplaceFooter />
     </div>
   )
 }
