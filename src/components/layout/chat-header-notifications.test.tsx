@@ -78,4 +78,52 @@ describe("ChatHeaderNotifications", () => {
       expect(screen.getByLabelText("2 conversas com nova mensagem")).toBeInTheDocument()
     })
   })
+
+  it("does not report CLOSED as an error when the channel is removed on unmount", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+
+    const { unmount } = render(<ChatHeaderNotifications />)
+
+    await act(async () => {
+      mocks.onStatus?.("SUBSCRIBED")
+    })
+
+    unmount()
+
+    await act(async () => {
+      mocks.onStatus?.("CLOSED")
+    })
+
+    expect(consoleError).not.toHaveBeenCalledWith(
+      "[chat-header] realtime subscription",
+      "CLOSED",
+    )
+
+    consoleError.mockRestore()
+  })
+
+  it("logs CLOSED as an error when the channel closes unexpectedly while mounted", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+
+    render(<ChatHeaderNotifications />)
+
+    await act(async () => {
+      mocks.onStatus?.("SUBSCRIBED")
+    })
+
+    act(() => {
+      mocks.onStatus?.("CLOSED")
+    })
+
+    expect(consoleError).toHaveBeenCalledWith(
+      "[chat-header] realtime subscription",
+      "CLOSED",
+    )
+
+    consoleError.mockRestore()
+  })
 })

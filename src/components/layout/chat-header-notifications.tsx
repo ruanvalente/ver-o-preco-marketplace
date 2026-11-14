@@ -58,6 +58,7 @@ export function ChatHeaderNotifications({
   useEffect(() => {
     let isMounted = true
     let latestRequest = 0
+    let isLeaving = false
     let refreshTimer: ReturnType<typeof setTimeout> | null = null
     const supabase = createClient()
     const channel = supabase.channel(`header-chat-notifications:${instanceId}`)
@@ -109,9 +110,10 @@ export function ChatHeaderNotifications({
         if (status === "SUBSCRIBED") {
           void refreshCount()
         } else if (
-          status === "CHANNEL_ERROR" ||
-          status === "TIMED_OUT" ||
-          status === "CLOSED"
+          !isLeaving &&
+          (status === "CHANNEL_ERROR" ||
+            status === "TIMED_OUT" ||
+            status === "CLOSED")
         ) {
           console.error("[chat-header] realtime subscription", status)
         }
@@ -119,6 +121,7 @@ export function ChatHeaderNotifications({
 
     return () => {
       isMounted = false
+      isLeaving = true
       if (refreshTimer) {
         clearTimeout(refreshTimer)
       }
