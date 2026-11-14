@@ -3,22 +3,22 @@ import {
   CHAT_IMAGE_MAX_BYTES,
   CHAT_IMAGE_MIME_TYPES,
   CHAT_MESSAGE_MAX_LENGTH,
-} from "../constants"
-import type { ChatImageMimeType } from "../constants"
+} from "../constants";
+import type { ChatImageMimeType } from "../constants";
 
 const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ISO_TIMESTAMP_PATTERN =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/i
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/i;
 const IMAGE_FILENAME_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|png|webp)$/i
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|png|webp)$/i;
 
 export type ChatValidationResult<T> =
   | { ok: true; data: T }
-  | { ok: false; error: string }
+  | { ok: false; error: string };
 
 export function isChatImageMimeType(value: string): value is ChatImageMimeType {
-  return (CHAT_IMAGE_MIME_TYPES as readonly string[]).includes(value)
+  return (CHAT_IMAGE_MIME_TYPES as readonly string[]).includes(value);
 }
 
 export function getChatImageExtension(
@@ -26,49 +26,53 @@ export function getChatImageExtension(
 ): "jpg" | "png" | "webp" | null {
   return isChatImageMimeType(mimeType)
     ? CHAT_IMAGE_EXTENSION_BY_MIME[mimeType]
-    : null
+    : null;
 }
 
 export function isConversationId(value: string): boolean {
-  return UUID_PATTERN.test(value)
+  return UUID_PATTERN.test(value);
 }
 
 export function isChatCursorTimestamp(value: string): boolean {
   return (
-    ISO_TIMESTAMP_PATTERN.test(value) &&
-    Number.isFinite(Date.parse(value))
-  )
+    ISO_TIMESTAMP_PATTERN.test(value) && Number.isFinite(Date.parse(value))
+  );
 }
 
-export function validateProductId(value: unknown): ChatValidationResult<string> {
+export function validateProductId(
+  value: unknown,
+): ChatValidationResult<string> {
   if (typeof value !== "string" || !UUID_PATTERN.test(value)) {
-    return { ok: false, error: "Este anúncio não está disponível para conversa." }
+    return {
+      ok: false,
+      error: "Este anúncio não está disponível para conversa.",
+    };
   }
 
-  return { ok: true, data: value }
+  return { ok: true, data: value };
 }
 
 export function validateMessageText(
   value: unknown,
 ): ChatValidationResult<string> {
   if (typeof value !== "string") {
-    return { ok: false, error: "Digite uma mensagem antes de enviar." }
+    return { ok: false, error: "Digite uma mensagem antes de enviar." };
   }
 
-  const content = value.trim()
+  const content = value.trim();
 
   if (!content) {
-    return { ok: false, error: "Digite uma mensagem antes de enviar." }
+    return { ok: false, error: "Digite uma mensagem antes de enviar." };
   }
 
   if (content.length > CHAT_MESSAGE_MAX_LENGTH) {
     return {
       ok: false,
       error: `A mensagem deve ter no máximo ${CHAT_MESSAGE_MAX_LENGTH} caracteres.`,
-    }
+    };
   }
 
-  return { ok: true, data: content }
+  return { ok: true, data: content };
 }
 
 export function validateChatImageFile(
@@ -78,18 +82,18 @@ export function validateChatImageFile(
     return {
       ok: false,
       error: "Formato não suportado. Use uma imagem JPG, PNG ou WebP.",
-    }
+    };
   }
 
   if (file.size <= 0) {
-    return { ok: false, error: "O arquivo de imagem está vazio." }
+    return { ok: false, error: "O arquivo de imagem está vazio." };
   }
 
   if (file.size > CHAT_IMAGE_MAX_BYTES) {
-    return { ok: false, error: "A imagem deve ter no máximo 5 MB." }
+    return { ok: false, error: "A imagem deve ter no máximo 5 MB." };
   }
 
-  return { ok: true, data: null }
+  return { ok: true, data: null };
 }
 
 export function validateChatAttachmentPath(
@@ -98,10 +102,10 @@ export function validateChatAttachmentPath(
   userId: string,
 ): ChatValidationResult<string> {
   if (typeof path !== "string" || path.length > 512) {
-    return { ok: false, error: "A imagem enviada não é válida." }
+    return { ok: false, error: "A imagem enviada não é válida." };
   }
 
-  const [pathConversationId, pathUserId, filename, ...extra] = path.split("/")
+  const [pathConversationId, pathUserId, filename, ...extra] = path.split("/");
 
   if (
     extra.length > 0 ||
@@ -109,8 +113,32 @@ export function validateChatAttachmentPath(
     pathUserId !== userId ||
     !IMAGE_FILENAME_PATTERN.test(filename ?? "")
   ) {
-    return { ok: false, error: "A imagem enviada não é válida." }
+    return { ok: false, error: "A imagem enviada não é válida." };
   }
 
-  return { ok: true, data: path }
+  return { ok: true, data: path };
+}
+
+/**
+ * Extracts the conversation id from a chat image storage path.
+ * Returns null for anything that is not `<conversationId>/<userId>/<file>`,
+ * so callers fail closed instead of signing arbitrary paths.
+ */
+export function parseChatImageConversationId(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const [conversationId, userId, filename, ...extra] = value.split("/");
+
+  if (
+    extra.length > 0 ||
+    !UUID_PATTERN.test(conversationId ?? "") ||
+    !UUID_PATTERN.test(userId ?? "") ||
+    !IMAGE_FILENAME_PATTERN.test(filename ?? "")
+  ) {
+    return null;
+  }
+
+  return conversationId;
 }

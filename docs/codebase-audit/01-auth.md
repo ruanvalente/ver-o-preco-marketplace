@@ -119,3 +119,31 @@ Módulo Auth com pasta `features/auth/`. Usa Supabase Auth via `auth.service.ts`
 4. Atualizar Server Actions.
 5. Migrar políticas de bucket.
 6. Executar testes.
+
+## Resultado da execução
+
+### Implementado: [P0] Chat signed-URL authorization gap
+
+- `migrations/0010_chat_signed_url_authorization.sql`: RPC `is_conversation_participant(p_conversation_id UUID)` no padrão de `is_chat_product_participant` (`SECURITY DEFINER`, `row_security = off`, `search_path` fixo, owner `postgres`, revoke de `PUBLIC`/`anon`, grant para `authenticated`). A identidade vem de `auth.uid()` dentro da função; o cliente não envia `user_id` (parâmetro seria falsificável).
+- `src/features/chat/schemas/chat.schemas.ts`: novo `parseChatImageConversationId(value)` que extrai o `conversationId` de caminhos `<conversationId>/<userId>/<uuid>.<ext>` e devolve `null` para qualquer outra forma (segmentos extras, UUIDs inválidos, travessia, tipos inválidos).
+- `src/features/chat/services/chat-storage.service.ts`: `getChatImageUrl` e `deleteChatImage` falham fechadas ("Esta imagem não está disponível." / "Não foi possível remover a imagem enviada.") em: parse inválido, erro de RPC ou `data !== true`. As mensagens são neutras e não confirmam a existência do objeto. `uploadChatImage` não mudou (o caminho é construído pelo serviço e a política de INSERT do bucket já amarra folder a participante).
+- `src/features/chat/services/chat.service.ts`: `addSignedImageUrls` consulta a RPC antes de `createSignedUrls` usando `messages[0].conversation_id` (a página inteira vem de uma mesma conversa). Em negação ou erro: log `[chat] addSignedImageUrls` e mensagens retornadas sem `imageUrl` (fail closed, sem quebrar o listagem).
+
+Desvios do documento: o RPC chama-se `is_conversation_participant` (sem `user_id` no signature) e não `check_conversation_participant(conversation_id, user_id)`; a migration é `0010_chat_signed_url_authorization.sql` (o `0009_profile_auth_sync.sql` já existia).
+
+Pendente operacional: a migration ainda não foi aplicada a nenhum ambiente (o repo não tem projeto Supabase local configurado). Aplicar via SQL editor ou `psql "$DATABASE_URL" -f migrations/0010_chat_signed_url_authorization.sql`, conforme o cabeçalho do arquivo. Até lá, o app falha fechado (imagens de chat não são assinadas), o que é o comportamento seguro desejado.
+
+### Verificado: [P0] Ownership re-check em Server Actions — já satisfeito
+
+`chat.actions.ts`, `favorites.actions.ts`, `listing.actions.ts` e `profile.actions.ts` já chamam `requireUser`/`getCurrentUser`, escopam mutações por `user.id` e validam caminhos de storage (`validateChatAttachmentPath`, `validateListingImagesForUser`, `isAvatarPathForUser`). O RLS continua sendo o limite real; a dupla verificação sugerida (`requireOwnership`) seria abstração prematura sem caso de uso. Nenhuma mudança.
+
+### Verificado: [P0] Storage bucket policies — já satisfeito
+
+`product-images` tem políticas públicas de SELECT e escritas escopadas ao vendedor em `migrations/0003_products.sql`; `chat-images` em `0007_chat.sql`; `avatars` em `0006_profile_avatars.sql`. Não havia políticas ausentes; nenhuma política nova criada.
+
+### Validação
+
+- `bun run typecheck`: ok.
+- `bun run lint`: 0 errors (warnings preexistentes não relacionados).
+- `bun run test`: 42 arquivos / 253 testes, incluindo parser (`chat-schemas.test.ts`), guards do storage (`chat-storage.service.test.ts`) e fail-closed do signing server-side (`chat-service.test.ts`).
+- `bun run build`: ok.
