@@ -7,7 +7,10 @@ import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AVATAR_BUCKET_NAME } from "../constants";
-import { uploadAvatarClient } from "../services/profile-storage.service";
+import {
+  removeObsoleteAvatarsClient,
+  uploadAvatarClient,
+} from "../services/profile-storage.service";
 import { updateAvatarAction } from "../services/profile.actions";
 
 type ProfileAvatarProps = {
@@ -51,6 +54,8 @@ export function ProfileAvatar({
           return;
         }
 
+        const cleanupResult = await removeObsoleteAvatarsClient(userId, result.avatarPath);
+
         // Get public URL
         const supabase = (await import("@/lib/supabase/client")).createClient();
         const { data } = supabase.storage
@@ -59,7 +64,11 @@ export function ProfileAvatar({
 
         setCurrentAvatarUrl(data.publicUrl);
         onAvatarUpdate?.(result.avatarPath);
-        toast.success("Avatar atualizado com sucesso!");
+        if (cleanupResult.success) {
+          toast.success("Avatar atualizado com sucesso!");
+        } else {
+          toast.error(cleanupResult.error || "O avatar foi atualizado, mas arquivos antigos permaneceram.");
+        }
       } else {
         toast.error(result.error || "Erro ao fazer upload da imagem.");
       }

@@ -1,24 +1,24 @@
-import Link from "next/link"
-import { connection } from "next/server"
-import { Heart, UserRound } from "lucide-react"
+import Link from "next/link";
+import { connection } from "next/server";
+import { Heart, UserRound } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { getCurrentUser } from "@/features/auth/services/session.service"
-import { getProfile } from "@/features/profile/services/profile.service"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { getCurrentUser } from "@/features/auth/services/session.service";
+import { getProfile } from "@/features/profile/services/profile.service";
 
 function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
+  const parts = name.trim().split(/\s+/).filter(Boolean);
 
   if (parts.length === 0) {
-    return "VP"
+    return "VP";
   }
 
   if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase()
+    return parts[0].slice(0, 2).toUpperCase();
   }
 
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
 /**
@@ -28,8 +28,8 @@ function getInitials(name: string): string {
  * fallback de Suspense no header cobre a leitura dinâmica da sessão.
  */
 export async function MarketplaceAccountArea() {
-  await connection()
-  const user = await getCurrentUser()
+  await connection();
+  const user = await getCurrentUser();
 
   if (!user) {
     return (
@@ -39,14 +39,12 @@ export async function MarketplaceAccountArea() {
           Entrar
         </Link>
       </Button>
-    )
+    );
   }
 
-  const profile = await getProfile(user.id)
+  const profile = await getProfile(user.id);
   const displayName =
-    profile?.displayName?.trim() ||
-    user.email?.split("@")[0] ||
-    "Minha conta"
+    profile?.displayName?.trim() || user.email?.split("@")[0] || "Minha conta";
 
   return (
     <>
@@ -61,7 +59,11 @@ export async function MarketplaceAccountArea() {
         href="/dashboard"
         className="flex min-h-11 items-center gap-2 rounded-full pr-2 pl-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
-        <Avatar size="default" className="size-9">
+        <Avatar size="default" className="size-9 sm:size-10">
+          {/* <AvatarImage
+            src={profile?.avatarUrl || undefined}
+            alt={displayName}
+          /> */}
           <AvatarFallback className="bg-primary-muted text-xs font-semibold text-primary">
             {getInitials(displayName)}
           </AvatarFallback>
@@ -71,5 +73,5 @@ export async function MarketplaceAccountArea() {
         </span>
       </Link>
     </>
-  )
+  );
 }

@@ -194,6 +194,9 @@ psql "$DATABASE_URL" -f migrations/0004_listing_images.sql
 # Favorites (after 0004).
 psql "$DATABASE_URL" -f migrations/0005_favorites.sql
 
+# Public profile avatars and owner-scoped Storage policies (after 0005).
+psql "$DATABASE_URL" -f migrations/0006_profile_avatars.sql
+
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
@@ -218,7 +221,13 @@ Used by public listings.
 
 ### Avatars
 
-Used by profiles and seller information.
+Profile avatars use a dedicated public `avatars` bucket. Object keys follow
+`<auth.uid()>/avatar.<extension>`; the `storage.objects` policies allow public
+reads only for avatar-shaped paths, while insert, update, and delete are
+restricted to the authenticated owner. The 2 MB limit and accepted image MIME
+types are configured on the bucket in `migrations/0006_profile_avatars.sql`.
+
+Do not make the private `veropreco` bucket public to serve avatars.
 
 ### Chat Images
 
