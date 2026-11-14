@@ -12,6 +12,8 @@ import { ProductImage } from "./product-image"
 
 type ProductCardProps = {
   product: ProductSummary
+  isFavorite?: boolean
+  favoriteRedirectTo?: string
   className?: string
 }
 
@@ -21,7 +23,12 @@ type ProductCardProps = {
  * Recebe apenas o modelo de leitura canônico. Favoritar é composto via
  * `FavoriteButton`, mantendo a responsabilidade de persistência fora do card.
  */
-export function ProductCard({ product, className }: ProductCardProps) {
+export function ProductCard({
+  product,
+  isFavorite = false,
+  favoriteRedirectTo,
+  className,
+}: ProductCardProps) {
   const productHref = `/products/${product.id}`
   const image = product.image
 
@@ -67,6 +74,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <FavoriteButton
           productId={product.id}
           productTitle={product.title}
+          isFavorite={isFavorite}
+          redirectTo={favoriteRedirectTo ?? productHref}
           className="absolute top-2 right-2 z-10"
         />
       </div>

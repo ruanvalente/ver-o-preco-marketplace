@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { fireEvent, render, screen, within } from "@testing-library/react"
 
 import { ContactSellerCta } from "../components/detail/contact-seller-cta"
@@ -7,6 +7,15 @@ import {
   productDetailFixture,
   productSummaryFixture,
 } from "./fixtures"
+
+vi.mock("next/navigation", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/navigation")>()
+  return { ...actual, useRouter: () => ({ push: vi.fn() }) }
+})
+
+vi.mock("@/features/favorites/services/favorites.actions", () => ({
+  setFavoriteAction: vi.fn(async () => ({ ok: true })),
+}))
 
 describe("ProductDetailView", () => {
   it("apresenta galeria, informações, vendedor e anúncios relacionados", () => {

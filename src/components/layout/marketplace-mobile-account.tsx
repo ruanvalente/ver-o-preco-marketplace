@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { connection } from "next/server"
-import { UserRound } from "lucide-react"
+import { Heart, UserRound } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { SheetClose } from "@/components/ui/sheet"
@@ -17,17 +17,48 @@ export async function MarketplaceMobileAccount() {
   await connection()
   const user = await getCurrentUser()
 
+  if (user) {
+    return (
+      <>
+        <SheetClose asChild>
+          <Link
+            href="/favorites"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-11 w-full rounded-full",
+            )}
+          >
+            <Heart aria-hidden="true" className="size-4" />
+            Meus favoritos
+          </Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link
+            href="/dashboard"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "lg" }),
+              "h-11 w-full rounded-full",
+            )}
+          >
+            <UserRound aria-hidden="true" className="size-4" />
+            Minha conta
+          </Link>
+        </SheetClose>
+      </>
+    )
+  }
+
   return (
     <SheetClose asChild>
       <Link
-        href={user ? "/dashboard" : "/login"}
+        href="/login"
         className={cn(
           buttonVariants({ variant: "ghost", size: "lg" }),
           "h-11 w-full rounded-full",
         )}
       >
         <UserRound aria-hidden="true" className="size-4" />
-        {user ? "Minha conta" : "Entrar na minha conta"}
+        Entrar na minha conta
       </Link>
     </SheetClose>
   )

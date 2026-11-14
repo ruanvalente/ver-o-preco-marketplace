@@ -191,6 +191,9 @@ psql "$DATABASE_URL" -f migrations/0003_products.sql
 # Listings image replacement (after 0003).
 psql "$DATABASE_URL" -f migrations/0004_listing_images.sql
 
+# Favorites (after 0004).
+psql "$DATABASE_URL" -f migrations/0005_favorites.sql
+
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
@@ -249,7 +252,11 @@ products.seller_id = auth.uid()
 
 ### Favorites
 
-Users can only create, read, and delete their own favorites.
+The `favorites` table stores a unique `(user_id, product_id)` pair and its
+creation time. Users can only read and delete their own records; inserts must
+belong to the authenticated user and reference an active product. The feature
+loads favorite product IDs in one query per displayed group, and the favorites
+page joins only active public products.
 
 ### Conversations
 
