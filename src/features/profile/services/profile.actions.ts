@@ -4,7 +4,7 @@ import { requireUser } from "@/features/auth/services/session.service";
 import { revalidatePath } from "next/cache";
 import type { ProfileActionState } from "../types/profile.types";
 import { upsertProfile } from "./profile.service";
-import { validateProfileUpdate } from "../schemas/profile.schemas";
+import { isAvatarPathForUser, validateProfileUpdate } from "../schemas/profile.schemas";
 
 export async function updateProfileAction(
   _prevState: ProfileActionState,
@@ -45,6 +45,11 @@ export async function updateProfileAction(
 export async function updateAvatarAction(avatarPath: string): Promise<{ success: boolean; error?: string }> {
   try {
     const user = await requireUser("/profile");
+
+    if (!isAvatarPathForUser(avatarPath, user.id)) {
+      return { success: false, error: "Caminho de avatar inválido." };
+    }
+
     const profile = await upsertProfile(user.id, { avatarPath });
 
     if (!profile) {
@@ -57,6 +62,7 @@ export async function updateAvatarAction(avatarPath: string): Promise<{ success:
 
     return { success: true };
   } catch (error) {
+    console.error("Error updating avatar:", error);
     return { success: false, error: "Não foi possível atualizar o avatar." };
   }
 }
