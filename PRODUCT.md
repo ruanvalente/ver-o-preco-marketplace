@@ -41,12 +41,8 @@ Shipped or in progress:
 - Profile: display name, avatar, phone, location.
 - Listings: create, edit, delete, publish, pause, mark as sold; multiple images with primary image, reordering and removal; validation on client and server.
 - Favorites: add and remove products, and view the user's saved products in a protected favorites list.
-- Dashboard: minimal authenticated shell today; the full overview, metrics and quick actions are planned.
-
-Committed for the MVP but not yet implemented:
-
-- In-platform chat tied to a listing: text and image messages, conversation list, read state, unread count, online status, typing indicator, Supabase Realtime.
-- The complete dashboard.
+- In-platform chat: listing-scoped conversations, text and image messages, unread/read state, private image storage, online status, typing indicator and Supabase Realtime.
+- Dashboard: authenticated seller overview with real listing/chat counts, URL-backed listing filters and owner-checked status actions. Page-view and seller-trust metrics are not recorded yet.
 
 Deliberately out of MVP scope: payments, shipping, escrow, reviews and seller ratings, delivery tracking, ads, subscription plans, recommendation engines, moderation and reporting, admin.
 
@@ -76,11 +72,11 @@ Open decisions:
 - `AGENTS.md` — product specification, domain boundaries, phases and acceptance criteria.
 - `DESIGN.md` — visual and interaction source of truth; `docs/design/` documents tokens and components.
 - `docs/architecture/` and `docs/plans/` — architecture and phase execution records.
-- `migrations/0001`–`0004` and `seeds/0001_products.sql` — current schema and seeded catalog data.
+- `migrations/0001`–`0007` and `seeds/0001_products.sql` — current schema and seeded catalog data.
 - `src/features/landing/data/landing-content.ts` — landing narrative and proof claims.
 - `public/products/*` — placeholder product imagery used by seeds and tests.
 
-Absences future work must not fabricate: there are no real customers, testimonials, press mentions, usage benchmarks, partnerships or seller verification data. The landing page currently marks the chat as "Disponível" although the module does not exist yet; chat is MVP-committed, and that badge is aspirational until it ships.
+Absences future work must not fabricate: there are no real customers, testimonials, press mentions, usage benchmarks, partnerships or seller verification data. The chat is implemented in the application; apply `migrations/0007_chat.sql` to each Supabase environment before enabling it there.
 
 ## Product Principles
 

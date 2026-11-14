@@ -85,6 +85,7 @@ async function ProductDetailContent({ params }: ProductDetailPageProps) {
         favoriteIdsResult.data.includes(product.id)
       }
       isAuthenticated={Boolean(user)}
+      currentUserId={user?.id ?? null}
     />
   )
 }

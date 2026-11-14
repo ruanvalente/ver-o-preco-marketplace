@@ -140,6 +140,29 @@ export async function getFavoriteProductIds(
 }
 
 /**
+ * Counts the authenticated user's favorites without loading product details.
+ */
+export async function getFavoriteCount(
+  userId: string,
+): Promise<ServiceResult<number>> {
+  try {
+    const supabase = await createClient()
+    const { count, error } = await supabase
+      .from("favorites")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+
+    if (error) {
+      return failure("getFavoriteCount", error)
+    }
+
+    return { ok: true, data: count ?? 0 }
+  } catch (error) {
+    return failure("getFavoriteCount", error)
+  }
+}
+
+/**
  * Persiste o estado desejado. A identidade vem da sessão validada pelo action,
  * e a RLS ainda impede gravar ou remover favoritos de outra conta.
  */

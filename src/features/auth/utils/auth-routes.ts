@@ -9,6 +9,7 @@ export const PROTECTED_PATH_PREFIXES = [
   "/profile",
   "/listings",
   "/favorites",
+  "/messages",
 ] as const;
 
 /**

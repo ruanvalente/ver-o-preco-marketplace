@@ -20,6 +20,7 @@ type ProductDetailViewProps = {
   favoriteProductIds?: string[]
   isFavorite?: boolean
   isAuthenticated: boolean
+  currentUserId?: string | null
 }
 
 /**
@@ -34,6 +35,7 @@ export function ProductDetailView({
   favoriteProductIds = [],
   isFavorite = false,
   isAuthenticated,
+  currentUserId,
 }: ProductDetailViewProps) {
   return (
     <>
@@ -104,6 +106,8 @@ export function ProductDetailView({
               productTitle={product.title}
               isFavorite={isFavorite}
               isAuthenticated={isAuthenticated}
+              sellerId={product.seller.id}
+              currentUserId={currentUserId}
             />
           </div>
         </div>

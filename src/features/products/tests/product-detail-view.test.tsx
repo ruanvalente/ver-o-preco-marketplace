@@ -152,7 +152,7 @@ describe("ContactSellerCta", () => {
     ).toBeInTheDocument()
   })
 
-  it("mostra o chat como indisponível para usuários autenticados", () => {
+  it("permite que usuários autenticados iniciem uma conversa", () => {
     render(
       <ContactSellerCta
         productId="product-1"
@@ -163,10 +163,10 @@ describe("ContactSellerCta", () => {
 
     expect(
       screen.getByRole("button", { name: "Conversar com o vendedor" }),
-    ).toBeDisabled()
+    ).toBeEnabled()
     expect(
       screen.getByText(
-        "O chat entre compradores e vendedores está em desenvolvimento.",
+        "Converse com o vendedor sem compartilhar seus dados pessoais.",
       ),
     ).toBeInTheDocument()
   })

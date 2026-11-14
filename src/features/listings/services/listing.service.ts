@@ -9,6 +9,9 @@ import type {
   ListingImageInput,
   ListingInput,
   ListingMutationResult,
+  OwnerListingDashboard,
+  OwnerListingFilters,
+  OwnerListingStatusFilter,
   ListingServiceResult,
   ListingSummary,
 } from "../types/listing.types";
@@ -161,6 +164,171 @@ export async function getListingsForOwner(
     };
   } catch (error) {
     return failure("getListingsForOwner", error);
+  }
+}
+
+function sanitizeListingSearch(value: string): string {
+  return value
+    .trim()
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .replace(/\s+/g, " ")
+    .slice(0, 100)
+}
+
+async function getOwnerStatusCount(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  status?: Exclude<OwnerListingStatusFilter, "all"> | "draft",
+): Promise<{ count: number | null; error: unknown }> {
+  let query = supabase
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq("seller_id", userId)
+    .neq("status", "removed");
+
+  if (status) {
+    query = query.eq("status", status);
+  }
+
+  const { count, error } = await query;
+  return { count, error };
+}
+
+/**
+ * Loads exact owner status counts and one filtered page for the seller
+ * dashboard. RLS and the explicit seller filter both scope the data.
+ */
+export async function getOwnerListingDashboard(
+  userId: string,
+  filters: OwnerListingFilters,
+): Promise<ListingServiceResult<OwnerListingDashboard>> {
+  try {
+    const supabase = await createClient();
+    const search = sanitizeListingSearch(filters.query);
+    const categoryIds: string[] = [];
+
+    if (search) {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id")
+        .ilike("name", `%${search}%`)
+        .limit(100);
+
+      if (error) {
+        return failure("getOwnerListingDashboard categories", error);
+      }
+
+      categoryIds.push(...(data ?? []).map((category) => category.id));
+    }
+
+    const [allCount, draftCount, activeCount, pausedCount, soldCount] =
+      await Promise.all([
+        getOwnerStatusCount(supabase, userId),
+        getOwnerStatusCount(supabase, userId, "draft"),
+        getOwnerStatusCount(supabase, userId, "active"),
+        getOwnerStatusCount(supabase, userId, "paused"),
+        getOwnerStatusCount(supabase, userId, "sold"),
+      ]);
+
+    const failedCount = [
+      allCount,
+      draftCount,
+      activeCount,
+      pausedCount,
+      soldCount,
+    ].find((result) => result.error);
+
+    if (failedCount) {
+      return failure("getOwnerListingDashboard counts", failedCount.error);
+    }
+
+    const makeListingQuery = () => {
+      let query = supabase
+        .from("products")
+        .select(LISTING_SELECT, { count: "exact" })
+        .eq("seller_id", userId)
+        .neq("status", "removed");
+
+      if (filters.status !== "all") {
+        query = query.eq("status", filters.status);
+      }
+
+      if (search) {
+        const conditions = [
+          `title.ilike.%${search}%`,
+          `city.ilike.%${search}%`,
+          `neighborhood.ilike.%${search}%`,
+          ...categoryIds.map((id) => `category_id.eq.${id}`),
+        ];
+        query = query.or(conditions.join(","));
+      }
+
+      if (filters.sort === "price_asc") {
+        return query
+          .order("price", { ascending: true })
+          .order("created_at", { ascending: false });
+      }
+
+      if (filters.sort === "price_desc") {
+        return query
+          .order("price", { ascending: false })
+          .order("created_at", { ascending: false });
+      }
+
+      return query.order("created_at", { ascending: false });
+    };
+
+    const pageSize = Math.min(Math.max(filters.pageSize, 1), 24);
+    const requestedPage = Math.max(filters.page, 1);
+    const firstResult = await makeListingQuery().range(
+      (requestedPage - 1) * pageSize,
+      requestedPage * pageSize - 1,
+    );
+
+    if (firstResult.error) {
+      return failure("getOwnerListingDashboard listings", firstResult.error);
+    }
+
+    const total = firstResult.count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const page = Math.min(requestedPage, totalPages);
+    const pageResult =
+      page === requestedPage
+        ? firstResult
+        : await makeListingQuery().range(
+            (page - 1) * pageSize,
+            page * pageSize - 1,
+          );
+
+    if (pageResult.error) {
+      return failure("getOwnerListingDashboard page", pageResult.error);
+    }
+
+    const mapperOptions = createMapperOptions(supabase);
+
+    return {
+      ok: true,
+      data: {
+        counts: {
+          all: allCount.count ?? 0,
+          draft: draftCount.count ?? 0,
+          active: activeCount.count ?? 0,
+          paused: pausedCount.count ?? 0,
+          sold: soldCount.count ?? 0,
+        },
+        page: {
+          items: ((pageResult.data ?? []) as unknown as ListingRow[]).map(
+            (row) => mapListingSummary(row, mapperOptions),
+          ),
+          total,
+          page,
+          pageSize,
+          totalPages,
+        },
+      },
+    };
+  } catch (error) {
+    return failure("getOwnerListingDashboard", error);
   }
 }
 

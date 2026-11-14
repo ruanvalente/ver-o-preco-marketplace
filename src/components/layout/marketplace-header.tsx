@@ -1,8 +1,6 @@
 import { Suspense } from "react"
 import Link from "next/link"
-import { Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CategoryNav } from "@/features/products/components/category-nav"
 import { marketplacePolos } from "@/features/products/data/marketplace-content"
@@ -14,6 +12,7 @@ import { LocationSelector } from "./location-selector"
 import { MarketplaceAccountArea } from "./marketplace-account-area"
 import { MarketplaceMobileAccount } from "./marketplace-mobile-account"
 import { MarketplaceMobileMenu } from "./marketplace-mobile-menu"
+import { MarketplaceCreateListingAction } from "./marketplace-create-listing-action"
 
 const mobileMenuCategories = categoryNavigationItems.filter(
   (item) => item.id !== "todas",
@@ -58,15 +57,9 @@ export function MarketplaceHeader() {
               <MarketplaceAccountArea />
             </Suspense>
 
-            <Button
-              asChild
-              className="hidden h-11 rounded-full px-4 sm:inline-flex"
-            >
-              <Link href="/listings/new">
-                <Plus aria-hidden="true" className="size-4" />
-                Anunciar produto
-              </Link>
-            </Button>
+            <Suspense fallback={null}>
+              <MarketplaceCreateListingAction placement="header" />
+            </Suspense>
 
             <MarketplaceMobileMenu
               polos={marketplacePolos}
