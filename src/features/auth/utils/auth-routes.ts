@@ -8,6 +8,8 @@ export const PROTECTED_PATH_PREFIXES = [
   "/dashboard",
   "/profile",
   "/listings",
+  "/favorites",
+  "/messages",
 ] as const;
 
 /**

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { connection } from "next/server"
 
 import { Button } from "@/components/ui/button"
 
@@ -6,6 +7,7 @@ import {
   getProductCategories,
   getProducts,
 } from "../../services/products.service"
+import { getFavoriteProductIds } from "@/features/favorites/services/favorites.service"
 import type { ProductFilters } from "../../types/product.types"
 import { formatListingCount } from "../../utils/format"
 import {
@@ -64,6 +66,7 @@ function ResultsSummary({
  * rota, já que lê dados de runtime.
  */
 export async function ProductsCatalog({ searchParams }: ProductsCatalogProps) {
+  await connection()
   const filters = parseProductFilters(await searchParams)
 
   const [categoriesResult, productsResult] = await Promise.all([
@@ -81,6 +84,9 @@ export async function ProductsCatalog({ searchParams }: ProductsCatalogProps) {
 
   const categories = categoriesResult.data
   const page = productsResult.data
+  const favoriteIdsResult = await getFavoriteProductIds(
+    page.items.map((product) => product.id),
+  )
   const activeFilterCount = getActiveFilterCount(filters)
   const searchKey = buildProductsHref(filters)
 
@@ -120,7 +126,12 @@ export async function ProductsCatalog({ searchParams }: ProductsCatalogProps) {
 
         <div className="mt-6">
           {page.items.length > 0 ? (
-            <ProductGrid products={page.items} />
+            <ProductGrid
+              products={page.items}
+              favoriteProductIds={
+                favoriteIdsResult.ok ? favoriteIdsResult.data : []
+              }
+            />
           ) : page.total > 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
               <h2 className="text-headline-sm font-semibold text-foreground">

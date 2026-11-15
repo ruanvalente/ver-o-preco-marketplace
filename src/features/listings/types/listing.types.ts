@@ -51,6 +51,39 @@ export type ListingSummary = {
   updatedAt: string
 }
 
+export type OwnerListingStatusFilter = "all" | "active" | "paused" | "sold"
+
+export type OwnerListingSort = "recent" | "price_asc" | "price_desc"
+
+export type OwnerListingFilters = {
+  status: OwnerListingStatusFilter
+  query: string
+  sort: OwnerListingSort
+  page: number
+  pageSize: number
+}
+
+export type OwnerListingCounts = {
+  all: number
+  draft: number
+  active: number
+  paused: number
+  sold: number
+}
+
+export type OwnerListingPage = {
+  items: ListingSummary[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+export type OwnerListingDashboard = {
+  counts: OwnerListingCounts
+  page: OwnerListingPage
+}
+
 export type ListingInput = {
   title: string
   description: string

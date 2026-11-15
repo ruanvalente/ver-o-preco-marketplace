@@ -18,6 +18,24 @@ vi.mock("../services/products.service", () => ({
   getProducts: vi.fn(),
 }))
 
+vi.mock("@/features/favorites/services/favorites.service", () => ({
+  getFavoriteProductIds: vi.fn(async () => ({ ok: true, data: [] })),
+}))
+
+vi.mock("next/server", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/server")>()
+  return { ...actual, connection: vi.fn() }
+})
+
+vi.mock("next/navigation", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/navigation")>()
+  return { ...actual, useRouter: () => ({ push: vi.fn() }) }
+})
+
+vi.mock("@/features/favorites/services/favorites.actions", () => ({
+  setFavoriteAction: vi.fn(async () => ({ ok: true })),
+}))
+
 const mockedGetCategories = vi.mocked(getProductCategories)
 const mockedGetProducts = vi.mocked(getProducts)
 

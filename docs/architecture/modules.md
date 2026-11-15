@@ -272,6 +272,17 @@ Dashboard
  └── FavoritesSummary → Favorites module
 ```
 
+The authenticated `/dashboard` route uses the shared marketplace header and
+loads seller profile, listing counts/page data, and chat activity on the
+server. Listing filters and pagination are URL-backed; seller queries include
+an explicit `seller_id` filter in addition to RLS. Listing status changes reuse
+the listings module's owner-checked actions.
+
+The current schema does not record product views, response rates, monthly
+history, seller verification, or ratings. The dashboard must label those
+indicators unavailable rather than infer or fabricate them. Promoted listings
+are outside the MVP; resource cards should link only to existing functionality.
+
 ## 10. Module Dependency Rules
 
 Prefer dependencies in this direction:

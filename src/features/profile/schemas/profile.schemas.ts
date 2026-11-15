@@ -94,3 +94,17 @@ export function validateAvatarFile(file: File): string | undefined {
 
   return undefined;
 }
+
+export function isAvatarPathForUser(path: unknown, userId: string): path is string {
+  if (typeof path !== "string") {
+    return false;
+  }
+
+  const [pathUserId, filename, ...extraSegments] = path.split("/");
+
+  return (
+    pathUserId === userId &&
+    extraSegments.length === 0 &&
+    /^avatar\.(jpg|jpeg|png|webp)$/i.test(filename ?? "")
+  );
+}

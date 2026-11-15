@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { fireEvent, render, screen, within } from "@testing-library/react"
 
 import { HeroSearchBar } from "../components/home/hero-search-bar"
@@ -10,6 +10,15 @@ import {
   productSummaryFixture,
   secondProductSummaryFixture,
 } from "./fixtures"
+
+vi.mock("next/navigation", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/navigation")>()
+  return { ...actual, useRouter: () => ({ push: vi.fn() }) }
+})
+
+vi.mock("@/features/favorites/services/favorites.actions", () => ({
+  setFavoriteAction: vi.fn(async () => ({ ok: true })),
+}))
 
 describe("HeroSearchBar", () => {
   it("envia a busca para o catálogo público", () => {

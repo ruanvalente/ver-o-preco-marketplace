@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { mapAuthError } from "@/features/auth/utils/auth-errors";
+import { AVATAR_BUCKET_NAME } from "../constants";
 import type { Profile, ProfileUpdateInput } from "../types/profile.types";
 import { validateProfileUpdate } from "../schemas/profile.schemas";
 
@@ -12,14 +13,18 @@ type ProfileRow = {
   updated_at: string;
 };
 
-function mapProfileRow(row: ProfileRow): Profile {
-  // We can't construct public URLs in server components easily without creating client
-  // The avatarUrl will be populated where needed
+type ProfileSupabaseClient = Awaited<ReturnType<typeof createClient>>;
+
+function mapProfileRow(row: ProfileRow, supabase: ProfileSupabaseClient): Profile {
+  const avatarUrl = row.avatar_path
+    ? supabase.storage.from(AVATAR_BUCKET_NAME).getPublicUrl(row.avatar_path).data.publicUrl
+    : null;
+
   return {
     id: row.id,
     displayName: row.display_name,
     avatarPath: row.avatar_path,
-    avatarUrl: null,
+    avatarUrl,
     location: row.location,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -44,7 +49,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
       return null;
     }
 
-    return mapProfileRow(data as ProfileRow);
+    return mapProfileRow(data as ProfileRow, supabase);
   } catch (error) {
     console.error("Error fetching profile:", error);
     return null;
@@ -69,7 +74,7 @@ export async function getProfileById(userId: string): Promise<Profile | null> {
       return null;
     }
 
-    return mapProfileRow(data as ProfileRow);
+    return mapProfileRow(data as ProfileRow, supabase);
   } catch (error) {
     console.error("Error fetching public profile:", error);
     return null;
@@ -99,7 +104,7 @@ export async function createProfile(userId: string, data: ProfileUpdateInput): P
       return null;
     }
 
-    return mapProfileRow(row as ProfileRow);
+    return mapProfileRow(row as ProfileRow, supabase);
   } catch (error) {
     console.error("Error creating profile:", error);
     return null;
@@ -139,7 +144,7 @@ export async function updateProfile(
       return null;
     }
 
-    return mapProfileRow(row as ProfileRow);
+    return mapProfileRow(row as ProfileRow, supabase);
   } catch (error) {
     console.error("Error updating profile:", error);
     return null;
@@ -179,7 +184,7 @@ export async function upsertProfile(
       return null;
     }
 
-    return mapProfileRow(row as ProfileRow);
+    return mapProfileRow(row as ProfileRow, supabase);
   } catch (error) {
     console.error("Error upserting profile:", error);
     return null;

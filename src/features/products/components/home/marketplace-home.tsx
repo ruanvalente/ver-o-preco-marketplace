@@ -1,5 +1,7 @@
 import { Suspense } from "react"
+import { connection } from "next/server"
 
+import { getFavoriteProductIds } from "@/features/favorites/services/favorites.service"
 import {
   getActiveProductCount,
   getProductCategories,
@@ -32,6 +34,7 @@ async function CategoriesSection() {
 }
 
 async function RecentListingsSection() {
+  await connection()
   const [productsResult, countResult] = await Promise.all([
     getRecentProducts(8),
     getActiveProductCount(),
@@ -41,10 +44,17 @@ async function RecentListingsSection() {
     return <ProductErrorState message={productsResult.error} retryHref="/" />
   }
 
+  const favoriteIdsResult = await getFavoriteProductIds(
+    productsResult.data.map((product) => product.id),
+  )
+
   return (
     <RecentListings
       products={productsResult.data}
       total={countResult.ok ? countResult.data : productsResult.data.length}
+      favoriteProductIds={
+        favoriteIdsResult.ok ? favoriteIdsResult.data : []
+      }
     />
   )
 }

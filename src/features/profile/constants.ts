@@ -5,4 +5,4 @@
  * público da imagem, por isso fica em um módulo neutro (sem imports de
  * Supabase) para evitar divergência entre os dois lados.
  */
-export const AVATAR_BUCKET_NAME = "veropreco/avatar/profile";
+export const AVATAR_BUCKET_NAME = "avatars";

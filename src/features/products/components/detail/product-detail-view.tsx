@@ -17,7 +17,10 @@ import { SellerCard } from "./seller-card"
 type ProductDetailViewProps = {
   product: ProductDetail
   relatedProducts: ProductSummary[]
+  favoriteProductIds?: string[]
+  isFavorite?: boolean
   isAuthenticated: boolean
+  currentUserId?: string | null
 }
 
 /**
@@ -29,7 +32,10 @@ type ProductDetailViewProps = {
 export function ProductDetailView({
   product,
   relatedProducts,
+  favoriteProductIds = [],
+  isFavorite = false,
   isAuthenticated,
+  currentUserId,
 }: ProductDetailViewProps) {
   return (
     <>
@@ -98,7 +104,10 @@ export function ProductDetailView({
             <ContactSellerCta
               productId={product.id}
               productTitle={product.title}
+              isFavorite={isFavorite}
               isAuthenticated={isAuthenticated}
+              sellerId={product.seller.id}
+              currentUserId={currentUserId}
             />
           </div>
         </div>
@@ -106,6 +115,7 @@ export function ProductDetailView({
 
       <RelatedProducts
         products={relatedProducts}
+        favoriteProductIds={favoriteProductIds}
         categoryName={product.category.name}
         categorySlug={product.category.slug}
       />

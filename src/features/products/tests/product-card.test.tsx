@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { fireEvent, render, screen } from "@testing-library/react"
 
 import { ProductCard } from "../components/product-card"
@@ -6,6 +6,15 @@ import {
   productSummaryFixture,
   secondProductSummaryFixture,
 } from "./fixtures"
+
+vi.mock("next/navigation", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/navigation")>()
+  return { ...actual, useRouter: () => ({ push: vi.fn() }) }
+})
+
+vi.mock("@/features/favorites/services/favorites.actions", () => ({
+  setFavoriteAction: vi.fn(async () => ({ ok: true })),
+}))
 
 describe("ProductCard", () => {
   it("apresenta imagem, preço, título, localização e condição", () => {

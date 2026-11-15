@@ -13,4 +13,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button:enabled {
+    cursor: pointer;
+  }
 }

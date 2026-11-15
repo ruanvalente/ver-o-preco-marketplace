@@ -1,8 +1,8 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { Suspense, type ReactNode } from "react"
 import Link from "next/link"
-import { ArrowRight, ChevronDown, MapPin, Menu, Plus, X } from "lucide-react"
+import { ArrowRight, ChevronDown, MapPin, Menu, X } from "lucide-react"
 
 import {
   Sheet,
@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 
 import type { MarketplacePolo } from "@/features/products/types/marketplace.types"
 
+import { MarketplaceCreateListingAction } from "./marketplace-create-listing-action"
 import { HeaderSearchForm } from "./header-search-form"
 
 type MarketplaceMobileMenuProps = {
@@ -134,18 +135,9 @@ export function MarketplaceMobileMenu({
           </nav>
 
           <div className="grid gap-2 border-t border-border pt-5">
-            <SheetClose asChild>
-              <Link
-                href="/listings/new"
-                className={cn(
-                  buttonVariants({ variant: "default", size: "lg" }),
-                  "h-11 w-full rounded-full",
-                )}
-              >
-                <Plus aria-hidden="true" className="size-4" />
-                Anunciar produto
-              </Link>
-            </SheetClose>
+            <Suspense fallback={null}>
+              <MarketplaceCreateListingAction placement="mobile" />
+            </Suspense>
 
             <SheetClose asChild>
               <Link

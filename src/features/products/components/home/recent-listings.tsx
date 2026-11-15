@@ -11,6 +11,7 @@ import { SectionHeader } from "./section-header"
 type RecentListingsProps = {
   products: ProductSummary[]
   total: number
+  favoriteProductIds?: string[]
 }
 
 /**
@@ -19,7 +20,13 @@ type RecentListingsProps = {
  * Recebe os produtos já mapeados pelo serviço de produtos. A composição visual
  * é independente da origem dos dados.
  */
-export function RecentListings({ products, total }: RecentListingsProps) {
+export function RecentListings({
+  products,
+  total,
+  favoriteProductIds = [],
+}: RecentListingsProps) {
+  const favorites = new Set(favoriteProductIds)
+
   return (
     <section aria-labelledby="recentes-title">
       <div className="flex flex-col gap-4">
@@ -51,7 +58,11 @@ export function RecentListings({ products, total }: RecentListingsProps) {
         <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
           {products.map((product) => (
             <li key={product.id} className="flex">
-              <ProductCard product={product} className="w-full" />
+              <ProductCard
+                product={product}
+                isFavorite={favorites.has(product.id)}
+                className="w-full"
+              />
             </li>
           ))}
         </ul>

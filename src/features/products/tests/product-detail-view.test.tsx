@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { fireEvent, render, screen, within } from "@testing-library/react"
 
 import { ContactSellerCta } from "../components/detail/contact-seller-cta"
@@ -7,6 +7,15 @@ import {
   productDetailFixture,
   productSummaryFixture,
 } from "./fixtures"
+
+vi.mock("next/navigation", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/navigation")>()
+  return { ...actual, useRouter: () => ({ push: vi.fn() }) }
+})
+
+vi.mock("@/features/favorites/services/favorites.actions", () => ({
+  setFavoriteAction: vi.fn(async () => ({ ok: true })),
+}))
 
 describe("ProductDetailView", () => {
   it("apresenta galeria, informações, vendedor e anúncios relacionados", () => {
@@ -143,7 +152,7 @@ describe("ContactSellerCta", () => {
     ).toBeInTheDocument()
   })
 
-  it("mostra o chat como indisponível para usuários autenticados", () => {
+  it("permite que usuários autenticados iniciem uma conversa", () => {
     render(
       <ContactSellerCta
         productId="product-1"
@@ -154,10 +163,10 @@ describe("ContactSellerCta", () => {
 
     expect(
       screen.getByRole("button", { name: "Conversar com o vendedor" }),
-    ).toBeDisabled()
+    ).toBeEnabled()
     expect(
       screen.getByText(
-        "O chat entre compradores e vendedores está em desenvolvimento.",
+        "Converse com o vendedor sem compartilhar seus dados pessoais.",
       ),
     ).toBeInTheDocument()
   })
