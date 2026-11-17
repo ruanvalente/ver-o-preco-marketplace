@@ -7,8 +7,9 @@ Catálogo enxuto das ferramentas de IA versionadas neste repositório. Regras de
 | Servidor | Escopo | Modo | Uso |
 | --- | --- | --- | --- |
 | `supabase` | projeto (`opencode.json`) | somente leitura, `database,docs,debugging` | inspecionar schema, consultar dados, consultar docs e logs |
+| `vercel` | projeto (`opencode.json`) | OAuth (conta do usuário) | consultar docs, inspecionar projetos/deploys e analytics da Vercel |
 
-Autenticação é feita pelo usuário via `/mcps`. Escrita, mudança de URL ou conexão com outro projeto exigem confirmação — ver `security.md`.
+Autenticação de ambos é feita pelo usuário via `/mcps`. Para o Supabase, escrita, mudança de URL ou conexão com outro projeto exigem confirmação — ver `security.md`. O MCP da Vercel acessa a conta do usuário: deploy, criação/configuração de projeto e ações em produção continuam exigindo confirmação explícita, uma a uma.
 
 ## Skills instaladas
 
