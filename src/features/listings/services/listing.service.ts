@@ -41,7 +41,7 @@ const LISTING_SELECT = `
 const LOAD_ERROR = "Não foi possível carregar o anúncio.";
 const SAVE_ERROR = "Não foi possível salvar o anúncio.";
 const IMAGE_ERROR = "Não foi possível salvar as imagens do anúncio.";
-const NOT_FOUND_ERROR =
+export const NOT_FOUND_ERROR =
   "Anúncio não encontrado ou sem permissão para editá-lo.";
 const PUBLISH_ERROR =
   "As alterações foram salvas, mas não foi possível publicar o anúncio.";
@@ -126,6 +126,42 @@ export async function getListingForOwner(
     };
   } catch (error) {
     return failure("getListingForOwner", error);
+  }
+}
+
+/**
+ * Checagem magra de propriedade para Server Actions.
+ *
+ * Confere apenas a existência da linha e a titularidade (`seller_id`), sem
+ * carregar imagens, categoria ou URLs assinadas. Assim como
+ * `getListingForOwner`, devolve `false` para UUID malformado, anúncio
+ * inexistente ou anúncio de outro usuário, sem distinguir os casos
+ * (anti-enumeração).
+ */
+export async function isListingOwnedBy(
+  userId: string,
+  listingId: string,
+): Promise<ListingServiceResult<boolean>> {
+  if (!isListingId(listingId)) {
+    return { ok: true, data: false };
+  }
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("id")
+      .eq("id", listingId)
+      .eq("seller_id", userId)
+      .maybeSingle();
+
+    if (error) {
+      return failure("isListingOwnedBy", error);
+    }
+
+    return { ok: true, data: data !== null };
+  } catch (error) {
+    return failure("isListingOwnedBy", error);
   }
 }
 

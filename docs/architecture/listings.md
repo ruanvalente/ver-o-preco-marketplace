@@ -82,7 +82,7 @@ Route (server)
 ListingsPage / ListingForm (domain UI)
     ↓
 listing.actions.ts (Server Action)
-    ↓ validateListingForm + validateListingImagesForUser
+    ↓ validateListingForm + requireOwnership + validateListingImagesForUser
 listing.service.ts
     ↓
 Supabase (products, product_images, replace_product_images)
@@ -162,7 +162,7 @@ publish → new or existing listing becomes active
 
 ## 7. Ownership and Security
 
-Authorization is enforced in three layers:
+Authorization is enforced in four layers:
 
 1. **Session** — the route and the Server Action call `requireUser`, so
    `userId` always comes from Supabase Auth.
@@ -172,6 +172,11 @@ Authorization is enforced in three layers:
 3. **Service filters** — every read and mutation also filters by
    `seller_id = userId`, keeping the ownership rule explicit in application
    code.
+4. **Action ownership check** — `updateListingAction` and
+   `updateListingStatusAction` call `requireOwnership` before mutating, which
+   re-confirms that the session user owns the listing. Denials are fail-closed
+   and indistinguishable from a missing listing; transient database failures map
+   to a retryable error instead of a permission error.
 
 Additional rules:
 

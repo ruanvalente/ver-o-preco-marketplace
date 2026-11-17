@@ -137,6 +137,8 @@ Pendente operacional: a migration ainda não foi aplicada a nenhum ambiente (o r
 
 `chat.actions.ts`, `favorites.actions.ts`, `listing.actions.ts` e `profile.actions.ts` já chamam `requireUser`/`getCurrentUser`, escopam mutações por `user.id` e validam caminhos de storage (`validateChatAttachmentPath`, `validateListingImagesForUser`, `isAvatarPathForUser`). O RLS continua sendo o limite real; a dupla verificação sugerida (`requireOwnership`) seria abstração prematura sem caso de uso. Nenhuma mudança.
 
+> **Atualização (Issue #18 — Phase 03):** o item foi implementado para listings. `session.service.ts` agora expõe `requireOwnership(currentPath, listingId)` (sessão via `requireUser` + checagem magra de `seller_id` via `isListingOwnedBy`), usada por `updateListingAction` e `updateListingStatusAction`. A negação é fail-closed e não distingue anúncio inexistente de anúncio alheio; falhas transitórias de banco voltam como `unavailable` para o chamador oferecer retry.
+
 ### Verificado: [P0] Storage bucket policies — já satisfeito
 
 `product-images` tem políticas públicas de SELECT e escritas escopadas ao vendedor em `migrations/0003_products.sql`; `chat-images` em `0007_chat.sql`; `avatars` em `0006_profile_avatars.sql`. Não havia políticas ausentes; nenhuma política nova criada.

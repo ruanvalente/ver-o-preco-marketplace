@@ -5,6 +5,7 @@ import {
   deleteListing,
   getListingForOwner,
   getListingsForOwner,
+  isListingOwnedBy,
   pauseListing,
   publishListing,
   updateListing,
@@ -200,6 +201,55 @@ describe("listing.service", () => {
       supabaseMocks.from.mockReturnValue(query)
 
       await expect(getListingForOwner(sellerId, listingId)).resolves.toEqual({
+        ok: false,
+        error: "Não foi possível carregar o anúncio.",
+      })
+
+      consoleError.mockRestore()
+    })
+  })
+
+  describe("isListingOwnedBy", () => {
+    it("filtra pelo id e pelo vendedor autenticado", async () => {
+      const query = createQuery({ data: { id: listingId }, error: null })
+      supabaseMocks.from.mockReturnValue(query)
+
+      const result = await isListingOwnedBy(sellerId, listingId)
+
+      expect(query.select).toHaveBeenCalledWith("id")
+      expect(query.eq).toHaveBeenCalledWith("id", listingId)
+      expect(query.eq).toHaveBeenCalledWith("seller_id", sellerId)
+      expect(query.maybeSingle).toHaveBeenCalled()
+      expect(result).toEqual({ ok: true, data: true })
+    })
+
+    it("não consulta o banco quando o id não é um UUID", async () => {
+      await expect(
+        isListingOwnedBy(sellerId, "id-invalido"),
+      ).resolves.toEqual({ ok: true, data: false })
+
+      expect(supabaseMocks.createClient).not.toHaveBeenCalled()
+      expect(supabaseMocks.from).not.toHaveBeenCalled()
+    })
+
+    it("devolve false quando o anúncio não existe ou é de outro usuário", async () => {
+      const query = createQuery({ data: null, error: null })
+      supabaseMocks.from.mockReturnValue(query)
+
+      await expect(isListingOwnedBy(sellerId, listingId)).resolves.toEqual({
+        ok: true,
+        data: false,
+      })
+    })
+
+    it("retorna um erro seguro quando a consulta falha", async () => {
+      const consoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined)
+      const query = createQuery({ data: null, error: { message: "denied" } })
+      supabaseMocks.from.mockReturnValue(query)
+
+      await expect(isListingOwnedBy(sellerId, listingId)).resolves.toEqual({
         ok: false,
         error: "Não foi possível carregar o anúncio.",
       })

@@ -22,6 +22,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   pause: "Não foi possível pausar o anúncio.",
   delete: "Não foi possível excluir o anúncio.",
   invalid: "Não foi possível concluir a ação.",
+  forbidden: "Você não tem permissão para este anúncio.",
+  unexpected: "Não foi possível concluir a ação. Tente novamente.",
 }
 
 /**

@@ -49,6 +49,8 @@ const STATUS_TABS = [
 
 const ACTION_ERRORS: Record<string, string> = {
   invalid: "Não foi possível identificar o anúncio.",
+  forbidden: "Você não tem permissão para este anúncio.",
+  unexpected: "Não foi possível concluir a ação. Tente novamente.",
   publish:
     "Não foi possível reativar o anúncio. Verifique se ele tem uma foto e tente novamente.",
   pause: "Não foi possível pausar o anúncio. Tente novamente.",
