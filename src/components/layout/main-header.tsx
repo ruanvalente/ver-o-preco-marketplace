@@ -11,7 +11,7 @@ export function MainHeader() {
       <div className="container mx-auto flex min-h-16 flex-wrap items-center justify-between gap-3 px-4 py-2">
         <Link
           href="/"
-          className="rounded-sm text-lg font-semibold tracking-tight focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="rounded-sm text-lg font-semibold tracking-tight focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           Ver-o-Preço
         </Link>
@@ -21,7 +21,7 @@ export function MainHeader() {
         >
           <Link
             href="/"
-            className="hidden rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
+            className="hidden rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
           >
             Explorar
           </Link>

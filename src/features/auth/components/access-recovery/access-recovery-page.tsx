@@ -7,7 +7,7 @@ import { SecurityTipCard } from "./security-tip-card";
 
 export function AccessRecoveryPage() {
   return (
-    <main className="bg-[#F8F7FC]">
+    <main className="bg-background">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <header className="flex flex-col items-center gap-3 text-center">
           <div className="space-y-2">

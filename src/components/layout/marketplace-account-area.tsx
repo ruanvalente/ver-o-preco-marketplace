@@ -91,7 +91,7 @@ export async function MarketplaceAccountArea() {
     <>
       <ChatHeaderNotifications
         initialCount={unreadConversations}
-        className="relative hidden size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
+        className="relative hidden size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
       />
       <Link
         href="/favorites"
@@ -100,7 +100,7 @@ export async function MarketplaceAccountArea() {
             ? "Meus favoritos, contagem indisponível"
             : `Meus favoritos, ${favoriteCount} ${favoriteCount === 1 ? "anúncio" : "anúncios"}`
         }
-        className="relative hidden size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
+        className="relative hidden size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:inline-flex"
       >
         <Heart aria-hidden="true" className="size-5" />
         {favoriteCount !== null && favoriteCount > 0 ? (

@@ -44,7 +44,7 @@ export function RelatedProducts({
 
         <Link
           href={`/products?category=${encodeURIComponent(categorySlug)}`}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           Ver tudo em {categoryName}
           <ArrowRight aria-hidden="true" className="size-4" />

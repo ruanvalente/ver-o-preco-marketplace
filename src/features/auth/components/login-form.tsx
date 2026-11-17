@@ -85,7 +85,7 @@ export function LoginForm() {
         labelAction={
           <Link
             href="/forgot-password"
-            className="rounded-sm text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="rounded-sm text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             Esqueceu a senha?
           </Link>
@@ -99,7 +99,7 @@ export function LoginForm() {
           value="true"
           checked={remember}
           onChange={(event) => setRemember(event.target.checked)}
-          className="mt-0.5 size-4 shrink-0 cursor-pointer rounded border-input accent-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="mt-0.5 size-4 shrink-0 cursor-pointer rounded border-input accent-primary focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         />
         <span>Lembrar de mim neste dispositivo</span>
       </label>

@@ -53,7 +53,7 @@ export function ProductPagination({
   const nextHref = buildProductsHref(filters, { page: current + 1 })
 
   const baseLinkClassName =
-    "inline-flex size-10 items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+    "inline-flex size-10 items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
 
   return (
     <nav

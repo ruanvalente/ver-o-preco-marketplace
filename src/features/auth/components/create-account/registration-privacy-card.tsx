@@ -21,7 +21,7 @@ export function RegistrationPrivacyCard() {
           </p>
           <Link
             href={REGISTRATION_PRIVACY.linkHref}
-            className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             {REGISTRATION_PRIVACY.linkLabel}
           </Link>

@@ -9,6 +9,10 @@
       "vercel": {
         "type": "remote",
         "url": "https://mcp.vercel.com"
+      },
+      "tailwindcss": {
+        "type": "local",
+        "command": ["bunx", "@clarity-contrib/tailwindcss-mcp-server"]
       }
     }
   }

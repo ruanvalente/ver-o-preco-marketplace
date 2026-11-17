@@ -37,7 +37,7 @@ export function ConsentCheckbox({
           onChange={(event) => onCheckedChange(event.target.checked)}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
-          className="mt-2.5 size-5 shrink-0 cursor-pointer rounded border-input accent-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive"
+          className="mt-2.5 size-5 shrink-0 cursor-pointer rounded border-input accent-primary focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive"
         />
 
         <label

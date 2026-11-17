@@ -26,7 +26,7 @@ export function RegistrationCard({ form }: RegistrationCardProps) {
 
         <Link
           href="/catalogo"
-          className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <Compass aria-hidden="true" className="size-4" />
           Explorar catálogo

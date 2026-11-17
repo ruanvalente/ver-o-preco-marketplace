@@ -4,10 +4,10 @@ import { Card, CardContent } from "@/components/ui/card"
 
 export function SecurityTipCard() {
   return (
-    <Card className="rounded-2xl border-border/80 bg-[#EEF0FF] shadow-none">
+    <Card className="rounded-2xl border-border/80 bg-accent shadow-none">
       <CardContent className="flex flex-col gap-3 p-6 sm:p-8">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 flex size-9 items-center justify-center rounded-full bg-white/80 text-primary">
+          <span className="mt-0.5 flex size-9 items-center justify-center rounded-full bg-card/80 text-primary">
             <Globe aria-hidden="true" className="size-4" />
           </span>
           <div className="space-y-2">
