@@ -148,6 +148,16 @@ publicly readable. `category_listing_counts` is a `security_invoker` view that
 exposes active product counts per category, so the catalog never fetches every
 product to render a badge.
 
+Catalog reads use explicit column lists defined in
+`features/products/utils/product-mappers.ts`. Public reads are tagged
+`products:list` and invalidated by listing Server Actions; favorite state is
+read per request in dynamic components and does not share this cache. See
+[issue #17 plan](../plans/013-issue-17-catalog-audit.md). The partial
+`(city, created_at DESC) WHERE status = 'active'` index added by
+`migrations/0011_products_catalog_index.sql` supports city filtering with
+newest-first ordering; the home query is covered by the existing
+`products_active_created_at_idx`.
+
 ## 7. Product Status
 
 ```text
@@ -212,6 +222,12 @@ psql "$DATABASE_URL" -f migrations/0008_chat_rls_recursion_fix.sql
 
 # Create and backfill profiles for Supabase Auth users (after 0008).
 psql "$DATABASE_URL" -f migrations/0009_profile_auth_sync.sql
+
+# Chat signed URL authorization RPC (after 0009).
+psql "$DATABASE_URL" -f migrations/0010_chat_signed_url_authorization.sql
+
+# Composite catalog index for city filters plus newest-first ordering (after 0003).
+psql "$DATABASE_URL" -f migrations/0011_products_catalog_index.sql
 
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql

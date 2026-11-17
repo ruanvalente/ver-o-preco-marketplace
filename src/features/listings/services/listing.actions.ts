@@ -4,6 +4,7 @@ import { revalidatePath, updateTag } from "next/cache"
 import { redirect } from "next/navigation"
 
 import { requireUser } from "@/features/auth/services/session.service"
+import { PRODUCTS_LIST_TAG } from "@/features/products/types/product.types"
 
 import { isListingId, validateListingForm } from "../schemas/listing.schemas"
 import type { ListingActionState } from "../types/listing.types"
@@ -17,7 +18,7 @@ import {
 } from "./listing.service"
 
 function revalidateListingViews(listingId?: string) {
-  updateTag("products")
+  updateTag(PRODUCTS_LIST_TAG)
   revalidatePath("/")
   revalidatePath("/products")
   revalidatePath("/listings")

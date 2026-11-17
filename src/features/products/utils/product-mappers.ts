@@ -11,6 +11,27 @@ import {
 import { formatRelativeTime } from "./format"
 
 /**
+ * Colunas explícitas usadas por toda leitura pública de produtos.
+ *
+ * Manter o select ao lado dos tipos de row evita drift entre a shape esperada
+ * pelo mapper e o que o PostgREST devolve. Nenhuma coluna de contato do
+ * vendedor (email/telefone) faz parte deste conjunto.
+ */
+export const PRODUCT_SELECT = `
+  id,
+  title,
+  description,
+  price,
+  condition,
+  city,
+  neighborhood,
+  created_at,
+  category:categories!products_category_id_fkey ( id, slug, name ),
+  seller:profiles!products_seller_id_fkey ( id, display_name, avatar_path, location ),
+  images:product_images ( id, storage_path, alt_text, sort_order, is_primary )
+`
+
+/**
  * Linhas do Supabase.
  *
  * Estes tipos ficam restritos à camada de serviço/mapeamento. Componentes
