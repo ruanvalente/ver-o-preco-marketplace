@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { cacheTag } from "next/cache"
 
 import { parseProductFilters } from "../utils/query"
 
@@ -102,6 +103,7 @@ describe("products.service", () => {
       expect(fromMock).toHaveBeenCalledWith("products")
       expect(query.eq).toHaveBeenCalledWith("id", productId)
       expect(query.eq).toHaveBeenCalledWith("status", "active")
+      expect(cacheTag).toHaveBeenCalledWith("products:list")
       expect(result.ok).toBe(true)
 
       if (result.ok) {
@@ -145,6 +147,19 @@ describe("products.service", () => {
   })
 
   describe("getProducts", () => {
+    it("usa um select explícito, sem colunas curinga", async () => {
+      const query = createQuery({ data: [], error: null, count: 0 })
+      fromMock.mockReturnValue(query)
+
+      await getProducts(parseProductFilters({}))
+
+      const select = query.select.mock.calls[0][0] as string
+      expect(select).toContain("category:categories!")
+      expect(select).toContain("seller:profiles!")
+      expect(select).toContain("images:product_images")
+      expect(select).not.toMatch(/(^|[\s,])\*(?=[\s,]|$)/)
+    })
+
     it("filtra por status ativo e monta a página", async () => {
       const query = createQuery({ data: [productRow], error: null, count: 1 })
       fromMock.mockReturnValue(query)

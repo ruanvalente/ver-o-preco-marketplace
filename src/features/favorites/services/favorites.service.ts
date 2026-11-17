@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { cache } from "react"
 
 import { createClient } from "@/lib/supabase/server"
 import type {
@@ -6,29 +7,19 @@ import type {
   ServiceResult,
 } from "@/features/products/types/product.types"
 import {
+  PRODUCT_SELECT,
   mapProductSummary,
   type ProductRow,
 } from "@/features/products/utils/product-mappers"
 import type { FavoriteCollection } from "../types/favorite.types"
 
-const PRODUCT_SELECT = `
-  id,
-  title,
-  description,
-  price,
-  condition,
-  city,
-  neighborhood,
-  created_at,
-  category:categories!products_category_id_fkey ( id, slug, name ),
-  seller:profiles!products_seller_id_fkey ( id, display_name, avatar_path, location ),
-  images:product_images ( id, storage_path, alt_text, sort_order, is_primary )
-`
+const FAVORITE_PRODUCT_SELECT = `product:products!favorites_product_id_fkey (${PRODUCT_SELECT})`
 
 const FAVORITES_LOAD_ERROR = "Não foi possível carregar seus favoritos."
 const FAVORITE_SAVE_ERROR = "Não foi possível atualizar este favorito."
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const FAVORITE_IDS_SEPARATOR = "|"
 
 type FavoriteProductRow = {
   product: ProductRow | ProductRow[] | null
@@ -70,9 +61,10 @@ export async function getFavoriteProducts(
     const supabase = await createClient()
     const { data, error } = await supabase
       .from("favorites")
-      .select(
-        `product:products!favorites_product_id_fkey (${PRODUCT_SELECT})`,
-      )
+      .select<
+        typeof FAVORITE_PRODUCT_SELECT,
+        FavoriteProductRow
+      >(FAVORITE_PRODUCT_SELECT)
       .eq("user_id", userId)
       .eq("product.status", "active")
       .order("created_at", { ascending: false })
@@ -83,7 +75,7 @@ export async function getFavoriteProducts(
     }
 
     const options = createMapperOptions(supabase)
-    const rows = (data ?? []) as unknown as FavoriteProductRow[]
+    const rows = data ?? []
     const products: ProductSummary[] = []
     let unavailableCount = 0
 
@@ -105,38 +97,62 @@ export async function getFavoriteProducts(
 }
 
 /**
- * Busca todos os favoritos de um conjunto de produtos em uma única consulta.
- * A política RLS associa os resultados à sessão, sem aceitar user_id do client.
+ * Normaliza os IDs em uma chave primitiva e estável.
+ *
+ * `cache()` do React memoiza por identidade dos argumentos; arrays criados por
+ * cada call site seriam sempre diferentes. Ordenar e deduplicar os UUIDs antes
+ * de gerar a chave garante uma única consulta por conjunto de produtos no
+ * mesmo request, independentemente da ordem em que foram pedidos.
  */
-export async function getFavoriteProductIds(
-  productIds: string[],
-): Promise<ServiceResult<string[]>> {
-  const validProductIds = [...new Set(productIds)].filter((id) =>
-    UUID_PATTERN.test(id),
-  )
+function buildFavoriteIdsCacheKey(productIds: string[]): string {
+  return [...new Set(productIds)]
+    .filter((id) => UUID_PATTERN.test(id))
+    .sort()
+    .join(FAVORITE_IDS_SEPARATOR)
+}
 
-  if (validProductIds.length === 0) {
-    return { ok: true, data: [] }
-  }
+const fetchFavoriteProductIds = cache(
+  async (cacheKey: string): Promise<ServiceResult<string[]>> => {
+    const productIds = cacheKey.split(FAVORITE_IDS_SEPARATOR).filter(Boolean)
 
-  try {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-      .from("favorites")
-      .select("product_id")
-      .in("product_id", validProductIds)
+    try {
+      const supabase = await createClient()
+      const { data, error } = await supabase
+        .from("favorites")
+        .select("product_id")
+        .in("product_id", productIds)
 
-    if (error) {
+      if (error) {
+        return failure("getFavoriteProductIds", error)
+      }
+
+      return {
+        ok: true,
+        data: (data ?? []).map((favorite) => favorite.product_id),
+      }
+    } catch (error) {
       return failure("getFavoriteProductIds", error)
     }
+  },
+)
 
-    return {
-      ok: true,
-      data: (data ?? []).map((favorite) => favorite.product_id),
-    }
-  } catch (error) {
-    return failure("getFavoriteProductIds", error)
+/**
+ * Busca os favoritos do usuário para um conjunto de produtos em uma consulta.
+ *
+ * O resultado é deduplicado por request (`cache()`), não entre requisições: a
+ * política RLS continua sendo a única fonte de autorização e a sessão nunca é
+ * compartilhada entre usuários.
+ */
+export function getFavoriteProductIds(
+  productIds: string[],
+): Promise<ServiceResult<string[]>> {
+  const cacheKey = buildFavoriteIdsCacheKey(productIds)
+
+  if (!cacheKey) {
+    return Promise.resolve({ ok: true, data: [] })
   }
+
+  return fetchFavoriteProductIds(cacheKey)
 }
 
 /**

@@ -14,6 +14,9 @@ export const PRODUCT_CONDITIONS = [
 
 export type ProductCondition = (typeof PRODUCT_CONDITIONS)[number];
 
+/** Cache tag shared by every cached public-catalog read. */
+export const PRODUCTS_LIST_TAG = "products:list";
+
 export const PRODUCT_STATUSES = [
   "draft",
   "active",
