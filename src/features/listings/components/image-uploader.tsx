@@ -126,7 +126,8 @@ export function ImageUploader({
         <div role="status" aria-live="polite" className="space-y-2">
           <p className="text-sm text-muted-foreground">
             Enviando {uploadProgress.completed} de {uploadProgress.total}{" "}
-            {uploadProgress.total === 1 ? "imagem" : "imagens"}…
+            {uploadProgress.total === 1 ? "imagem" : "imagens"}… (
+            {progressPercent}%)
           </p>
           <div
             role="progressbar"
