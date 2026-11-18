@@ -65,7 +65,7 @@ export function SellerCard({ seller }: SellerCardProps) {
             {profileHref ? (
               <Link
                 href={profileHref}
-                className="rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                className="rounded-sm transition-colors hover:text-primary focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
               >
                 {seller.displayName}
               </Link>

@@ -54,7 +54,7 @@ export function AuthSelect({
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
           className={cn(
-            "h-12 w-full appearance-none rounded-lg border border-input bg-surface-container-low py-2 pr-10 text-base text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            "h-12 w-full appearance-none rounded-lg border border-input bg-surface-container-low py-2 pr-10 text-base text-foreground shadow-xs outline-hidden transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
             Icon ? "pl-10" : "pl-3",
             "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
             className

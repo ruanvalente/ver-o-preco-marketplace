@@ -9,7 +9,7 @@ export function ProductContext({ product }: { product: ChatProductContext }) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className="flex min-h-[68px] items-center gap-3 border-y bg-muted/40 px-4 py-2 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50"
+      className="flex min-h-[68px] items-center gap-3 border-y bg-muted/40 px-4 py-2 transition-colors hover:bg-accent focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50"
     >
       <span className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-background text-xs text-muted-foreground">
         {product.imageUrl ? (

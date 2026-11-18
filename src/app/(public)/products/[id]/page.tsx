@@ -102,7 +102,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
     <main className="mx-auto w-full max-w-[1100px] flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <Link
         href="/products"
-        className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
         Voltar para o catálogo

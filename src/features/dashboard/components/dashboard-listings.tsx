@@ -335,7 +335,7 @@ export function DashboardListings({
                         page: 1,
                       })}
                       aria-current={isCurrent ? "page" : undefined}
-                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 ${
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 ${
                         isCurrent
                           ? "border-primary bg-primary-muted text-primary"
                           : "border-border bg-card text-muted-foreground hover:bg-accent"
@@ -397,7 +397,7 @@ export function DashboardListings({
                   id="seller-listings-sort"
                   name="sort"
                   defaultValue={filters.sort}
-                  className="h-11 w-full min-w-44 appearance-none rounded-md border border-input bg-background pr-3 pl-9 text-sm text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="h-11 w-full min-w-44 appearance-none rounded-md border border-input bg-background pr-3 pl-9 text-sm text-foreground outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   <option value="recent">Mais recentes</option>
                   <option value="price_asc">Menor preço</option>

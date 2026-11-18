@@ -62,7 +62,7 @@ export function NextStepPreviewCard() {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showPassword ? (
@@ -93,7 +93,7 @@ export function NextStepPreviewCard() {
               <button
                 type="button"
                 onClick={() => setShowConfirm((prev) => !prev)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 aria-label={showConfirm ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showConfirm ? (
@@ -103,7 +103,7 @@ export function NextStepPreviewCard() {
                 )}
               </button>
               {passwordsMatch ? (
-                <span className="absolute right-10 top-1/2 -translate-y-1/2 text-[#3B7668]">
+                <span className="absolute right-10 top-1/2 -translate-y-1/2 text-success-strong">
                   <Check aria-hidden="true" className="size-4" />
                 </span>
               ) : null}

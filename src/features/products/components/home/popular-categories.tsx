@@ -32,7 +32,7 @@ export function PopularCategories({ categories }: PopularCategoriesProps) {
         action={
           <Link
             href="/products"
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             Ver catálogo completo
             <ArrowRight aria-hidden="true" className="size-4" />
@@ -49,7 +49,7 @@ export function PopularCategories({ categories }: PopularCategoriesProps) {
               <li key={category.id}>
                 <Link
                   href={category.href}
-                  className="group flex h-full flex-col items-start gap-3 rounded-xl border border-border bg-card p-4 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="group flex h-full flex-col items-start gap-3 rounded-xl border border-border bg-card p-4 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-card-hover focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   <span
                     aria-hidden="true"

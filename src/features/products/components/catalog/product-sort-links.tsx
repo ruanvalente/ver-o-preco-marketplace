@@ -39,7 +39,7 @@ export function ProductSortLinks({ filters }: ProductSortLinksProps) {
             })}
             aria-current={isActive ? "true" : undefined}
             className={cn(
-              "inline-flex h-9 shrink-0 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+              "inline-flex h-9 shrink-0 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50",
               isActive
                 ? "bg-primary-muted text-primary"
                 : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",

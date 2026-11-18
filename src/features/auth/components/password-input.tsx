@@ -38,7 +38,7 @@ export function PasswordInput({
           aria-label={visible ? "Ocultar senha" : "Mostrar senha"}
           aria-controls={id}
           aria-pressed={visible}
-          className="inline-flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-surface-container hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-surface-container hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           {visible ? (
             <EyeOff aria-hidden="true" className="size-4" />

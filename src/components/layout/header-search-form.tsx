@@ -43,7 +43,7 @@ export function HeaderSearchForm({
         type="search"
         autoComplete="off"
         placeholder="Buscar no Ver-o-Preço"
-        className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+        className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-hidden placeholder:text-muted-foreground"
       />
 
       <Button

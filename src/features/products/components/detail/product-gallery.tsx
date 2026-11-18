@@ -65,7 +65,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
                   aria-label={`Ver imagem ${index + 1} de ${images.length}`}
                   aria-pressed={isActive}
                   className={cn(
-                    "relative size-16 overflow-hidden rounded-lg border-2 bg-muted transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:size-20",
+                    "relative size-16 overflow-hidden rounded-lg border-2 bg-muted transition-colors focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:size-20",
                     isActive
                       ? "border-primary"
                       : "border-transparent hover:border-border",

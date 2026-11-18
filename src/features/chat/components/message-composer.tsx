@@ -244,7 +244,7 @@ export function MessageComposer({
           aria-describedby={`message-hint-${conversationId}`}
           placeholder="Escreva sua mensagem"
           disabled={isSending}
-          className="max-h-32 min-h-11 flex-1 resize-y rounded-lg border bg-background px-3 py-2.5 text-base text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60 sm:text-sm"
+          className="max-h-32 min-h-11 flex-1 resize-y rounded-lg border bg-background px-3 py-2.5 text-base text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60 sm:text-sm"
           onChange={(event) => {
             handleTextChange(event.currentTarget.value)
             event.currentTarget.style.height = "auto"

@@ -14,11 +14,11 @@ export function SellCtaBanner() {
   return (
     <section
       aria-labelledby="vender-title"
-      className="overflow-hidden rounded-2xl bg-[linear-gradient(135deg,var(--secondary-strong)_0%,var(--primary-strong)_100%)] text-secondary-foreground shadow-card"
+      className="overflow-hidden rounded-2xl bg-linear-to-br from-secondary-strong to-primary-strong text-secondary-foreground shadow-card"
     >
       <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-12">
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-label-sm font-medium text-secondary-foreground">
+          <p className="inline-flex items-center gap-2 rounded-full bg-on-secondary/10 px-3 py-1 text-label-sm font-medium text-secondary-foreground">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-success" />
             Anunciar é grátis
           </p>
@@ -58,7 +58,7 @@ export function SellCtaBanner() {
             return (
               <li
                 key={step.title}
-                className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
+                className="flex items-start gap-3 rounded-xl border border-on-secondary/10 bg-on-secondary/5 p-4 backdrop-blur-sm"
               >
                 <span
                   aria-hidden="true"

@@ -13,7 +13,7 @@ export function LandingHeader() {
         <Link
           href="/"
           aria-label="Ver-o-Preço — página inicial"
-          className="rounded-md focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="rounded-md focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <BrandLogo />
         </Link>
@@ -26,7 +26,7 @@ export function LandingHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               {item.label}
             </a>

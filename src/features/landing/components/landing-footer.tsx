@@ -32,7 +32,7 @@ export function LandingFooter() {
                   <li key={`${column.title}-${link.label}`}>
                     <Link
                       href={link.href}
-                      className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     >
                       {link.label}
                     </Link>
@@ -53,7 +53,7 @@ export function LandingFooter() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   {link.label}
                 </Link>

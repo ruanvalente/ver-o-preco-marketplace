@@ -62,7 +62,7 @@ const INITIAL_VALUES: RegistrationValues = {
 const PASSWORD_REQUIREMENTS_ID = "password-requirements"
 
 const LINK_CLASS =
-  "rounded-sm font-medium text-primary underline-offset-4 transition-colors hover:text-primary-hover hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+  "rounded-sm font-medium text-primary underline-offset-4 transition-colors hover:text-primary-hover hover:underline focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
 
 async function submitRegistration(
   previousState: AuthActionState,

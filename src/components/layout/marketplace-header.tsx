@@ -32,7 +32,7 @@ export function MarketplaceHeader() {
           <Link
             href="/"
             aria-label="Ver-o-Preço — página inicial"
-            className="shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="shrink-0 rounded-md focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <BrandLogo />
           </Link>

@@ -18,7 +18,7 @@ export function TrustSection() {
         action={
           <Link
             href="/about"
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-muted focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             Sobre o Ver-o-Preço
             <ArrowRight aria-hidden="true" className="size-4" />

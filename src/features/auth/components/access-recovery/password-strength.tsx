@@ -26,9 +26,9 @@ export function PasswordStrength({ value }: PasswordStrengthProps) {
           className={cn(
             "font-medium",
             strength.level >= 3
-              ? "text-[#3B7668]"
+              ? "text-success-strong"
               : strength.level === 2
-                ? "text-amber-600"
+                ? "text-warning"
                 : "text-muted-foreground"
           )}
         >
@@ -43,9 +43,9 @@ export function PasswordStrength({ value }: PasswordStrengthProps) {
               "h-1.5 rounded-full",
               strength.level >= step
                 ? strength.level >= 3
-                  ? "bg-[#3B7668]"
+                  ? "bg-success-strong"
                   : strength.level === 2
-                    ? "bg-amber-500"
+                    ? "bg-warning"
                     : "bg-muted-foreground/60"
                 : "bg-border"
             )}
