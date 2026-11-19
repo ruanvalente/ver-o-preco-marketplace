@@ -126,4 +126,89 @@ describe("ChatHeaderNotifications", () => {
 
     consoleError.mockRestore()
   })
+
+  it("exibe rótulo e contador inline na apresentação usada pelo menu mobile", () => {
+    render(
+      <ChatHeaderNotifications
+        initialCount={2}
+        presentation="inline"
+        ariaLabel="Chat"
+      />,
+    )
+
+    expect(
+      screen.getByRole("link", {
+        name: "Chat, 2 conversas com novas mensagens",
+      }),
+    ).toHaveAttribute("href", "/messages")
+    expect(screen.getByText("Chat")).toBeInTheDocument()
+    expect(screen.getByText("2")).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText("2 conversas com nova mensagem"),
+    ).not.toBeInTheDocument()
+  })
+
+  it("não exibe número na apresentação inline quando não há mensagens não lidas", () => {
+    render(
+      <ChatHeaderNotifications
+        initialCount={0}
+        presentation="inline"
+        ariaLabel="Chat"
+      />,
+    )
+
+    expect(screen.getByRole("link", { name: "Chat" })).toBeInTheDocument()
+    expect(screen.queryByText("0")).not.toBeInTheDocument()
+  })
+
+  it("informa quando a contagem inline está indisponível", () => {
+    render(
+      <ChatHeaderNotifications
+        initialCount={null}
+        presentation="inline"
+        ariaLabel="Chat"
+      />,
+    )
+
+    expect(
+      screen.getByRole("link", { name: "Chat, contagem indisponível" }),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/\d/)).not.toBeInTheDocument()
+  })
+
+  it("mantém a atualização em tempo real na apresentação inline", async () => {
+    render(
+      <ChatHeaderNotifications
+        initialCount={0}
+        presentation="inline"
+        ariaLabel="Chat"
+      />,
+    )
+
+    await act(async () => {
+      mocks.onStatus?.("SUBSCRIBED")
+    })
+
+    await waitFor(() => {
+      expect(mocks.rpc).toHaveBeenCalledTimes(1)
+    })
+
+    mocks.rpc.mockResolvedValue({
+      data: [{ unread_count: 2 }, { unread_count: 1 }],
+      error: null,
+    })
+
+    act(() => {
+      mocks.callbacks[0]?.()
+    })
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("link", {
+          name: "Chat, 2 conversas com novas mensagens",
+        }),
+      ).toBeInTheDocument()
+    })
+    expect(screen.getByText("2")).toBeInTheDocument()
+  })
 })
