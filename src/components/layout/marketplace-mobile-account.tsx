@@ -68,11 +68,12 @@ export async function MarketplaceMobileAccount() {
         <SheetClose asChild>
           <ChatHeaderNotifications
             initialCount={unreadConversations}
+            presentation="inline"
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "flex h-11 w-full items-center justify-center gap-2 rounded-full",
+              "relative h-11 w-full rounded-full",
             )}
-            ariaLabel="Mensagens"
+            ariaLabel="Chat"
           />
         </SheetClose>
         <SheetClose asChild>
