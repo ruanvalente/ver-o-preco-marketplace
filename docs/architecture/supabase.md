@@ -386,6 +386,14 @@ participates in a conversation for that product. This breaks the recursive RLS
 dependency while preserving participant-only access to inactive listing
 context; it does not grant users direct table access.
 
+Chat Server Actions (`chat.actions.ts`) repeat the participation check on the
+server through `is_conversation_participant` before reading or writing
+messages. It is a defense-in-depth check on top of RLS: the RPC reads
+`auth.uid()` from the session and fails closed when the conversation is
+someone else's, missing, or when the lookup is unavailable. The conversation
+page keeps using `getConversation` for access control, so no extra RPC runs on
+page load.
+
 ## 13. Message Model
 
 Suggested fields:
@@ -589,6 +597,7 @@ Before considering Supabase integration complete:
 [ ] Favorites protected
 [ ] Conversations protected
 [ ] Messages protected
+[ ] Chat actions re-check conversation participation
 [ ] Storage policies configured
 [ ] Chat images protected
 [ ] Service role key not exposed

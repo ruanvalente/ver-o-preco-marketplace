@@ -219,6 +219,41 @@ function mapMessage(
   };
 }
 
+type ParticipationResult =
+  | { ok: true }
+  | { ok: false; reason: "forbidden" | "unavailable" };
+
+/**
+ * Double-check de participação no servidor, independente da RLS.
+ *
+ * A RPC lê `auth.uid()` da sessão, então um `conversation_id` enviado pelo
+ * cliente nunca autoriza o acesso. Falhas de leitura da sessão ou do banco
+ * negam a operação, em vez de liberá-la.
+ */
+export async function checkConversationParticipation(
+  conversationId: string,
+): Promise<ParticipationResult> {
+  if (!isConversationId(conversationId)) {
+    return { ok: false, reason: "forbidden" };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("is_conversation_participant", {
+    p_conversation_id: conversationId,
+  });
+
+  if (error) {
+    console.error("[chat] is_conversation_participant", error);
+    return { ok: false, reason: "unavailable" };
+  }
+
+  if (data !== true) {
+    return { ok: false, reason: "forbidden" };
+  }
+
+  return { ok: true };
+}
+
 async function addSignedImageUrls(
   supabase: Awaited<ReturnType<typeof createClient>>,
   messages: MessageRow[],
