@@ -4,7 +4,7 @@ Issues e specs deste repo ficam no GitHub Issues. Use o `gh` CLI para todas as o
 
 ## Convenções
 
-- **Criar issue**: `gh issue create --title "..." --body "..."` (use heredoc para corpos com múltiplas linhas). Issues de bug criadas pelo fluxo de aprovação devem ter título e corpo em inglês — ver `docs/ai/workflow.md` (gates de aprovação do usuário).
+- **Criar issue**: `gh issue create --title "..." --body "..."` (use heredoc para corpos com múltiplas linhas). Issue and PR titles and bodies must always be written in English — see `docs/ai/workflow.md` (user-approval gates).
 - **Ler issue**: `gh issue view <numero> --json number,title,body,labels,comments`.
 - **Listar issues**: `gh issue list --state open --json number,title,labels --jq '.[] | {number, title, labels: [.labels[].name]}'`, com filtros `--label` e `--state` conforme necessário.
 - **Sub-issue**: `gh issue create --parent <pai> ...` ou `gh issue edit <pai> --add-sub-issue <filha>` (`gh` 2.94+). Em versões antigas, use `gh api --method POST repos/<owner>/<repo>/issues/<pai>/sub_issues -F sub_issue_id=<id-do-banco-da-filha>`. Sem sub-issues, coloque `Part of #<pai>` no topo da issue filha.
@@ -13,7 +13,7 @@ Issues e specs deste repo ficam no GitHub Issues. Use o `gh` CLI para todas as o
 - **Comentar**: `gh issue comment <numero> --body "..."`.
 - **Labels**: `gh issue edit <numero> --add-label "..."` / `--remove-label "..."`.
 - **Criar label ausente**: só quando nenhuma label existente representar o trabalho e após aprovação explícita; use `gh label create "<nome>" --description "<descrição>" --color "<hex>"` e confirme com `gh label list`. Não crie labels redundantes ou "por precaução".
-- **Assinatura e autoria**: obtenha a identidade real com `gh api user --jq '{login,name,email}'`; use o `login` retornado em `--add-assignee` e o par `name <email>` no trailer `Signed-off-by:` de commits, corpos de PR, comentários e issues. Nunca invente nome, login ou e-mail.
+- **Authorship and sign-off**: get the GitHub login with `gh api user --jq '.login'`; use it with `--assignee` and as the only signature (`@login`) in issue bodies, PR bodies, comments and commit messages. Do not include a name or e-mail, and never invent a login.
 - **Fechar**: publique a explicação com `gh issue comment <numero> --body "..."` e depois `gh issue close <numero>`.
 
 O repo é inferido de `git remote -v`; `gh` resolve isso automaticamente dentro do clone.
