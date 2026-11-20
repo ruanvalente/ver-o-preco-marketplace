@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CHAT_SIGNED_URL_TTL_SECONDS } from "../constants";
 import {
+  checkConversationParticipation,
   getConversationMessages,
   getSellerChatMetrics,
   sendChatMessage,
@@ -302,5 +303,48 @@ describe("getSellerChatMetrics", () => {
       ok: false,
       error: "Não foi possível carregar suas conversas.",
     });
+  });
+});
+
+describe("checkConversationParticipation", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("denies an invalid id without querying the database", async () => {
+    const result = await checkConversationParticipation("not-a-uuid");
+
+    expect(result).toEqual({ ok: false, reason: "forbidden" });
+    expect(mocks.createClient).not.toHaveBeenCalled();
+  });
+
+  it("allows a participant confirmed by the RPC", async () => {
+    mocks.createClient.mockReturnValue(createMockClient([]));
+    rpcMock.mockResolvedValue({ data: true, error: null });
+
+    const result = await checkConversationParticipation(conversationId);
+
+    expect(result).toEqual({ ok: true });
+    expect(rpcMock).toHaveBeenCalledWith("is_conversation_participant", {
+      p_conversation_id: conversationId,
+    });
+  });
+
+  it("denies a non-participant", async () => {
+    mocks.createClient.mockReturnValue(createMockClient([]));
+    rpcMock.mockResolvedValue({ data: false, error: null });
+
+    const result = await checkConversationParticipation(conversationId);
+
+    expect(result).toEqual({ ok: false, reason: "forbidden" });
+  });
+
+  it("fails closed when the RPC is unavailable", async () => {
+    mocks.createClient.mockReturnValue(createMockClient([]));
+    rpcMock.mockResolvedValue({ data: null, error: { message: "boom" } });
+
+    const result = await checkConversationParticipation(conversationId);
+
+    expect(result).toEqual({ ok: false, reason: "unavailable" });
   });
 });
