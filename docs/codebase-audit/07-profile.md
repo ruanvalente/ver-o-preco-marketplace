@@ -60,3 +60,7 @@ Módulo `features/profile/` com serviços (`profile.service.ts`, `profile.action
 
 ## Ordem de implementação
 1. Remover imports.
+
+## Resultado da execução (Issue #22 — Phase 07)
+
+> **Atualização (Issue #22 — Phase 07):** os três warnings de lint foram resolvidos. `catch (error)` sem uso virou `catch {` em `profile-avatar.tsx` e em `updateProfileAction` (`profile.actions.ts`); o import não usado de `mapAuthError` foi removido de `profile.service.ts`. O binding `error` de `updateAvatarAction` foi mantido porque alimenta o `console.error`. Nenhuma mudança de comportamento, RLS ou Storage; `profile.schemas.test.ts` permanece como teste de regressão da feature.

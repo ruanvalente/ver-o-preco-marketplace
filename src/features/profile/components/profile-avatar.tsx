@@ -72,7 +72,7 @@ export function ProfileAvatar({
       } else {
         toast.error(result.error || "Erro ao fazer upload da imagem.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro ao fazer upload da imagem.");
     } finally {
       setIsUploading(false);
