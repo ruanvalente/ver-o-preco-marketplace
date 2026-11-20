@@ -12,6 +12,11 @@ type ChatHeaderNotificationsProps = {
   initialCount?: number | null
   className?: string
   ariaLabel?: string
+  /**
+   * `icon` mantém o badge de canto usado no header; `inline` exibe rótulo e
+   * contador na mesma linha, como os itens do menu mobile (Meus favoritos 2).
+   */
+  presentation?: "icon" | "inline"
 }
 
 async function getUnreadConversationCount(): Promise<number | null> {
@@ -51,6 +56,7 @@ export function ChatHeaderNotifications({
   initialCount = 0,
   className,
   ariaLabel = "Mensagens",
+  presentation = "icon",
 }: ChatHeaderNotificationsProps) {
   const [count, setCount] = useState<number | null>(initialCount)
   const instanceId = useId().replace(/:/g, "")
@@ -131,20 +137,34 @@ export function ChatHeaderNotifications({
     }
   }, [instanceId])
 
+  const accessibleLabel =
+    count === null
+      ? `${ariaLabel}, contagem indisponível`
+      : count > 0
+        ? presentation === "inline"
+          ? `${ariaLabel}, ${count} ${count === 1 ? "conversa com nova mensagem" : "conversas com novas mensagens"}`
+          : `${count} conversas com novas mensagens`
+        : ariaLabel
+
   return (
-    <Link
-      href="/messages"
-      aria-label={
-        count === null
-          ? `${ariaLabel}, contagem indisponível`
-          : count > 0
-            ? `${count} conversas com novas mensagens`
-            : ariaLabel
-      }
-      className={className}
-    >
+    <Link href="/messages" aria-label={accessibleLabel} className={className}>
       <MessageCircle aria-hidden="true" className="size-4" />
-      {count !== null ? <ChatNotificationBadge count={count} /> : null}
+      {presentation === "inline" ? (
+        <>
+          {ariaLabel}
+          {count !== null && count > 0 ? (
+            <span
+              aria-hidden="true"
+              className="ml-1 rounded-full bg-primary-muted px-2 py-0.5 text-xs text-primary"
+            >
+              {count}
+            </span>
+          ) : null}
+        </>
+      ) : null}
+      {presentation === "icon" && count !== null ? (
+        <ChatNotificationBadge count={count} />
+      ) : null}
     </Link>
   )
 }

@@ -148,6 +148,16 @@ publicly readable. `category_listing_counts` is a `security_invoker` view that
 exposes active product counts per category, so the catalog never fetches every
 product to render a badge.
 
+Catalog reads use explicit column lists defined in
+`features/products/utils/product-mappers.ts`. Public reads are tagged
+`products:list` and invalidated by listing Server Actions; favorite state is
+read per request in dynamic components and does not share this cache. See
+[issue #17 plan](../plans/013-issue-17-catalog-audit.md). The partial
+`(city, created_at DESC) WHERE status = 'active'` index added by
+`migrations/0011_products_catalog_index.sql` supports city filtering with
+newest-first ordering; the home query is covered by the existing
+`products_active_created_at_idx`.
+
 ## 7. Product Status
 
 ```text
@@ -212,6 +222,18 @@ psql "$DATABASE_URL" -f migrations/0008_chat_rls_recursion_fix.sql
 
 # Create and backfill profiles for Supabase Auth users (after 0008).
 psql "$DATABASE_URL" -f migrations/0009_profile_auth_sync.sql
+
+# Chat signed URL authorization RPC (after 0009).
+psql "$DATABASE_URL" -f migrations/0010_chat_signed_url_authorization.sql
+
+# Composite catalog index for city filters plus newest-first ordering (after 0003).
+psql "$DATABASE_URL" -f migrations/0011_products_catalog_index.sql
+
+# Seller chat counters in a single round-trip (after 0007).
+psql "$DATABASE_URL" -f migrations/0012_seller_chat_metrics.sql
+
+# Full-text search: generated tsvector, GIN index, synonyms and RPCs (after 0012).
+psql "$DATABASE_URL" -f migrations/0013_full_text_search.sql
 
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
@@ -354,6 +376,11 @@ Participants can still read their product context after its status changes.
 The `get_chat_conversations` function returns a bounded, participant-scoped
 inbox summary including the latest message and unread count.
 
+`get_seller_chat_metrics` in `migrations/0012_seller_chat_metrics.sql` returns
+the seller's conversation, received-message and unread-message counters in a
+single call. It runs as `SECURITY INVOKER`, so RLS stays in force, and checks
+`p_seller_id` against `auth.uid()` inside the function as defense in depth.
+
 `migrations/0008_chat_rls_recursion_fix.sql` replaces the product participant
 policy's inline query of `conversations` with a narrowly scoped boolean helper.
 The helper is owned by `postgres`, runs with a fixed `search_path` and
@@ -361,6 +388,14 @@ The helper is owned by `postgres`, runs with a fixed `search_path` and
 participates in a conversation for that product. This breaks the recursive RLS
 dependency while preserving participant-only access to inactive listing
 context; it does not grant users direct table access.
+
+Chat Server Actions (`chat.actions.ts`) repeat the participation check on the
+server through `is_conversation_participant` before reading or writing
+messages. It is a defense-in-depth check on top of RLS: the RPC reads
+`auth.uid()` from the session and fails closed when the conversation is
+someone else's, missing, or when the lookup is unavailable. The conversation
+page keeps using `getConversation` for access control, so no extra RPC runs on
+page load.
 
 ## 13. Message Model
 
@@ -497,27 +532,26 @@ Review query plans as the dataset grows.
 
 ## 20. Search
 
-The initial implementation can use PostgreSQL capabilities appropriate
-to the MVP.
+Search uses native PostgreSQL full-text search (no vector/embeddings pipeline):
 
-Search should support:
-
-- Product title.
-- Description where appropriate.
-- Category.
-- Price.
-- Location.
-
-Search parameters should preferably be represented in the URL.
+- `products.search_vector` is generated from title (weight A) and description
+  (weight C) with `unaccent` and the `portuguese` configuration, backed by a GIN
+  index.
+- `search_products` and `search_owner_listings` are `SECURITY INVOKER` RPCs;
+  they apply RLS, weight title above description, expand curated aliases from
+  `product_search_synonyms` and fall back to `pg_trgm` similarity only when no
+  FTS match exists.
+- Search parameters stay in the URL. With a term, `sort=relevance` is the
+  default; without one, `sort=recent` remains the default.
 
 Example:
 
 ```text
-/products?q=iphone&category=electronics&sort=recent
+/products?q=iphone&category=celulares&sort=relevance
 ```
 
-For larger datasets, evaluate PostgreSQL full-text search or a dedicated
-search solution.
+For a much larger corpus, re-evaluate relevance tuning or a dedicated search
+solution. Do not add embeddings without a semantic-use case.
 
 ## 21. Pagination
 
@@ -565,6 +599,7 @@ Before considering Supabase integration complete:
 [ ] Favorites protected
 [ ] Conversations protected
 [ ] Messages protected
+[ ] Chat actions re-check conversation participation
 [ ] Storage policies configured
 [ ] Chat images protected
 [ ] Service role key not exposed

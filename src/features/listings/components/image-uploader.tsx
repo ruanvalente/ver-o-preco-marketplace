@@ -126,7 +126,8 @@ export function ImageUploader({
         <div role="status" aria-live="polite" className="space-y-2">
           <p className="text-sm text-muted-foreground">
             Enviando {uploadProgress.completed} de {uploadProgress.total}{" "}
-            {uploadProgress.total === 1 ? "imagem" : "imagens"}…
+            {uploadProgress.total === 1 ? "imagem" : "imagens"}… (
+            {progressPercent}%)
           </p>
           <div
             role="progressbar"
@@ -152,7 +153,7 @@ export function ImageUploader({
             <button
               type="button"
               onClick={onClearError}
-              className="mt-1 rounded-sm text-sm font-semibold underline underline-offset-4 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="mt-1 rounded-sm text-sm font-semibold underline underline-offset-4 focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               Fechar aviso
             </button>
@@ -210,7 +211,7 @@ export function ImageUploader({
                   {image.status === "error" ? (
                     <div
                       role="alert"
-                      className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-destructive/90 px-3 text-center text-sm font-medium text-white"
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-destructive/90 px-3 text-center text-sm font-medium text-destructive-foreground"
                     >
                       <AlertCircle aria-hidden="true" className="size-5" />
                       {image.error ?? "Falha no envio"}

@@ -72,7 +72,7 @@ export function ConversationList({
         </p>
         <Link
           href="/products"
-          className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           Explorar anúncios
         </Link>
@@ -92,7 +92,7 @@ export function ConversationList({
             key={conversation.id}
             href={`/messages/${conversation.id}`}
             aria-current={selected ? "page" : undefined}
-            className={`flex min-h-[76px] items-center gap-3 px-3 py-3 transition-colors hover:bg-accent focus-visible:z-10 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50 ${
+            className={`flex min-h-[76px] items-center gap-3 px-3 py-3 transition-colors hover:bg-accent focus-visible:z-10 focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50 ${
               selected ? "bg-primary-muted/60" : "bg-card"
             }`}
           >

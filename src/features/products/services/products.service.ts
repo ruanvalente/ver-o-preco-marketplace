@@ -2,35 +2,25 @@ import { cacheLife, cacheTag } from "next/cache"
 
 import { getPublicSupabaseClient } from "@/lib/supabase/public"
 
-import type {
-  ProductCategorySummary,
-  ProductDetail,
-  ProductFilters,
-  ProductPage,
-  ProductSummary,
-  ServiceResult,
+import {
+  PRODUCTS_LIST_TAG,
+  type ProductCategorySummary,
+  type ProductDetail,
+  type ProductFilters,
+  type ProductPage,
+  type ProductSummary,
+  type ServiceResult,
 } from "../types/product.types"
 import { getLocationCities } from "../utils/catalog-options"
 import {
+  PRODUCT_SELECT,
+  isProductSearchRow,
   mapProductDetail,
+  mapProductSearchRow,
   mapProductSummary,
   type MapProductOptions,
   type ProductRow,
 } from "../utils/product-mappers"
-
-const PRODUCT_SELECT = `
-  id,
-  title,
-  description,
-  price,
-  condition,
-  city,
-  neighborhood,
-  created_at,
-  category:categories!products_category_id_fkey ( id, slug, name ),
-  seller:profiles!products_seller_id_fkey ( id, display_name, avatar_path, location ),
-  images:product_images ( id, storage_path, alt_text, sort_order, is_primary )
-`
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -66,22 +56,12 @@ function createMapperOptions(): MapProductOptions {
   }
 }
 
-/**
- * Sanitiza o termo de busca antes de montar o filtro `or` do PostgREST.
- *
- * Vírgulas e curingas são removidos para impedir que o texto digitado altere a
- * estrutura do filtro.
- */
-function sanitizeSearchTerm(value: string): string {
-  return value.replace(/[,%_()\\*]/g, " ").replace(/\s+/g, " ").trim()
-}
-
 export async function getProductCategories(): Promise<
   ServiceResult<ProductCategorySummary[]>
 > {
   "use cache"
   cacheLife("hours")
-  cacheTag("products")
+  cacheTag(PRODUCTS_LIST_TAG)
 
   try {
     const supabase = getPublicSupabaseClient()
@@ -115,7 +95,7 @@ export async function getProductCategories(): Promise<
 export async function getActiveProductCount(): Promise<ServiceResult<number>> {
   "use cache"
   cacheLife("minutes")
-  cacheTag("products")
+  cacheTag(PRODUCTS_LIST_TAG)
 
   try {
     const supabase = getPublicSupabaseClient()
@@ -139,13 +119,13 @@ export async function getRecentProducts(
 ): Promise<ServiceResult<ProductSummary[]>> {
   "use cache"
   cacheLife("minutes")
-  cacheTag("products")
+  cacheTag(PRODUCTS_LIST_TAG)
 
   try {
     const supabase = getPublicSupabaseClient()
     const { data, error } = await supabase
       .from("products")
-      .select(PRODUCT_SELECT)
+      .select<typeof PRODUCT_SELECT, ProductRow>(PRODUCT_SELECT)
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(Math.min(Math.max(limit, 1), 24))
@@ -158,9 +138,7 @@ export async function getRecentProducts(
 
     return {
       ok: true,
-      data: ((data ?? []) as unknown as ProductRow[]).map((row) =>
-        mapProductSummary(row, options),
-      ),
+      data: (data ?? []).map((row) => mapProductSummary(row, options)),
     }
   } catch (error) {
     return failure("getRecentProducts", error)
@@ -172,10 +150,64 @@ export async function getProducts(
 ): Promise<ServiceResult<ProductPage>> {
   "use cache"
   cacheLife("minutes")
-  cacheTag("products")
+  cacheTag(PRODUCTS_LIST_TAG)
 
   try {
     const supabase = getPublicSupabaseClient()
+    const from = (filters.page - 1) * filters.pageSize
+    const cities = getLocationCities(filters.location)
+
+    // Full-text search runs in the database: ranking, synonym expansion and
+    // the total count all come from the same RPC call.
+    if (filters.q.trim()) {
+      const { data, error } = await supabase.rpc("search_products", {
+        p_search_term: filters.q,
+        p_category_slug: filters.category,
+        p_min_price: filters.minPrice,
+        p_max_price: filters.maxPrice,
+        p_cities: cities,
+        p_condition: filters.condition,
+        p_limit: filters.pageSize,
+        p_offset: from,
+        p_sort: filters.sort,
+      })
+
+      if (error) {
+        return failure("getProducts search", error)
+      }
+
+      if (!Array.isArray(data)) {
+        return failure(
+          "getProducts search",
+          new Error("Resposta inesperada da busca"),
+        )
+      }
+
+      const rows = data.filter(isProductSearchRow)
+
+      if (rows.length !== data.length) {
+        return failure("getProducts search", new Error("Linhas de busca inválidas"))
+      }
+
+      const total = rows.length > 0 ? Number(rows[0].total_count ?? 0) : 0
+
+      if (!Number.isFinite(total)) {
+        return failure("getProducts search", new Error("Total de busca inválido"))
+      }
+
+      const options = createMapperOptions()
+
+      return {
+        ok: true,
+        data: {
+          items: rows.map((row) => mapProductSearchRow(row, options)),
+          total,
+          page: filters.page,
+          pageSize: filters.pageSize,
+          totalPages: Math.ceil(total / filters.pageSize),
+        },
+      }
+    }
 
     let categoryId: string | null = null
 
@@ -204,12 +236,13 @@ export async function getProducts(
       }
     }
 
-    const from = (filters.page - 1) * filters.pageSize
     const to = from + filters.pageSize - 1
 
     let query = supabase
       .from("products")
-      .select(PRODUCT_SELECT, { count: "exact" })
+      .select<typeof PRODUCT_SELECT, ProductRow>(PRODUCT_SELECT, {
+        count: "exact",
+      })
       .eq("status", "active")
 
     if (categoryId) {
@@ -228,18 +261,8 @@ export async function getProducts(
       query = query.lte("price", filters.maxPrice)
     }
 
-    const cities = getLocationCities(filters.location)
-
     if (cities && cities.length > 0) {
       query = query.in("city", cities)
-    }
-
-    const searchTerm = sanitizeSearchTerm(filters.q)
-
-    if (searchTerm) {
-      query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
-      )
     }
 
     switch (filters.sort) {
@@ -265,9 +288,7 @@ export async function getProducts(
     return {
       ok: true,
       data: {
-        items: ((data ?? []) as unknown as ProductRow[]).map((row) =>
-          mapProductSummary(row, options),
-        ),
+        items: (data ?? []).map((row) => mapProductSummary(row, options)),
         total,
         page: filters.page,
         pageSize: filters.pageSize,
@@ -284,7 +305,7 @@ export async function getProductById(
 ): Promise<ServiceResult<ProductDetail | null>> {
   "use cache"
   cacheLife("minutes")
-  cacheTag("products")
+  cacheTag(PRODUCTS_LIST_TAG)
 
   if (!UUID_PATTERN.test(id)) {
     return { ok: true, data: null }
@@ -294,7 +315,7 @@ export async function getProductById(
     const supabase = getPublicSupabaseClient()
     const { data, error } = await supabase
       .from("products")
-      .select(PRODUCT_SELECT)
+      .select<typeof PRODUCT_SELECT, ProductRow>(PRODUCT_SELECT)
       .eq("id", id)
       .eq("status", "active")
       .maybeSingle()
@@ -310,10 +331,7 @@ export async function getProductById(
 
     return {
       ok: true,
-      data: mapProductDetail(
-        data as unknown as ProductRow,
-        createMapperOptions(),
-      ),
+      data: mapProductDetail(data, createMapperOptions()),
     }
   } catch (error) {
     console.error("[products] getProductById", error)
@@ -328,7 +346,7 @@ export async function getRelatedProducts(
 ): Promise<ServiceResult<ProductSummary[]>> {
   "use cache"
   cacheLife("minutes")
-  cacheTag("products")
+  cacheTag(PRODUCTS_LIST_TAG)
 
   if (!categoryId || !UUID_PATTERN.test(categoryId)) {
     return { ok: true, data: [] }
@@ -338,7 +356,7 @@ export async function getRelatedProducts(
     const supabase = getPublicSupabaseClient()
     const { data, error } = await supabase
       .from("products")
-      .select(PRODUCT_SELECT)
+      .select<typeof PRODUCT_SELECT, ProductRow>(PRODUCT_SELECT)
       .eq("status", "active")
       .eq("category_id", categoryId)
       .neq("id", excludeProductId)
@@ -353,9 +371,7 @@ export async function getRelatedProducts(
 
     return {
       ok: true,
-      data: ((data ?? []) as unknown as ProductRow[]).map((row) =>
-        mapProductSummary(row, options),
-      ),
+      data: (data ?? []).map((row) => mapProductSummary(row, options)),
     }
   } catch (error) {
     return failure("getRelatedProducts", error)

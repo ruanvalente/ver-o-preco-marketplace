@@ -16,8 +16,10 @@ import type {
   ListingSummary,
 } from "../types/listing.types";
 import {
+  isOwnerSearchRow,
   mapListing,
   mapListingSummary,
+  mapOwnerSearchRow,
   type ListingRow,
   type MapListingOptions,
 } from "../utils/listing-mappers";
@@ -41,7 +43,7 @@ const LISTING_SELECT = `
 const LOAD_ERROR = "Não foi possível carregar o anúncio.";
 const SAVE_ERROR = "Não foi possível salvar o anúncio.";
 const IMAGE_ERROR = "Não foi possível salvar as imagens do anúncio.";
-const NOT_FOUND_ERROR =
+export const NOT_FOUND_ERROR =
   "Anúncio não encontrado ou sem permissão para editá-lo.";
 const PUBLISH_ERROR =
   "As alterações foram salvas, mas não foi possível publicar o anúncio.";
@@ -104,7 +106,7 @@ export async function getListingForOwner(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("products")
-      .select(LISTING_SELECT)
+      .select<typeof LISTING_SELECT, ListingRow>(LISTING_SELECT)
       .eq("id", listingId)
       .eq("seller_id", userId)
       .maybeSingle();
@@ -119,13 +121,46 @@ export async function getListingForOwner(
 
     return {
       ok: true,
-      data: mapListing(
-        data as unknown as ListingRow,
-        createMapperOptions(supabase),
-      ),
+      data: mapListing(data, createMapperOptions(supabase)),
     };
   } catch (error) {
     return failure("getListingForOwner", error);
+  }
+}
+
+/**
+ * Checagem magra de propriedade para Server Actions.
+ *
+ * Confere apenas a existência da linha e a titularidade (`seller_id`), sem
+ * carregar imagens, categoria ou URLs assinadas. Assim como
+ * `getListingForOwner`, devolve `false` para UUID malformado, anúncio
+ * inexistente ou anúncio de outro usuário, sem distinguir os casos
+ * (anti-enumeração).
+ */
+export async function isListingOwnedBy(
+  userId: string,
+  listingId: string,
+): Promise<ListingServiceResult<boolean>> {
+  if (!isListingId(listingId)) {
+    return { ok: true, data: false };
+  }
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("id")
+      .eq("id", listingId)
+      .eq("seller_id", userId)
+      .maybeSingle();
+
+    if (error) {
+      return failure("isListingOwnedBy", error);
+    }
+
+    return { ok: true, data: data !== null };
+  } catch (error) {
+    return failure("isListingOwnedBy", error);
   }
 }
 
@@ -144,7 +179,7 @@ export async function getListingsForOwner(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("products")
-      .select(LISTING_SELECT)
+      .select<typeof LISTING_SELECT, ListingRow>(LISTING_SELECT)
       .eq("seller_id", userId)
       .neq("status", "removed")
       .order("updated_at", { ascending: false })
@@ -158,9 +193,7 @@ export async function getListingsForOwner(
 
     return {
       ok: true,
-      data: ((data ?? []) as unknown as ListingRow[]).map((row) =>
-        mapListingSummary(row, options),
-      ),
+      data: (data ?? []).map((row) => mapListingSummary(row, options)),
     };
   } catch (error) {
     return failure("getListingsForOwner", error);
@@ -205,21 +238,6 @@ export async function getOwnerListingDashboard(
   try {
     const supabase = await createClient();
     const search = sanitizeListingSearch(filters.query);
-    const categoryIds: string[] = [];
-
-    if (search) {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("id")
-        .ilike("name", `%${search}%`)
-        .limit(100);
-
-      if (error) {
-        return failure("getOwnerListingDashboard categories", error);
-      }
-
-      categoryIds.push(...(data ?? []).map((category) => category.id));
-    }
 
     const [allCount, draftCount, activeCount, pausedCount, soldCount] =
       await Promise.all([
@@ -242,25 +260,115 @@ export async function getOwnerListingDashboard(
       return failure("getOwnerListingDashboard counts", failedCount.error);
     }
 
+    const counts = {
+      all: allCount.count ?? 0,
+      draft: draftCount.count ?? 0,
+      active: activeCount.count ?? 0,
+      paused: pausedCount.count ?? 0,
+      sold: soldCount.count ?? 0,
+    };
+
+    const pageSize = Math.min(Math.max(filters.pageSize, 1), 24);
+    const requestedPage = Math.max(filters.page, 1);
+    const mapperOptions = createMapperOptions(supabase);
+
+    if (search) {
+      const rpcArgs = {
+        p_search_term: search,
+        p_status: filters.status,
+        p_sort: filters.sort,
+        p_limit: pageSize,
+      };
+
+      const readSearchPage = async (offset: number) => {
+        const { data, error } = await supabase.rpc("search_owner_listings", {
+          ...rpcArgs,
+          p_offset: offset,
+        });
+
+        if (error) {
+          return { error } as const;
+        }
+
+        if (!Array.isArray(data)) {
+          return { error: new Error("Resposta inesperada da busca") } as const;
+        }
+
+        const rows = data.filter(isOwnerSearchRow);
+
+        if (rows.length !== data.length) {
+          return { error: new Error("Linhas de busca inválidas") } as const;
+        }
+
+        return { rows } as const;
+      };
+
+      const first = await readSearchPage((requestedPage - 1) * pageSize);
+
+      if ("error" in first) {
+        return failure("getOwnerListingDashboard search", first.error);
+      }
+
+      const readTotal = (rows: typeof first.rows) => {
+        const value = rows.length > 0 ? Number(rows[0].total_count ?? 0) : 0;
+        return Number.isFinite(value) ? value : null;
+      };
+
+      let total = readTotal(first.rows);
+
+      if (total === null) {
+        return failure("getOwnerListingDashboard search", new Error("Total de busca inválido"));
+      }
+
+      let totalPages = Math.max(1, Math.ceil(total / pageSize));
+      let page = Math.min(requestedPage, totalPages);
+      let pageRows = first.rows;
+
+      if (page !== requestedPage) {
+        const retry = await readSearchPage((page - 1) * pageSize);
+
+        if ("error" in retry) {
+          return failure("getOwnerListingDashboard page", retry.error);
+        }
+
+        pageRows = retry.rows;
+        const retryTotal = readTotal(retry.rows);
+
+        if (retryTotal === null) {
+          return failure("getOwnerListingDashboard page", new Error("Total de busca inválido"));
+        }
+
+        total = retryTotal;
+        totalPages = Math.max(1, Math.ceil(total / pageSize));
+        page = Math.min(page, totalPages);
+      }
+
+      return {
+        ok: true,
+        data: {
+          counts,
+          page: {
+            items: pageRows.map((row) => mapOwnerSearchRow(row, mapperOptions)),
+            total,
+            page,
+            pageSize,
+            totalPages,
+          },
+        },
+      };
+    }
+
     const makeListingQuery = () => {
       let query = supabase
         .from("products")
-        .select(LISTING_SELECT, { count: "exact" })
+        .select<typeof LISTING_SELECT, ListingRow>(LISTING_SELECT, {
+          count: "exact",
+        })
         .eq("seller_id", userId)
         .neq("status", "removed");
 
       if (filters.status !== "all") {
         query = query.eq("status", filters.status);
-      }
-
-      if (search) {
-        const conditions = [
-          `title.ilike.%${search}%`,
-          `city.ilike.%${search}%`,
-          `neighborhood.ilike.%${search}%`,
-          ...categoryIds.map((id) => `category_id.eq.${id}`),
-        ];
-        query = query.or(conditions.join(","));
       }
 
       if (filters.sort === "price_asc") {
@@ -278,8 +386,6 @@ export async function getOwnerListingDashboard(
       return query.order("created_at", { ascending: false });
     };
 
-    const pageSize = Math.min(Math.max(filters.pageSize, 1), 24);
-    const requestedPage = Math.max(filters.page, 1);
     const firstResult = await makeListingQuery().range(
       (requestedPage - 1) * pageSize,
       requestedPage * pageSize - 1,
@@ -304,21 +410,13 @@ export async function getOwnerListingDashboard(
       return failure("getOwnerListingDashboard page", pageResult.error);
     }
 
-    const mapperOptions = createMapperOptions(supabase);
-
     return {
       ok: true,
       data: {
-        counts: {
-          all: allCount.count ?? 0,
-          draft: draftCount.count ?? 0,
-          active: activeCount.count ?? 0,
-          paused: pausedCount.count ?? 0,
-          sold: soldCount.count ?? 0,
-        },
+        counts,
         page: {
-          items: ((pageResult.data ?? []) as unknown as ListingRow[]).map(
-            (row) => mapListingSummary(row, mapperOptions),
+          items: (pageResult.data ?? []).map((row) =>
+            mapListingSummary(row, mapperOptions),
           ),
           total,
           page,

@@ -85,7 +85,7 @@ const FIELD_ORDER = [
 
 const INPUT_CLASS = "h-11 rounded-lg bg-surface-container-low"
 const SELECT_CLASS =
-  "h-11 w-full appearance-none rounded-lg border border-input bg-surface-container-low px-3 pr-10 text-base text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
+  "h-11 w-full appearance-none rounded-lg border border-input bg-surface-container-low px-3 pr-10 text-base text-foreground shadow-xs outline-hidden transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
 
 function createInitialValues(listing?: Listing): ListingFormValues {
   if (!listing) {
@@ -335,7 +335,7 @@ export function ListingForm({
     <div className="mx-auto w-full max-w-3xl">
       <Link
         href="/listings"
-        className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
         Meus anúncios

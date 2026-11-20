@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  isOwnerSearchRow,
   mapListing,
   mapListingSummary,
+  mapOwnerSearchRow,
   type ListingRow,
   type MapListingOptions,
+  type OwnerSearchRow,
 } from "../utils/listing-mappers"
 import { categoryId, listingId, sellerId } from "./fixtures"
 
@@ -51,7 +54,7 @@ const row: ListingRow = {
 }
 
 describe("mapListing", () => {
-  it("mapeia a linha do Supabase para o modelo canônico", () => {
+  it("maps a Supabase row to the canonical model", () => {
     const listing = mapListing(row, options)
 
     expect(listing.id).toBe(listingId)
@@ -72,7 +75,7 @@ describe("mapListing", () => {
     })
   })
 
-  it("ordena as imagens por sort_order e resolve a URL", () => {
+  it("sorts images by sort_order and resolves the URL", () => {
     const listing = mapListing(row, options)
 
     expect(listing.images.map((image) => image.id)).toEqual([
@@ -85,14 +88,14 @@ describe("mapListing", () => {
     )
   })
 
-  it("usa o título como texto alternativo quando a imagem não tem descrição", () => {
+  it("uses the title as alt text when the image has no description", () => {
     const listing = mapListing(row, options)
 
     expect(listing.images[1].alt).toBe("iPhone 15 Pro")
     expect(listing.images[0].alt).toBe("Foto principal")
   })
 
-  it("trata relações ausentes e valores desconhecidos", () => {
+  it("handles missing relations and unknown values", () => {
     const listing = mapListing(
       {
         ...row,
@@ -116,7 +119,7 @@ describe("mapListing", () => {
     expect(listing.images).toEqual([])
   })
 
-  it("aceita relações retornadas como array", () => {
+  it("accepts relations returned as an array", () => {
     const listing = mapListing(
       {
         ...row,
@@ -130,14 +133,14 @@ describe("mapListing", () => {
 })
 
 describe("mapListingSummary", () => {
-  it("usa a imagem marcada como principal", () => {
+  it("uses the image marked as primary", () => {
     const summary = mapListingSummary(row, options)
 
     expect(summary.image?.id).toBe("image-1")
     expect(summary.image?.isPrimary).toBe(true)
   })
 
-  it("usa a primeira imagem quando nenhuma é marcada como principal", () => {
+  it("uses the first image when none is marked as primary", () => {
     const summary = mapListingSummary(
       {
         ...row,
@@ -150,7 +153,55 @@ describe("mapListingSummary", () => {
     expect(summary.image?.id).toBe("image-1")
   })
 
-  it("retorna imagem nula quando o anúncio não tem imagens", () => {
+  it("returns a null image when the listing has no images", () => {
     expect(mapListingSummary({ ...row, images: null }, options).image).toBeNull()
+  })
+})
+
+describe("mapOwnerSearchRow", () => {
+  const searchRow: OwnerSearchRow = {
+    id: row.id,
+    seller_id: row.seller_id,
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    condition: row.condition,
+    city: row.city,
+    neighborhood: row.neighborhood,
+    status: row.status,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    category_id: categoryId,
+    category_slug: "celulares",
+    category_name: "Celulares",
+    primary_image_path: `${sellerId}/image-1.png`,
+    primary_image_alt: "Foto principal",
+    rank: 0.6,
+    total_count: "2",
+  }
+
+  it("validates the flat row returned by the RPC", () => {
+    expect(isOwnerSearchRow(searchRow)).toBe(true)
+    expect(isOwnerSearchRow(undefined)).toBe(false)
+    expect(isOwnerSearchRow({ ...searchRow, seller_id: null })).toBe(false)
+  })
+
+  it("keeps status and location in the seller summary", () => {
+    const summary = mapOwnerSearchRow(searchRow, options)
+
+    expect(summary.id).toBe(listingId)
+    expect(summary.status).toBe("active")
+    expect(summary.location.label).toBe("Belém - Nazaré")
+    expect(summary.image?.id).toBe(`${listingId}-primary`)
+    expect(summary.image?.url).toBe(
+      `https://cdn.example.com/${sellerId}/image-1.png`,
+    )
+  })
+
+  it("returns a null image when the RPC has no image path", () => {
+    expect(
+      mapOwnerSearchRow({ ...searchRow, primary_image_path: null }, options)
+        .image,
+    ).toBeNull()
   })
 })

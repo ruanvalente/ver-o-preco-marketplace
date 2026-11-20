@@ -61,7 +61,7 @@ export function ProductCard({
         <Link
           href={productHref}
           aria-label={`Ver detalhes de ${product.title}`}
-          className="absolute inset-0 z-[1] rounded-t-xl focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/70"
+          className="absolute inset-0 z-[1] rounded-t-xl focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/70"
         />
 
         <Badge
@@ -88,7 +88,7 @@ export function ProductCard({
         <h3 className="line-clamp-2 text-headline-sm leading-snug font-semibold text-foreground">
           <Link
             href={productHref}
-            className="rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="rounded-sm transition-colors hover:text-primary focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             {product.title}
           </Link>

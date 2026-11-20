@@ -18,7 +18,7 @@ export function HeroSearchBar() {
       method="get"
       role="search"
       aria-label="Buscar produtos no marketplace"
-      className="mt-8 w-full rounded-2xl border border-border bg-card p-2 shadow-card"
+      className="mt-8 w-full rounded-2xl border border-border bg-card p-2 shadow-card focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/20"
     >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-0">
         <div className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-xl bg-background px-3 sm:bg-transparent sm:px-2">
@@ -35,7 +35,7 @@ export function HeroSearchBar() {
             type="search"
             autoComplete="off"
             placeholder="O que você está procurando hoje?"
-            className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground sm:text-base"
+            className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-hidden placeholder:text-muted-foreground sm:text-base"
           />
         </div>
 
@@ -56,7 +56,7 @@ export function HeroSearchBar() {
             id="hero-search-location"
             name="location"
             defaultValue="belem"
-            className="h-full w-full appearance-none bg-transparent pr-6 text-sm font-medium text-foreground outline-none"
+            className="h-full w-full appearance-none bg-transparent pr-6 text-sm font-medium text-foreground outline-hidden"
           >
             {marketplacePolos.map((polo) => (
               <option key={polo.value} value={polo.value}>
@@ -87,7 +87,7 @@ export function HeroSearchBar() {
             id="hero-search-category"
             name="category"
             defaultValue=""
-            className="h-full w-full appearance-none bg-transparent pr-6 text-sm font-medium text-foreground outline-none"
+            className="h-full w-full appearance-none bg-transparent pr-6 text-sm font-medium text-foreground outline-hidden"
           >
             <option value="">Todas</option>
             {categoryNavigationItems

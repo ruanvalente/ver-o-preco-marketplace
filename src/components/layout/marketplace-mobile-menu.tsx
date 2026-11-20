@@ -64,7 +64,7 @@ export function MarketplaceMobileMenu({
           </SheetDescription>
           <SheetClose
             aria-label="Fechar menu"
-            className="absolute top-3 right-3 inline-flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="absolute top-3 right-3 inline-flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <X aria-hidden="true" className="size-5" />
           </SheetClose>
@@ -78,7 +78,7 @@ export function MarketplaceMobileMenu({
             method="get"
             role="search"
             aria-label="Filtrar anúncios por região"
-            className="flex h-11 items-center gap-2 rounded-full border border-border bg-background px-3"
+            className="flex h-11 items-center gap-2 rounded-full border border-border bg-background px-3 focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/20"
           >
             <MapPin
               aria-hidden="true"
@@ -92,7 +92,7 @@ export function MarketplaceMobileMenu({
                 id="mobile-menu-location"
                 name="location"
                 defaultValue="belem"
-                className="h-11 w-full appearance-none bg-transparent pr-5 text-sm font-medium text-foreground outline-none"
+                className="h-11 w-full appearance-none bg-transparent pr-5 text-sm font-medium text-foreground outline-hidden"
               >
                 {polos.map((polo) => (
                   <option key={polo.value} value={polo.value}>
@@ -108,7 +108,7 @@ export function MarketplaceMobileMenu({
             <button
               type="submit"
               aria-label="Aplicar região selecionada"
-              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <ArrowRight aria-hidden="true" className="size-4" />
             </button>
@@ -124,7 +124,7 @@ export function MarketplaceMobileMenu({
                   <SheetClose asChild>
                     <Link
                       href={category.href}
-                      className="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      className="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     >
                       {category.label}
                     </Link>

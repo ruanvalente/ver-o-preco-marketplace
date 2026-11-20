@@ -119,7 +119,7 @@ function PrivateChatImage({
             setError(null)
             void refreshUrl()
           }}
-          className="min-h-11 rounded-md px-2 text-xs font-medium underline underline-offset-4 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="min-h-11 rounded-md px-2 text-xs font-medium underline underline-offset-4 focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           Tentar carregar de novo
         </button>
@@ -141,7 +141,7 @@ function PrivateChatImage({
       target="_blank"
       rel="noreferrer"
       aria-label="Abrir imagem enviada em outra aba"
-      className="block overflow-hidden rounded-lg focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      className="block overflow-hidden rounded-lg focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <Image
         src={imageUrl}
@@ -176,7 +176,7 @@ export function MessageList({
             type="button"
             disabled={isLoadingMore}
             onClick={onLoadMore}
-            className="inline-flex min-h-11 items-center rounded-full px-4 text-sm font-medium text-primary hover:bg-primary-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
+            className="inline-flex min-h-11 items-center rounded-full px-4 text-sm font-medium text-primary hover:bg-primary-muted focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
           >
             {isLoadingMore ? "Carregando…" : "Carregar mensagens anteriores"}
           </button>

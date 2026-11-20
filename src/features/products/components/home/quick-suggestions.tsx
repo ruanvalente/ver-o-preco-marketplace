@@ -14,7 +14,7 @@ export function QuickSuggestions() {
         <Link
           key={search.query}
           href={`/products?q=${encodeURIComponent(search.query)}`}
-          className="inline-flex min-h-11 items-center rounded-full border border-border bg-card px-3.5 py-1 text-label-sm font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary-muted hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex min-h-11 items-center rounded-full border border-border bg-card px-3.5 py-1 text-label-sm font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary-muted hover:text-primary focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           {search.label}
         </Link>

@@ -26,6 +26,25 @@ const CONVERSATION_START_ERROR =
   "Não foi possível iniciar uma conversa para este anúncio.";
 const READ_STATE_ERROR = "Não foi possível atualizar o status de leitura.";
 
+const CONVERSATION_SELECT = `
+  id,
+  buyer_id,
+  seller_id,
+  product:products!conversations_product_id_fkey (
+    id,
+    title,
+    price,
+    city,
+    neighborhood,
+    images:product_images ( storage_path, is_primary, sort_order )
+  ),
+  buyer:profiles!conversations_buyer_id_fkey ( id, display_name, avatar_path ),
+  seller:profiles!conversations_seller_id_fkey ( id, display_name, avatar_path )
+`;
+
+const MESSAGE_SELECT =
+  "id, conversation_id, sender_id, message_type, content, attachment_path, created_at, read_at";
+
 type ChatConversationRow = {
   conversation_id: string;
   product_id: string;
@@ -219,6 +238,41 @@ function mapMessage(
   };
 }
 
+type ParticipationResult =
+  | { ok: true }
+  | { ok: false; reason: "forbidden" | "unavailable" };
+
+/**
+ * Double-check de participação no servidor, independente da RLS.
+ *
+ * A RPC lê `auth.uid()` da sessão, então um `conversation_id` enviado pelo
+ * cliente nunca autoriza o acesso. Falhas de leitura da sessão ou do banco
+ * negam a operação, em vez de liberá-la.
+ */
+export async function checkConversationParticipation(
+  conversationId: string,
+): Promise<ParticipationResult> {
+  if (!isConversationId(conversationId)) {
+    return { ok: false, reason: "forbidden" };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("is_conversation_participant", {
+    p_conversation_id: conversationId,
+  });
+
+  if (error) {
+    console.error("[chat] is_conversation_participant", error);
+    return { ok: false, reason: "unavailable" };
+  }
+
+  if (data !== true) {
+    return { ok: false, reason: "forbidden" };
+  }
+
+  return { ok: true };
+}
+
 async function addSignedImageUrls(
   supabase: Awaited<ReturnType<typeof createClient>>,
   messages: MessageRow[],
@@ -304,65 +358,41 @@ export async function getChatConversations(
     return { ok: false, error: CHAT_LOAD_ERROR };
   }
 
+  const rows: ChatConversationRow[] = Array.isArray(data) ? data : [];
+
   return {
     ok: true,
-    data: ((data ?? []) as unknown as ChatConversationRow[]).map((row) =>
-      mapConversation(supabase, row),
-    ),
+    data: rows.map((row) => mapConversation(supabase, row)),
   };
 }
 
 /**
  * Counts seller-side chat activity without returning message contents.
- * The session's RLS policies remain in force alongside the explicit owner
- * filter.
+ * `get_seller_chat_metrics` runs as the caller, so RLS stays in force, and
+ * rechecks the seller id against auth.uid() inside the database.
  */
 export async function getSellerChatMetrics(
   sellerId: string,
 ): Promise<ChatServiceResult<SellerChatMetrics>> {
   try {
     const supabase = await createClient();
-    const [conversations, receivedMessages, unreadMessages] = await Promise.all(
-      [
-        supabase
-          .from("conversations")
-          .select("id", { count: "exact", head: true })
-          .eq("seller_id", sellerId),
-        supabase
-          .from("messages")
-          .select("id, conversations!inner(seller_id)", {
-            count: "exact",
-            head: true,
-          })
-          .eq("conversations.seller_id", sellerId)
-          .neq("sender_id", sellerId),
-        supabase
-          .from("messages")
-          .select("id, conversations!inner(seller_id)", {
-            count: "exact",
-            head: true,
-          })
-          .eq("conversations.seller_id", sellerId)
-          .neq("sender_id", sellerId)
-          .is("read_at", null),
-      ],
-    );
+    const { data, error } = await supabase.rpc("get_seller_chat_metrics", {
+      p_seller_id: sellerId,
+    });
 
-    const failedResult = [conversations, receivedMessages, unreadMessages].find(
-      (result) => result.error,
-    );
-
-    if (failedResult?.error) {
-      console.error("[chat] getSellerChatMetrics", failedResult.error);
+    if (error) {
+      console.error("[chat] getSellerChatMetrics", error);
       return { ok: false, error: CHAT_LOAD_ERROR };
     }
+
+    const metrics = Array.isArray(data) ? data[0] : null;
 
     return {
       ok: true,
       data: {
-        conversationCount: conversations.count ?? 0,
-        receivedMessageCount: receivedMessages.count ?? 0,
-        unreadMessageCount: unreadMessages.count ?? 0,
+        conversationCount: Number(metrics?.conversation_count ?? 0),
+        receivedMessageCount: Number(metrics?.received_message_count ?? 0),
+        unreadMessageCount: Number(metrics?.unread_message_count ?? 0),
       },
     };
   } catch (error) {
@@ -382,23 +412,7 @@ export async function getConversation(
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("conversations")
-    .select(
-      `
-        id,
-        buyer_id,
-        seller_id,
-        product:products!conversations_product_id_fkey (
-          id,
-          title,
-          price,
-          city,
-          neighborhood,
-          images:product_images ( storage_path, is_primary, sort_order )
-        ),
-        buyer:profiles!conversations_buyer_id_fkey ( id, display_name, avatar_path ),
-        seller:profiles!conversations_seller_id_fkey ( id, display_name, avatar_path )
-      `,
-    )
+    .select<typeof CONVERSATION_SELECT, ConversationRow>(CONVERSATION_SELECT)
     .eq("id", conversationId)
     .maybeSingle();
 
@@ -411,11 +425,7 @@ export async function getConversation(
     return { ok: true, data: null };
   }
 
-  const details = mapConversationDetails(
-    supabase,
-    data as unknown as ConversationRow,
-    userId,
-  );
+  const details = mapConversationDetails(supabase, data, userId);
 
   return details
     ? { ok: true, data: details }
@@ -438,9 +448,7 @@ export async function getConversationMessages(
   const supabase = await createClient();
   let query = supabase
     .from("messages")
-    .select(
-      "id, conversation_id, sender_id, message_type, content, attachment_path, created_at, read_at",
-    )
+    .select<typeof MESSAGE_SELECT, MessageRow>(MESSAGE_SELECT)
     .eq("conversation_id", conversationId);
 
   if (before) {
@@ -459,7 +467,7 @@ export async function getConversationMessages(
     return { ok: false, error: MESSAGE_LOAD_ERROR };
   }
 
-  const rows = (data ?? []) as MessageRow[];
+  const rows = data ?? [];
   const hasMore = rows.length > CHAT_MESSAGE_PAGE_SIZE;
   const page = rows.slice(0, CHAT_MESSAGE_PAGE_SIZE).reverse();
 
@@ -505,9 +513,7 @@ export async function sendChatMessage(input: {
       content: input.content,
       attachment_path: input.attachmentPath,
     })
-    .select(
-      "id, conversation_id, sender_id, message_type, content, attachment_path, created_at, read_at",
-    )
+    .select<typeof MESSAGE_SELECT, MessageRow>(MESSAGE_SELECT)
     .single();
 
   if (error || !data) {
@@ -515,12 +521,10 @@ export async function sendChatMessage(input: {
     return { ok: false, error: MESSAGE_SAVE_ERROR };
   }
 
-  const message = mapMessage(data as MessageRow);
+  const message = mapMessage(data);
 
   if (message.attachmentPath) {
-    const [signedMessage] = await addSignedImageUrls(supabase, [
-      data as MessageRow,
-    ]);
+    const [signedMessage] = await addSignedImageUrls(supabase, [data]);
     return { ok: true, data: signedMessage };
   }
 

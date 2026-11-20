@@ -39,7 +39,7 @@ export function LocationSelector({
           id={id}
           name="location"
           defaultValue="belem"
-          className="h-11 max-w-52 appearance-none bg-transparent pr-5 text-sm font-medium text-foreground outline-none"
+          className="h-11 max-w-52 appearance-none bg-transparent pr-5 text-sm font-medium text-foreground outline-hidden"
         >
           {marketplacePolos.map((polo) => (
             <option key={polo.value} value={polo.value}>
@@ -56,7 +56,7 @@ export function LocationSelector({
       <button
         type="submit"
         aria-label="Aplicar região selecionada"
-        className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <ArrowRight aria-hidden="true" className="size-4" />
       </button>

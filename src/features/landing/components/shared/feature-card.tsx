@@ -70,7 +70,7 @@ export function FeatureCard({
       {link ? (
         <Link
           href={link.href}
-          className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-sm text-sm font-semibold text-primary transition-colors hover:text-primary-hover focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-sm text-sm font-semibold text-primary transition-colors hover:text-primary-hover focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           {link.label}
           <span className="sr-only"> sobre {title}</span>

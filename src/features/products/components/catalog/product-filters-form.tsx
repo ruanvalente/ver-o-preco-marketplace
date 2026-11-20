@@ -12,7 +12,11 @@ import {
   LOCATION_OPTIONS,
   PRODUCT_CONDITION_OPTIONS,
 } from "../../utils/catalog-options"
-import { DEFAULT_PAGE_SIZE, hasActiveFilters } from "../../utils/query"
+import {
+  DEFAULT_PAGE_SIZE,
+  getDefaultProductSort,
+  hasActiveFilters,
+} from "../../utils/query"
 
 type ProductFiltersFormProps = {
   filters: ProductFilters
@@ -21,7 +25,7 @@ type ProductFiltersFormProps = {
 }
 
 const selectClassName =
-  "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm text-foreground shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+  "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm text-foreground shadow-xs outline-hidden focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 
 /**
  * Formulário de filtros do catálogo.
@@ -39,7 +43,7 @@ export function ProductFiltersForm({
       <fieldset className="space-y-5">
         <legend className="sr-only">Filtros do catálogo</legend>
 
-        {filters.sort !== "recent" && (
+        {filters.sort !== getDefaultProductSort(filters.q) && (
           <input type="hidden" name="sort" value={filters.sort} />
         )}
         {filters.pageSize !== DEFAULT_PAGE_SIZE && (

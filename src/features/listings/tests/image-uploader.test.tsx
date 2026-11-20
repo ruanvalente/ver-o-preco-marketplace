@@ -90,7 +90,7 @@ describe("ImageUploader", () => {
         name: "Progresso do envio de imagens",
       }),
     ).toHaveAttribute("aria-valuenow", "1")
-    expect(screen.getByText("Enviando 1 de 2 imagens…")).toBeInTheDocument()
+    expect(screen.getByText("Enviando 1 de 2 imagens… (50%)")).toBeInTheDocument()
     expect(screen.getAllByText("Enviando…").length).toBeGreaterThan(0)
   })
 

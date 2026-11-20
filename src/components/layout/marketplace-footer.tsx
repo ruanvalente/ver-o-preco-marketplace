@@ -21,7 +21,7 @@ export function MarketplaceFooter() {
             <Link
               href="/"
               aria-label="Ver-o-Preço — página inicial"
-              className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="inline-flex rounded-md focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <BrandLogo />
             </Link>
@@ -48,7 +48,7 @@ export function MarketplaceFooter() {
                   <li key={`${column.title}-${link.label}`}>
                     <Link
                       href={link.href}
-                      className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     >
                       {link.label}
                     </Link>
@@ -69,7 +69,7 @@ export function MarketplaceFooter() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   {link.label}
                 </Link>

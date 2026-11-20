@@ -66,3 +66,7 @@ Uso de strict mode, interfaces, generics, unions.
 ## Ordem de implementação
 1. Definir tipos.
 2. Substituir `!`.
+
+## Resultado da execução (Issue #30 — Phase 15)
+
+> **Atualização (Issue #30 — Phase 15):** os dois achados P3 da auditoria foram resolvidos. Os casts `as unknown as` de `products.service.ts`, `chat.service.ts` e `listing.service.ts` foram eliminados com `.select<Query, Row>()` (issues #17, #29 e follow-up de #29); uma busca em `src/` não encontra `as unknown as`, `as MessageRow`, `as ProfileRow` nem non-null assertions. Cast estreitos aplicados após validação (por exemplo `as ProductCondition`) permanecem fora do escopo deste achado.

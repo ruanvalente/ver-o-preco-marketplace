@@ -19,7 +19,7 @@ export function AuthFooter() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="rounded-sm text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="rounded-sm text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   {link.label}
                 </Link>

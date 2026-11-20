@@ -30,7 +30,7 @@ export function ChatHeader({
       <Link
         href="/messages"
         aria-label="Voltar para suas conversas"
-        className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 md:hidden"
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-accent focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50 md:hidden"
       >
         <ArrowLeft aria-hidden="true" className="size-5" />
       </Link>

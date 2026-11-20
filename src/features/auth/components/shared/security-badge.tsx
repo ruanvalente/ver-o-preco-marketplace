@@ -9,7 +9,7 @@ export function SecurityBadge({ className }: SecurityBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full bg-[#C7F1DF] px-3 py-1 text-xs font-semibold text-[#477567]",
+        "inline-flex items-center gap-1.5 rounded-full bg-secondary-muted px-3 py-1 text-xs font-semibold text-secondary-strong",
         className
       )}
     >

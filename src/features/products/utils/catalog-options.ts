@@ -30,6 +30,7 @@ export const PRODUCT_CONDITION_OPTIONS = (
 ).map(([value, label]) => ({ value, label }))
 
 export const PRODUCT_SORT_OPTIONS: { value: ProductSort; label: string }[] = [
+  { value: "relevance", label: "Mais relevantes" },
   { value: "recent", label: "Mais recentes" },
   { value: "price_asc", label: "Menor preço" },
   { value: "price_desc", label: "Maior preço" },

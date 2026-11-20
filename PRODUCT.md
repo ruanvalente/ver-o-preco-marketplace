@@ -72,11 +72,11 @@ Open decisions:
 - `AGENTS.md` — product specification, domain boundaries, phases and acceptance criteria.
 - `DESIGN.md` — visual and interaction source of truth; `docs/design/` documents tokens and components.
 - `docs/architecture/` and `docs/plans/` — architecture and phase execution records.
-- `migrations/0001`–`0007` and `seeds/0001_products.sql` — current schema and seeded catalog data.
+- `migrations/0001`–`0010` and `seeds/0001_products.sql` — current schema and seeded catalog data.
 - `src/features/landing/data/landing-content.ts` — landing narrative and proof claims.
 - `public/products/*` — placeholder product imagery used by seeds and tests.
 
-Absences future work must not fabricate: there are no real customers, testimonials, press mentions, usage benchmarks, partnerships or seller verification data. The chat is implemented in the application; apply `migrations/0007_chat.sql` to each Supabase environment before enabling it there.
+Absences future work must not fabricate: there are no real customers, testimonials, press mentions, usage benchmarks, partnerships or seller verification data. The chat is implemented in the application; apply `migrations/0007_chat.sql`, `0008_chat_rls_recursion_fix.sql` and `0010_chat_signed_url_authorization.sql` to each Supabase environment before enabling it there.
 
 ## Product Principles
 

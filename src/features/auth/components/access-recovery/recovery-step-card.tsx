@@ -78,11 +78,11 @@ export function RecoveryStepCard() {
         </form>
         <Link
           href="/login"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           ← Lembrou sua senha? Voltar para o Login
         </Link>
-        <div className="absolute bottom-6 right-6 hidden items-center gap-1.5 rounded-full bg-success-surface px-2.5 py-1 text-xs font-medium text-[#3B7668] sm:flex">
+        <div className="absolute bottom-6 right-6 hidden items-center gap-1.5 rounded-full bg-success-surface px-2.5 py-1 text-xs font-medium text-secondary-strong sm:flex">
           <ShieldCheck aria-hidden="true" className="size-3.5" />
           Proteção Total Ver-o-Preço
         </div>

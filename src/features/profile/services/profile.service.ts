@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { mapAuthError } from "@/features/auth/utils/auth-errors";
 import { AVATAR_BUCKET_NAME } from "../constants";
 import type { Profile, ProfileUpdateInput } from "../types/profile.types";
 import { validateProfileUpdate } from "../schemas/profile.schemas";
@@ -12,6 +11,8 @@ type ProfileRow = {
   created_at: string;
   updated_at: string;
 };
+
+const PROFILE_SELECT = "id, display_name, avatar_path, location, created_at, updated_at";
 
 type ProfileSupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -36,7 +37,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, display_name, avatar_path, location, created_at, updated_at")
+      .select<typeof PROFILE_SELECT, ProfileRow>(PROFILE_SELECT)
       .eq("id", userId)
       .maybeSingle();
 
@@ -49,7 +50,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
       return null;
     }
 
-    return mapProfileRow(data as ProfileRow, supabase);
+    return mapProfileRow(data, supabase);
   } catch (error) {
     console.error("Error fetching profile:", error);
     return null;
@@ -61,7 +62,7 @@ export async function getProfileById(userId: string): Promise<Profile | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, display_name, avatar_path, location, created_at, updated_at")
+      .select<typeof PROFILE_SELECT, ProfileRow>(PROFILE_SELECT)
       .eq("id", userId)
       .maybeSingle();
 
@@ -74,7 +75,7 @@ export async function getProfileById(userId: string): Promise<Profile | null> {
       return null;
     }
 
-    return mapProfileRow(data as ProfileRow, supabase);
+    return mapProfileRow(data, supabase);
   } catch (error) {
     console.error("Error fetching public profile:", error);
     return null;
@@ -96,7 +97,7 @@ export async function createProfile(userId: string, data: ProfileUpdateInput): P
         display_name: validation.data.displayName,
         location: validation.data.location,
       })
-      .select("id, display_name, avatar_path, location, created_at, updated_at")
+      .select<typeof PROFILE_SELECT, ProfileRow>(PROFILE_SELECT)
       .single();
 
     if (error) {
@@ -104,7 +105,7 @@ export async function createProfile(userId: string, data: ProfileUpdateInput): P
       return null;
     }
 
-    return mapProfileRow(row as ProfileRow, supabase);
+    return mapProfileRow(row, supabase);
   } catch (error) {
     console.error("Error creating profile:", error);
     return null;
@@ -136,7 +137,7 @@ export async function updateProfile(
       .from("profiles")
       .update(updateData)
       .eq("id", userId)
-      .select("id, display_name, avatar_path, location, created_at, updated_at")
+      .select<typeof PROFILE_SELECT, ProfileRow>(PROFILE_SELECT)
       .single();
 
     if (error) {
@@ -144,7 +145,7 @@ export async function updateProfile(
       return null;
     }
 
-    return mapProfileRow(row as ProfileRow, supabase);
+    return mapProfileRow(row, supabase);
   } catch (error) {
     console.error("Error updating profile:", error);
     return null;
@@ -176,7 +177,7 @@ export async function upsertProfile(
     const { data: row, error } = await supabase
       .from("profiles")
       .upsert(upsertData, { onConflict: "id" })
-      .select("id, display_name, avatar_path, location, created_at, updated_at")
+      .select<typeof PROFILE_SELECT, ProfileRow>(PROFILE_SELECT)
       .single();
 
     if (error) {
@@ -184,7 +185,7 @@ export async function upsertProfile(
       return null;
     }
 
-    return mapProfileRow(row as ProfileRow, supabase);
+    return mapProfileRow(row, supabase);
   } catch (error) {
     console.error("Error upserting profile:", error);
     return null;

@@ -29,7 +29,7 @@ function CategoryNavLinks({ activeId }: CategoryNavLinksProps) {
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "inline-flex h-10 items-center rounded-full px-3.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                "inline-flex h-10 items-center rounded-full px-3.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50",
                 isActive
                   ? "bg-primary-muted text-primary"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
@@ -48,7 +48,7 @@ function CategoryNavLinks({ activeId }: CategoryNavLinksProps) {
       <li className="shrink-0">
         <Link
           href={myListingsNavigationItem.href}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium whitespace-nowrap text-secondary-strong transition-colors hover:bg-secondary-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium whitespace-nowrap text-secondary-strong transition-colors hover:bg-secondary-muted focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <Plus aria-hidden="true" className="size-4" />
           {myListingsNavigationItem.label}

@@ -3,12 +3,17 @@
 import { revalidatePath, updateTag } from "next/cache"
 import { redirect } from "next/navigation"
 
-import { requireUser } from "@/features/auth/services/session.service"
+import {
+  requireOwnership,
+  requireUser,
+} from "@/features/auth/services/session.service"
+import { PRODUCTS_LIST_TAG } from "@/features/products/types/product.types"
 
 import { isListingId, validateListingForm } from "../schemas/listing.schemas"
 import type { ListingActionState } from "../types/listing.types"
 import { validateListingImagesForUser } from "./listing-image.service"
 import {
+  NOT_FOUND_ERROR,
   createListing,
   deleteListing,
   pauseListing,
@@ -16,8 +21,11 @@ import {
   updateListing,
 } from "./listing.service"
 
+const OWNERSHIP_CHECK_ERROR =
+  "Não foi possível verificar o anúncio. Tente novamente.";
+
 function revalidateListingViews(listingId?: string) {
-  updateTag("products")
+  updateTag(PRODUCTS_LIST_TAG)
   revalidatePath("/")
   revalidatePath("/products")
   revalidatePath("/listings")
@@ -87,7 +95,19 @@ export async function updateListingAction(
     return { status: "error", message: "Anúncio inválido." }
   }
 
-  const user = await requireUser(`/listings/${listingId}/edit`)
+  const ownership = await requireOwnership(`/listings/${listingId}/edit`, listingId)
+
+  if (!ownership.ok) {
+    return {
+      status: "error",
+      message:
+        ownership.reason === "unavailable"
+          ? OWNERSHIP_CHECK_ERROR
+          : NOT_FOUND_ERROR,
+    }
+  }
+
+  const user = ownership.user
   const imageValidation = await validateListingImagesForUser(user.id, images)
 
   if (!imageValidation.ok) {
@@ -136,13 +156,22 @@ function parseStatusIntent(value: FormDataEntryValue | null): ListingStatusInten
 export async function updateListingStatusAction(formData: FormData) {
   const returnTo =
     formData.get("returnTo") === "/dashboard" ? "/dashboard" : "/listings"
-  const user = await requireUser(returnTo)
   const listingId = formData.get("listingId")
   const intent = parseStatusIntent(formData.get("intent"))
 
-  if (typeof listingId !== "string" || !intent) {
+  if (typeof listingId !== "string" || !isListingId(listingId) || !intent) {
     redirect(`${returnTo}?error=invalid`)
   }
+
+  const ownership = await requireOwnership(returnTo, listingId)
+
+  if (!ownership.ok) {
+    redirect(
+      `${returnTo}?error=${ownership.reason === "unavailable" ? "unexpected" : "forbidden"}`,
+    )
+  }
+
+  const { user } = ownership
 
   if (intent === "delete") {
     const result = await deleteListing(user.id, listingId)
