@@ -4,19 +4,20 @@ import {
   DEFAULT_PAGE_SIZE,
   buildProductsHref,
   getActiveFilterCount,
+  getDefaultProductSort,
   hasActiveFilters,
   parsePrice,
   parseProductFilters,
 } from "../utils/query"
 
 describe("parsePrice", () => {
-  it("aceita formatos brasileiros e valores com moeda", () => {
+  it("accepts Brazilian formats and currency values", () => {
     expect(parsePrice("1.000")).toBe(1000)
     expect(parsePrice("1.000,50")).toBe(1000.5)
     expect(parsePrice("R$ 4.500")).toBe(4500)
   })
 
-  it("descarta valores vazios, inválidos ou negativos", () => {
+  it("discards empty, invalid or negative values", () => {
     expect(parsePrice(null)).toBeNull()
     expect(parsePrice("")).toBeNull()
     expect(parsePrice("abc")).toBeNull()
@@ -24,8 +25,16 @@ describe("parsePrice", () => {
   })
 })
 
+describe("getDefaultProductSort", () => {
+  it("uses relevance with a term and recent without one", () => {
+    expect(getDefaultProductSort("celular")).toBe("relevance")
+    expect(getDefaultProductSort("  ")).toBe("recent")
+    expect(getDefaultProductSort("")).toBe("recent")
+  })
+})
+
 describe("parseProductFilters", () => {
-  it("normaliza os parâmetros válidos da URL", () => {
+  it("normalizes valid URL parameters", () => {
     const filters = parseProductFilters({
       q: "  iphone  ",
       category: "celulares",
@@ -51,7 +60,7 @@ describe("parseProductFilters", () => {
     })
   })
 
-  it("ignora valores inválidos e aplica os padrões", () => {
+  it("ignores invalid values and applies defaults", () => {
     const filters = parseProductFilters({
       category: "Categoria Inválida",
       condition: "broken",
@@ -72,14 +81,21 @@ describe("parseProductFilters", () => {
     expect(filters.maxPrice).toBeNull()
   })
 
-  it("inverte a faixa de preço quando o mínimo é maior que o máximo", () => {
+  it("swaps the price range when the minimum is greater than the maximum", () => {
     const filters = parseProductFilters({ minPrice: "5000", maxPrice: "1000" })
 
     expect(filters.minPrice).toBe(1000)
     expect(filters.maxPrice).toBe(5000)
   })
 
-  it("limita o termo de busca e usa o primeiro valor de parâmetros repetidos", () => {
+  it("uses relevance as the default sort when searching", () => {
+    expect(parseProductFilters({ q: "celular" }).sort).toBe("relevance")
+    expect(parseProductFilters({ q: "celular", sort: "price_asc" }).sort).toBe(
+      "price_asc",
+    )
+  })
+
+  it("caps the search term and uses the first value of repeated parameters", () => {
     const filters = parseProductFilters({
       q: ["primeiro", "segundo"],
       page: ["3", "4"],
@@ -89,20 +105,20 @@ describe("parseProductFilters", () => {
     expect(filters.page).toBe(3)
   })
 
-  it("limita a página máxima para evitar ranges absurdos", () => {
+  it("caps the maximum page to avoid absurd ranges", () => {
     expect(parseProductFilters({ page: "999999" }).page).toBe(10_000)
   })
 })
 
-describe("hasActiveFilters e getActiveFilterCount", () => {
+describe("hasActiveFilters and getActiveFilterCount", () => {
   const baseFilters = parseProductFilters({})
 
-  it("não considera filtros quando apenas a ordenação foi alterada", () => {
+  it("does not count filters when only sorting changed", () => {
     expect(hasActiveFilters({ ...baseFilters, sort: "price_desc" })).toBe(false)
     expect(getActiveFilterCount({ ...baseFilters, sort: "price_desc" })).toBe(0)
   })
 
-  it("conta busca, categoria, condição, preço e localização", () => {
+  it("counts search, category, condition, price and location", () => {
     const filters = parseProductFilters({
       q: "iphone",
       category: "celulares",
@@ -118,14 +134,23 @@ describe("hasActiveFilters e getActiveFilterCount", () => {
 })
 
 describe("buildProductsHref", () => {
-  it("omite valores padrão", () => {
+  it("omits default values", () => {
     expect(buildProductsHref(parseProductFilters({}))).toBe("/products")
     expect(
       buildProductsHref(parseProductFilters({}), { page: 1, sort: "recent" }),
     ).toBe("/products")
   })
 
-  it("preserva filtros ao trocar de página", () => {
+  it("omits relevance from the URL when it is the search default", () => {
+    const filters = parseProductFilters({ q: "celular" })
+
+    expect(buildProductsHref(filters)).toBe("/products?q=celular")
+    expect(buildProductsHref(filters, { sort: "recent" })).toBe(
+      "/products?q=celular&sort=recent",
+    )
+  })
+
+  it("preserves filters when changing pages", () => {
     const filters = parseProductFilters({
       q: "iphone",
       category: "celulares",
@@ -141,7 +166,7 @@ describe("buildProductsHref", () => {
     expect(href).toContain("page=3")
   })
 
-  it("permite limpar filtros com overrides nulos", () => {
+  it("allows clearing filters with null overrides", () => {
     const filters = parseProductFilters({
       q: "iphone",
       category: "celulares",
@@ -156,7 +181,7 @@ describe("buildProductsHref", () => {
     expect(href).toBe("/products")
   })
 
-  it("inclui pageSize quando difere do padrão", () => {
+  it("includes pageSize when it differs from the default", () => {
     const filters = parseProductFilters({ pageSize: "24" })
 
     expect(filters.pageSize).not.toBe(DEFAULT_PAGE_SIZE)

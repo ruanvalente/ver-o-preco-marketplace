@@ -32,6 +32,11 @@ function isProductSort(value: string): value is ProductSort {
   return (PRODUCT_SORTS as readonly string[]).includes(value)
 }
 
+/** Relevância only exists as a default while a search term is present. */
+export function getDefaultProductSort(q: string): ProductSort {
+  return q.trim() ? "relevance" : "recent"
+}
+
 function isCategorySlug(value: string): boolean {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)
 }
@@ -107,7 +112,8 @@ export function parseProductFilters(
       : null
 
   const rawSort = firstValue(searchParams.sort)
-  const sort = rawSort && isProductSort(rawSort) ? rawSort : "recent"
+  const sort =
+    rawSort && isProductSort(rawSort) ? rawSort : getDefaultProductSort(q)
 
   let minPrice = parsePrice(firstValue(searchParams.minPrice))
   let maxPrice = parsePrice(firstValue(searchParams.maxPrice))
@@ -169,6 +175,17 @@ export function buildProductsHref(
   overrides: Partial<ProductFilters> = {},
 ): string {
   const merged: ProductFilters = { ...filters, ...overrides }
+
+  // Relevância só é o padrão enquanto houver termo. Ao limpar a busca sem
+  // escolher outra ordenação, volta-se ao padrão do catálogo sem busca.
+  if (
+    typeof overrides.q === "string" &&
+    !overrides.q.trim() &&
+    overrides.sort === undefined
+  ) {
+    merged.sort = "recent"
+  }
+
   const params = new URLSearchParams()
 
   if (merged.q.trim()) {
@@ -195,7 +212,7 @@ export function buildProductsHref(
     params.set("location", merged.location)
   }
 
-  if (merged.sort !== "recent") {
+  if (merged.sort !== getDefaultProductSort(merged.q)) {
     params.set("sort", merged.sort)
   }
 

@@ -16,8 +16,10 @@ import type {
   ListingSummary,
 } from "../types/listing.types";
 import {
+  isOwnerSearchRow,
   mapListing,
   mapListingSummary,
+  mapOwnerSearchRow,
   type ListingRow,
   type MapListingOptions,
 } from "../utils/listing-mappers";
@@ -236,21 +238,6 @@ export async function getOwnerListingDashboard(
   try {
     const supabase = await createClient();
     const search = sanitizeListingSearch(filters.query);
-    const categoryIds: string[] = [];
-
-    if (search) {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("id")
-        .ilike("name", `%${search}%`)
-        .limit(100);
-
-      if (error) {
-        return failure("getOwnerListingDashboard categories", error);
-      }
-
-      categoryIds.push(...(data ?? []).map((category) => category.id));
-    }
 
     const [allCount, draftCount, activeCount, pausedCount, soldCount] =
       await Promise.all([
@@ -273,6 +260,104 @@ export async function getOwnerListingDashboard(
       return failure("getOwnerListingDashboard counts", failedCount.error);
     }
 
+    const counts = {
+      all: allCount.count ?? 0,
+      draft: draftCount.count ?? 0,
+      active: activeCount.count ?? 0,
+      paused: pausedCount.count ?? 0,
+      sold: soldCount.count ?? 0,
+    };
+
+    const pageSize = Math.min(Math.max(filters.pageSize, 1), 24);
+    const requestedPage = Math.max(filters.page, 1);
+    const mapperOptions = createMapperOptions(supabase);
+
+    if (search) {
+      const rpcArgs = {
+        p_search_term: search,
+        p_status: filters.status,
+        p_sort: filters.sort,
+        p_limit: pageSize,
+      };
+
+      const readSearchPage = async (offset: number) => {
+        const { data, error } = await supabase.rpc("search_owner_listings", {
+          ...rpcArgs,
+          p_offset: offset,
+        });
+
+        if (error) {
+          return { error } as const;
+        }
+
+        if (!Array.isArray(data)) {
+          return { error: new Error("Resposta inesperada da busca") } as const;
+        }
+
+        const rows = data.filter(isOwnerSearchRow);
+
+        if (rows.length !== data.length) {
+          return { error: new Error("Linhas de busca inválidas") } as const;
+        }
+
+        return { rows } as const;
+      };
+
+      const first = await readSearchPage((requestedPage - 1) * pageSize);
+
+      if ("error" in first) {
+        return failure("getOwnerListingDashboard search", first.error);
+      }
+
+      const readTotal = (rows: typeof first.rows) => {
+        const value = rows.length > 0 ? Number(rows[0].total_count ?? 0) : 0;
+        return Number.isFinite(value) ? value : null;
+      };
+
+      let total = readTotal(first.rows);
+
+      if (total === null) {
+        return failure("getOwnerListingDashboard search", new Error("Total de busca inválido"));
+      }
+
+      let totalPages = Math.max(1, Math.ceil(total / pageSize));
+      let page = Math.min(requestedPage, totalPages);
+      let pageRows = first.rows;
+
+      if (page !== requestedPage) {
+        const retry = await readSearchPage((page - 1) * pageSize);
+
+        if ("error" in retry) {
+          return failure("getOwnerListingDashboard page", retry.error);
+        }
+
+        pageRows = retry.rows;
+        const retryTotal = readTotal(retry.rows);
+
+        if (retryTotal === null) {
+          return failure("getOwnerListingDashboard page", new Error("Total de busca inválido"));
+        }
+
+        total = retryTotal;
+        totalPages = Math.max(1, Math.ceil(total / pageSize));
+        page = Math.min(page, totalPages);
+      }
+
+      return {
+        ok: true,
+        data: {
+          counts,
+          page: {
+            items: pageRows.map((row) => mapOwnerSearchRow(row, mapperOptions)),
+            total,
+            page,
+            pageSize,
+            totalPages,
+          },
+        },
+      };
+    }
+
     const makeListingQuery = () => {
       let query = supabase
         .from("products")
@@ -284,16 +369,6 @@ export async function getOwnerListingDashboard(
 
       if (filters.status !== "all") {
         query = query.eq("status", filters.status);
-      }
-
-      if (search) {
-        const conditions = [
-          `title.ilike.%${search}%`,
-          `city.ilike.%${search}%`,
-          `neighborhood.ilike.%${search}%`,
-          ...categoryIds.map((id) => `category_id.eq.${id}`),
-        ];
-        query = query.or(conditions.join(","));
       }
 
       if (filters.sort === "price_asc") {
@@ -311,8 +386,6 @@ export async function getOwnerListingDashboard(
       return query.order("created_at", { ascending: false });
     };
 
-    const pageSize = Math.min(Math.max(filters.pageSize, 1), 24);
-    const requestedPage = Math.max(filters.page, 1);
     const firstResult = await makeListingQuery().range(
       (requestedPage - 1) * pageSize,
       requestedPage * pageSize - 1,
@@ -337,18 +410,10 @@ export async function getOwnerListingDashboard(
       return failure("getOwnerListingDashboard page", pageResult.error);
     }
 
-    const mapperOptions = createMapperOptions(supabase);
-
     return {
       ok: true,
       data: {
-        counts: {
-          all: allCount.count ?? 0,
-          draft: draftCount.count ?? 0,
-          active: activeCount.count ?? 0,
-          paused: pausedCount.count ?? 0,
-          sold: soldCount.count ?? 0,
-        },
+        counts,
         page: {
           items: (pageResult.data ?? []).map((row) =>
             mapListingSummary(row, mapperOptions),

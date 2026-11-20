@@ -79,7 +79,12 @@ export type ProductCategorySummary = ProductCategory & {
   count: number;
 };
 
-export const PRODUCT_SORTS = ["recent", "price_asc", "price_desc"] as const;
+export const PRODUCT_SORTS = [
+  "relevance",
+  "recent",
+  "price_asc",
+  "price_desc",
+] as const;
 
 export type ProductSort = (typeof PRODUCT_SORTS)[number];
 

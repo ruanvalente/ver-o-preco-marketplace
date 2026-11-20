@@ -72,6 +72,57 @@ export type ProductRow = {
   images: ProductImageRow[] | null
 }
 
+/**
+ * Flat row returned by `search_products`. Keeping it separate from ProductRow
+ * prevents the RPC shape from leaking into the rest of the module.
+ */
+export type ProductSearchRow = {
+  id: string
+  title: string
+  description: string | null
+  price: number | string
+  condition: string
+  city: string
+  neighborhood: string | null
+  created_at: string
+  category_id: string
+  category_slug: string
+  category_name: string
+  seller_id: string
+  seller_display_name: string | null
+  seller_avatar_path: string | null
+  seller_location: string | null
+  primary_image_path: string | null
+  primary_image_alt: string | null
+  rank: number | string | null
+  total_count: number | string | null
+}
+
+/** Runtime guard for the untyped payload returned by PostgREST RPCs. */
+export function isProductSearchRow(value: unknown): value is ProductSearchRow {
+  if (!value || typeof value !== "object") {
+    return false
+  }
+
+  const row = value as Record<string, unknown>
+
+  return (
+    typeof row.id === "string" &&
+    typeof row.title === "string" &&
+    (typeof row.price === "number" || typeof row.price === "string") &&
+    typeof row.condition === "string" &&
+    typeof row.city === "string" &&
+    typeof row.created_at === "string" &&
+    typeof row.category_id === "string" &&
+    typeof row.category_slug === "string" &&
+    typeof row.category_name === "string" &&
+    typeof row.seller_id === "string" &&
+    (row.total_count === null ||
+      typeof row.total_count === "number" ||
+      typeof row.total_count === "string")
+  )
+}
+
 export type MapProductOptions = {
   referenceDate: string
   resolveImageUrl: (storagePath: string) => string
@@ -183,6 +234,49 @@ export function mapProductSummary(
     publishedAt: row.created_at,
     publishedLabel: formatRelativeTime(row.created_at, options.referenceDate),
   }
+}
+
+export function mapProductSearchRow(
+  row: ProductSearchRow,
+  options: MapProductOptions,
+): ProductSummary {
+  const images: ProductImageRow[] = row.primary_image_path
+    ? [
+        {
+          id: `${row.id}-primary`,
+          storage_path: row.primary_image_path,
+          alt_text: row.primary_image_alt,
+          sort_order: 0,
+          is_primary: true,
+        },
+      ]
+    : []
+
+  return mapProductSummary(
+    {
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      price: row.price,
+      condition: row.condition,
+      city: row.city,
+      neighborhood: row.neighborhood,
+      created_at: row.created_at,
+      category: {
+        id: row.category_id,
+        slug: row.category_slug,
+        name: row.category_name,
+      },
+      seller: {
+        id: row.seller_id,
+        display_name: row.seller_display_name,
+        avatar_path: row.seller_avatar_path,
+        location: row.seller_location,
+      },
+      images,
+    },
+    options,
+  )
 }
 
 export function mapProductDetail(

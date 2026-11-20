@@ -69,7 +69,7 @@ describe("ProductsCatalog", () => {
     vi.clearAllMocks()
   })
 
-  it("traduz a URL em filtros e apresenta os resultados", async () => {
+  it("translates the URL into filters and renders the results", async () => {
     mockCatalog({ ok: true, data: populatedPage })
 
     render(
@@ -113,7 +113,7 @@ describe("ProductsCatalog", () => {
     expect(secondPageLink.getAttribute("href")).toContain("page=2")
   })
 
-  it("exibe o estado vazio quando os filtros não retornam anúncios", async () => {
+  it("shows the empty state when filters return no listings", async () => {
     mockCatalog({ ok: true, data: emptyPage })
 
     render(
@@ -130,7 +130,7 @@ describe("ProductsCatalog", () => {
     ).toHaveAttribute("href", "/products")
   })
 
-  it("exibe o estado vazio do catálogo quando não há filtros", async () => {
+  it("shows the catalog empty state when there are no filters", async () => {
     mockCatalog({ ok: true, data: emptyPage })
 
     render(await ProductsCatalog({ searchParams: Promise.resolve({}) }))
@@ -143,7 +143,7 @@ describe("ProductsCatalog", () => {
     ).toHaveAttribute("href", "/listings/new")
   })
 
-  it("oferece retorno quando a página pedida não existe", async () => {
+  it("offers a way back when the requested page does not exist", async () => {
     mockCatalog({
       ok: true,
       data: { items: [], total: 13, page: 99, pageSize: 12, totalPages: 2 },
@@ -163,7 +163,34 @@ describe("ProductsCatalog", () => {
     ).toHaveAttribute("href", "/products")
   })
 
-  it("exibe um erro recuperável quando a consulta falha", async () => {    mockCatalog({
+  it("offers relevance sorting only when a term is present", async () => {
+    mockCatalog({ ok: true, data: populatedPage })
+
+    const withSearch = render(
+      await ProductsCatalog({
+        searchParams: Promise.resolve({ q: "iphone" }),
+      }),
+    )
+
+    expect(
+      screen.getByRole("link", { name: "Mais relevantes" }),
+    ).toHaveAttribute("aria-current", "true")
+    withSearch.unmount()
+
+    mockCatalog({ ok: true, data: populatedPage })
+
+    render(await ProductsCatalog({ searchParams: Promise.resolve({}) }))
+
+    expect(
+      screen.queryByRole("link", { name: "Mais relevantes" }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole("link", { name: "Mais recentes" }),
+    ).toHaveAttribute("aria-current", "true")
+  })
+
+  it("shows a recoverable error when the query fails", async () => {
+    mockCatalog({
       ok: false,
       error: "Não foi possível carregar os anúncios.",
     })

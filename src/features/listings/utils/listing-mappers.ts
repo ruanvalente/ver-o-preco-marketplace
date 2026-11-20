@@ -50,6 +50,54 @@ export type ListingRow = {
   images: ListingImageRow[] | null
 }
 
+/** Flat row returned by `search_owner_listings`. */
+export type OwnerSearchRow = {
+  id: string
+  seller_id: string
+  title: string
+  description: string | null
+  price: number | string
+  condition: string
+  city: string
+  neighborhood: string | null
+  status: string
+  created_at: string
+  updated_at: string
+  category_id: string
+  category_slug: string
+  category_name: string
+  primary_image_path: string | null
+  primary_image_alt: string | null
+  rank: number | string | null
+  total_count: number | string | null
+}
+
+export function isOwnerSearchRow(value: unknown): value is OwnerSearchRow {
+  if (!value || typeof value !== "object") {
+    return false
+  }
+
+  const row = value as Record<string, unknown>
+
+  return (
+    typeof row.id === "string" &&
+    typeof row.seller_id === "string" &&
+    typeof row.title === "string" &&
+    (typeof row.price === "number" || typeof row.price === "string") &&
+    typeof row.condition === "string" &&
+    typeof row.city === "string" &&
+    typeof row.status === "string" &&
+    typeof row.created_at === "string" &&
+    typeof row.updated_at === "string" &&
+    typeof row.category_id === "string" &&
+    typeof row.category_slug === "string" &&
+    typeof row.category_name === "string" &&
+    (row.total_count === null ||
+      typeof row.total_count === "number" ||
+      typeof row.total_count === "string")
+  )
+}
+
 export type MapListingOptions = {
   resolveImageUrl: (storagePath: string) => string
 }
@@ -130,6 +178,46 @@ export function mapListing(
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
+}
+
+export function mapOwnerSearchRow(
+  row: OwnerSearchRow,
+  options: MapListingOptions,
+): ListingSummary {
+  const images: ListingImageRow[] = row.primary_image_path
+    ? [
+        {
+          id: `${row.id}-primary`,
+          storage_path: row.primary_image_path,
+          alt_text: row.primary_image_alt,
+          sort_order: 0,
+          is_primary: true,
+        },
+      ]
+    : []
+
+  return mapListingSummary(
+    {
+      id: row.id,
+      seller_id: row.seller_id,
+      title: row.title,
+      description: row.description,
+      price: row.price,
+      condition: row.condition,
+      city: row.city,
+      neighborhood: row.neighborhood,
+      status: row.status,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      category: {
+        id: row.category_id,
+        slug: row.category_slug,
+        name: row.category_name,
+      },
+      images,
+    },
+    options,
+  )
 }
 
 export function mapListingSummary(

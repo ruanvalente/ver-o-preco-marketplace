@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest"
 
 import {
   formatProductLocation,
+  isProductSearchRow,
   mapProductDetail,
+  mapProductSearchRow,
   mapProductSummary,
   type MapProductOptions,
   type ProductRow,
+  type ProductSearchRow,
 } from "../utils/product-mappers"
 
 const referenceDate = "2026-10-30T12:00:00.000Z"
@@ -57,7 +60,7 @@ const baseRow: ProductRow = {
 }
 
 describe("formatProductLocation", () => {
-  it("combina cidade e bairro", () => {
+  it("combines city and neighborhood", () => {
     expect(formatProductLocation("Belém", "Nazaré")).toEqual({
       city: "Belém",
       neighborhood: "Nazaré",
@@ -65,7 +68,7 @@ describe("formatProductLocation", () => {
     })
   })
 
-  it("usa apenas a cidade quando o bairro está vazio", () => {
+  it("uses only the city when the neighborhood is empty", () => {
     expect(formatProductLocation("Castanhal", "   ")).toEqual({
       city: "Castanhal",
       neighborhood: null,
@@ -75,7 +78,7 @@ describe("formatProductLocation", () => {
 })
 
 describe("mapProductSummary", () => {
-  it("mapeia a linha do Supabase para o modelo canônico", () => {
+  it("maps a Supabase row to the canonical model", () => {
     const product = mapProductSummary(baseRow, options)
 
     expect(product.price).toBe(4500)
@@ -100,7 +103,7 @@ describe("mapProductSummary", () => {
     expect(product.publishedLabel).toBe("Há 1 dia")
   })
 
-  it("usa a primeira imagem quando nenhuma é marcada como principal", () => {
+  it("uses the first image when none is marked as primary", () => {
     const row: ProductRow = {
       ...baseRow,
       images: baseRow.images?.map((image) => ({
@@ -115,7 +118,7 @@ describe("mapProductSummary", () => {
     expect(product.image?.alt).toBe("Foto principal")
   })
 
-  it("usa o título como texto alternativo quando a imagem não tem descrição", () => {
+  it("uses the title as alt text when the image has no description", () => {
     const row: ProductRow = {
       ...baseRow,
       images: [
@@ -132,7 +135,7 @@ describe("mapProductSummary", () => {
     expect(mapProductSummary(row, options).image?.alt).toBe("iPhone 15 Pro")
   })
 
-  it("trata relações ausentes e condições desconhecidas", () => {
+  it("handles missing relations and unknown conditions", () => {
     const row: ProductRow = {
       ...baseRow,
       condition: "unknown",
@@ -153,7 +156,7 @@ describe("mapProductSummary", () => {
     expect(product.image).toBeNull()
   })
 
-  it("aceita relações retornadas como array", () => {
+  it("accepts relations returned as an array", () => {
     const row: ProductRow = {
       ...baseRow,
       category: [{ id: "category-1", slug: "celulares", name: "Celulares" }],
@@ -175,7 +178,7 @@ describe("mapProductSummary", () => {
 })
 
 describe("mapProductDetail", () => {
-  it("inclui descrição, galeria ordenada e dados completos do vendedor", () => {
+  it("includes description, ordered gallery and full seller data", () => {
     const product = mapProductDetail(baseRow, options)
 
     expect(product.description).toBe("Excelente estado.")
@@ -192,7 +195,7 @@ describe("mapProductDetail", () => {
     })
   })
 
-  it("só expõe avatar quando ele já é uma URL utilizável", () => {
+  it("only exposes the avatar when it is already a usable URL", () => {
     const row: ProductRow = {
       ...baseRow,
       seller: {
@@ -220,9 +223,69 @@ describe("mapProductDetail", () => {
     )
   })
 
-  it("usa uma descrição vazia quando o anúncio não tem texto", () => {
+  it("uses an empty description when the listing has no text", () => {
     const row: ProductRow = { ...baseRow, description: "   " }
 
     expect(mapProductDetail(row, options).description).toBe("")
+  })
+})
+
+describe("mapProductSearchRow", () => {
+  const searchRow: ProductSearchRow = {
+    id: baseRow.id,
+    title: baseRow.title,
+    description: baseRow.description ?? null,
+    price: baseRow.price,
+    condition: baseRow.condition,
+    city: baseRow.city,
+    neighborhood: baseRow.neighborhood,
+    created_at: baseRow.created_at,
+    category_id: "category-1",
+    category_slug: "celulares",
+    category_name: "Celulares",
+    seller_id: "seller-1",
+    seller_display_name: "Ana Souza",
+    seller_avatar_path: null,
+    seller_location: "Belém",
+    primary_image_path: "seller/image-1.png",
+    primary_image_alt: "Foto principal",
+    rank: 0.6,
+    total_count: 3,
+  }
+
+  it("validates the flat row returned by the RPC", () => {
+    expect(isProductSearchRow(searchRow)).toBe(true)
+    expect(isProductSearchRow(null)).toBe(false)
+    expect(isProductSearchRow({ ...searchRow, title: undefined })).toBe(false)
+    expect(isProductSearchRow({ ...searchRow, total_count: "abc" })).toBe(true)
+  })
+
+  it("reuses the canonical mapper with the synthetic primary image", () => {
+    const product = mapProductSearchRow(searchRow, options)
+
+    expect(product.id).toBe(baseRow.id)
+    expect(product.category).toEqual({
+      id: "category-1",
+      slug: "celulares",
+      name: "Celulares",
+    })
+    expect(product.seller).toEqual({
+      id: "seller-1",
+      displayName: "Ana Souza",
+    })
+    expect(product.image).toEqual({
+      id: `${baseRow.id}-primary`,
+      url: "https://cdn.example.com/seller/image-1.png",
+      alt: "Foto principal",
+      sortOrder: 0,
+      isPrimary: true,
+    })
+  })
+
+  it("returns a null image when the RPC has no image path", () => {
+    expect(
+      mapProductSearchRow({ ...searchRow, primary_image_path: null }, options)
+        .image,
+    ).toBeNull()
   })
 })
