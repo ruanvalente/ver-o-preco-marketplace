@@ -12,6 +12,8 @@ Issues e specs deste repo ficam no GitHub Issues. Use o `gh` CLI para todas as o
 - **Contar bloqueadores abertos**: `gh api repos/<owner>/<repo>/issues/<n> --jq .issue_dependencies_summary.blocked_by` (0 = pode começar). `gh issue view <n> --json blockedBy` inclui fechados; filtre com `--jq '[.blockedBy.nodes[] | select(.state == "OPEN")] | length'`.
 - **Comentar**: `gh issue comment <numero> --body "..."`.
 - **Labels**: `gh issue edit <numero> --add-label "..."` / `--remove-label "..."`.
+- **Criar label ausente**: só quando nenhuma label existente representar o trabalho e após aprovação explícita; use `gh label create "<nome>" --description "<descrição>" --color "<hex>"` e confirme com `gh label list`. Não crie labels redundantes ou "por precaução".
+- **Assinatura e autoria**: obtenha a identidade real com `gh api user --jq '{login,name,email}'`; use o `login` retornado em `--add-assignee` e o par `name <email>` no trailer `Signed-off-by:` de commits, corpos de PR, comentários e issues. Nunca invente nome, login ou e-mail.
 - **Fechar**: publique a explicação com `gh issue comment <numero> --body "..."` e depois `gh issue close <numero>`.
 
 O repo é inferido de `git remote -v`; `gh` resolve isso automaticamente dentro do clone.

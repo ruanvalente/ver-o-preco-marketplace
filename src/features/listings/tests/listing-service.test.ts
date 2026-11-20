@@ -5,6 +5,7 @@ import {
   deleteListing,
   getListingForOwner,
   getListingsForOwner,
+  getOwnerListingDashboard,
   isListingOwnedBy,
   pauseListing,
   publishListing,
@@ -107,6 +108,27 @@ function createRow(overrides: Record<string, unknown> = {}) {
   }
 }
 
+const ownerSearchRow = {
+  id: listingId,
+  seller_id: sellerId,
+  title: "iPhone 15 Pro 256GB Titânio Natural",
+  description: "Aparelho em excelente estado.",
+  price: "4500.00",
+  condition: "like_new",
+  city: "Belém",
+  neighborhood: "Nazaré",
+  status: "active",
+  created_at: "2026-10-29T12:00:00.000Z",
+  updated_at: "2026-10-30T12:00:00.000Z",
+  category_id: categoryId,
+  category_slug: "celulares",
+  category_name: "Celulares",
+  primary_image_path: `${sellerId}/photo-1.png`,
+  primary_image_alt: "Frente",
+  rank: 0.115,
+  total_count: 1,
+}
+
 const input = {
   title: "iPhone 15 Pro",
   description: "Excelente estado.",
@@ -154,7 +176,7 @@ describe("listing.service", () => {
   })
 
   describe("getListingForOwner", () => {
-    it("filtra pelo id e pelo vendedor autenticado", async () => {
+    it("filters by id and authenticated seller", async () => {
       const query = createQuery({ data: createRow(), error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -174,7 +196,7 @@ describe("listing.service", () => {
       }
     })
 
-    it("não consulta o banco quando o id não é um UUID", async () => {
+    it("does not query the database when the id is not a UUID", async () => {
       await expect(
         getListingForOwner(sellerId, "id-invalido"),
       ).resolves.toEqual({ ok: true, data: null })
@@ -183,7 +205,7 @@ describe("listing.service", () => {
       expect(supabaseMocks.from).not.toHaveBeenCalled()
     })
 
-    it("retorna null quando o anúncio não existe ou é de outro usuário", async () => {
+    it("returns null when the listing does not exist or belongs to another user", async () => {
       const query = createQuery({ data: null, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -193,7 +215,7 @@ describe("listing.service", () => {
       })
     })
 
-    it("retorna um erro seguro quando a consulta falha", async () => {
+    it("returns a safe error when the query fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -210,7 +232,7 @@ describe("listing.service", () => {
   })
 
   describe("isListingOwnedBy", () => {
-    it("filtra pelo id e pelo vendedor autenticado", async () => {
+    it("filters by id and authenticated seller", async () => {
       const query = createQuery({ data: { id: listingId }, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -223,7 +245,7 @@ describe("listing.service", () => {
       expect(result).toEqual({ ok: true, data: true })
     })
 
-    it("não consulta o banco quando o id não é um UUID", async () => {
+    it("does not query the database when the id is not a UUID", async () => {
       await expect(
         isListingOwnedBy(sellerId, "id-invalido"),
       ).resolves.toEqual({ ok: true, data: false })
@@ -232,7 +254,7 @@ describe("listing.service", () => {
       expect(supabaseMocks.from).not.toHaveBeenCalled()
     })
 
-    it("devolve false quando o anúncio não existe ou é de outro usuário", async () => {
+    it("returns false when the listing does not exist or belongs to another user", async () => {
       const query = createQuery({ data: null, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -242,7 +264,7 @@ describe("listing.service", () => {
       })
     })
 
-    it("retorna um erro seguro quando a consulta falha", async () => {
+    it("returns a safe error when the query fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -259,7 +281,7 @@ describe("listing.service", () => {
   })
 
   describe("getListingsForOwner", () => {
-    it("lista apenas os anúncios do usuário, mais recentes primeiro", async () => {
+    it("lists only the user's listings, newest first", async () => {
       const query = createQuery({ data: [createRow()], error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -281,7 +303,7 @@ describe("listing.service", () => {
       }
     })
 
-    it("limita a consulta a no máximo 200 registros", async () => {
+    it("limits the query to at most 200 records", async () => {
       const query = createQuery({ data: [], error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -292,7 +314,7 @@ describe("listing.service", () => {
       expect(query.limit).toHaveBeenLastCalledWith(1)
     })
 
-    it("retorna um erro seguro quando a consulta falha", async () => {
+    it("returns a safe error when the query fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -308,8 +330,137 @@ describe("listing.service", () => {
     })
   })
 
+  describe("getOwnerListingDashboard", () => {
+    it("uses the full-text search RPC without exposing the seller to the client", async () => {
+      const query = createQuery({ data: [], error: null })
+      supabaseMocks.from.mockReturnValue(query)
+      supabaseMocks.rpc.mockResolvedValue({
+        data: [ownerSearchRow],
+        error: null,
+      })
+
+      const result = await getOwnerListingDashboard(sellerId, {
+        status: "active",
+        query: "iphone",
+        sort: "recent",
+        page: 1,
+        pageSize: 12,
+      })
+
+      expect(supabaseMocks.rpc).toHaveBeenCalledWith("search_owner_listings", {
+        p_search_term: "iphone",
+        p_status: "active",
+        p_sort: "recent",
+        p_limit: 12,
+        p_offset: 0,
+      })
+      expect(result.ok).toBe(true)
+
+      if (result.ok) {
+        expect(result.data.page.total).toBe(1)
+        expect(result.data.page.items[0]).toMatchObject({
+          id: listingId,
+          title: ownerSearchRow.title,
+          status: "active",
+        })
+        expect(result.data.page.items[0].image?.url).toBe(
+          `https://cdn.example.com/${sellerId}/photo-1.png`,
+        )
+      }
+    })
+
+    it("recovers the total and items when the requested page is out of range", async () => {
+      const query = createQuery({ data: [], error: null })
+      supabaseMocks.from.mockReturnValue(query)
+      supabaseMocks.rpc
+        .mockResolvedValueOnce({ data: [], error: null })
+        .mockResolvedValueOnce({ data: [ownerSearchRow], error: null })
+
+      const result = await getOwnerListingDashboard(sellerId, {
+        status: "all",
+        query: "iphone",
+        sort: "recent",
+        page: 99,
+        pageSize: 6,
+      })
+
+      expect(supabaseMocks.rpc).toHaveBeenNthCalledWith(
+        1,
+        "search_owner_listings",
+        expect.objectContaining({ p_offset: 588 }),
+      )
+      expect(supabaseMocks.rpc).toHaveBeenNthCalledWith(
+        2,
+        "search_owner_listings",
+        expect.objectContaining({ p_offset: 0 }),
+      )
+      expect(result.ok).toBe(true)
+
+      if (result.ok) {
+        expect(result.data.page.total).toBe(1)
+        expect(result.data.page.page).toBe(1)
+        expect(result.data.page.totalPages).toBe(1)
+        expect(result.data.page.items).toHaveLength(1)
+      }
+    })
+
+    it("rejects partially malformed responses", async () => {
+      const consoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined)
+      const query = createQuery({ data: [], error: null })
+      supabaseMocks.from.mockReturnValue(query)
+      supabaseMocks.rpc.mockResolvedValue({
+        data: [ownerSearchRow, { id: "invalido" }],
+        error: null,
+      })
+
+      await expect(
+        getOwnerListingDashboard(sellerId, {
+          status: "all",
+          query: "iphone",
+          sort: "recent",
+          page: 1,
+          pageSize: 12,
+        }),
+      ).resolves.toEqual({
+        ok: false,
+        error: "Não foi possível carregar o anúncio.",
+      })
+
+      consoleError.mockRestore()
+    })
+
+    it("returns a safe error when the search RPC fails", async () => {
+      const consoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined)
+      const query = createQuery({ data: [], error: null })
+      supabaseMocks.from.mockReturnValue(query)
+      supabaseMocks.rpc.mockResolvedValue({
+        data: null,
+        error: { message: "boom" },
+      })
+
+      await expect(
+        getOwnerListingDashboard(sellerId, {
+          status: "all",
+          query: "iphone",
+          sort: "recent",
+          page: 1,
+          pageSize: 12,
+        }),
+      ).resolves.toEqual({
+        ok: false,
+        error: "Não foi possível carregar o anúncio.",
+      })
+
+      consoleError.mockRestore()
+    })
+  })
+
   describe("createListing", () => {
-    it("cria como rascunho, associa imagens e publica quando solicitado", async () => {
+    it("creates a draft, attaches images and publishes when requested", async () => {
       const insertQuery = createQuery({
         data: { id: listingId },
         error: null,
@@ -365,7 +516,7 @@ describe("listing.service", () => {
       }
     })
 
-    it("mantém o rascunho quando a publicação não é solicitada", async () => {
+    it("keeps the draft when publishing is not requested", async () => {
       const insertQuery = createQuery({ data: { id: listingId }, error: null })
       const reloadQuery = createQuery({ data: createRow(), error: null })
 
@@ -385,7 +536,7 @@ describe("listing.service", () => {
       expect(result.ok).toBe(true)
     })
 
-    it("remove o anúncio quando a associação das imagens falha", async () => {
+    it("removes the listing when image association fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -419,7 +570,7 @@ describe("listing.service", () => {
       consoleError.mockRestore()
     })
 
-    it("retorna um erro seguro quando o insert falha", async () => {
+    it("returns a safe error when the insert fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -445,7 +596,7 @@ describe("listing.service", () => {
       consoleError.mockRestore()
     })
 
-    it("informa o rascunho salvo quando a publicação falha", async () => {
+    it("reports the saved draft when publishing fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -478,7 +629,7 @@ describe("listing.service", () => {
   })
 
   describe("updateListing", () => {
-    it("rejeita ids inválidos sem consultar o banco", async () => {
+    it("rejects invalid ids without querying the database", async () => {
       await expect(
         updateListing({
           userId: sellerId,
@@ -495,7 +646,7 @@ describe("listing.service", () => {
       expect(supabaseMocks.createClient).not.toHaveBeenCalled()
     })
 
-    it("não edita anúncio de outro usuário", async () => {
+    it("does not edit another user's listing", async () => {
       const query = createQuery({ data: null, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -516,7 +667,7 @@ describe("listing.service", () => {
       expect(supabaseMocks.rpc).not.toHaveBeenCalled()
     })
 
-    it("atualiza os campos, substitui as imagens e limpa arquivos removidos", async () => {
+    it("updates fields, replaces images and removes deleted files", async () => {
       const currentQuery = createQuery({
         data: createRow({
           images: [
@@ -589,7 +740,7 @@ describe("listing.service", () => {
       expect(result.ok).toBe(true)
     })
 
-    it("não desfaz a edição quando a limpeza do Storage falha", async () => {
+    it("does not roll back the edit when Storage cleanup fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -639,7 +790,7 @@ describe("listing.service", () => {
       consoleError.mockRestore()
     })
 
-    it("sinaliza quando os campos salvam mas as imagens falham", async () => {
+    it("reports when fields save but images fail", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -674,7 +825,7 @@ describe("listing.service", () => {
       consoleError.mockRestore()
     })
 
-    it("retorna um erro seguro quando a atualização dos campos falha", async () => {
+    it("returns a safe error when the field update fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -708,7 +859,7 @@ describe("listing.service", () => {
   })
 
   describe("publishListing", () => {
-    it("exige pelo menos uma imagem para publicar", async () => {
+    it("requires at least one image to publish", async () => {
       const query = createQuery({
         data: createRow({ images: [] }),
         error: null,
@@ -723,7 +874,7 @@ describe("listing.service", () => {
       expect(query.update).not.toHaveBeenCalled()
     })
 
-    it("publica apenas o anúncio do próprio usuário", async () => {
+    it("publishes only the user's own listing", async () => {
       const currentQuery = createQuery({ data: createRow(), error: null })
       const updateQuery = createQuery({ data: null, error: null })
 
@@ -743,7 +894,7 @@ describe("listing.service", () => {
       }
     })
 
-    it("retorna um erro seguro quando a publicação falha", async () => {
+    it("returns a safe error when publishing fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)
@@ -767,7 +918,7 @@ describe("listing.service", () => {
       consoleError.mockRestore()
     })
 
-    it("não publica anúncio de outro usuário", async () => {
+    it("does not publish another user's listing", async () => {
       const query = createQuery({ data: null, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -780,7 +931,7 @@ describe("listing.service", () => {
   })
 
   describe("pauseListing", () => {
-    it("pausa o anúncio do próprio usuário", async () => {
+    it("pauses the user's own listing", async () => {
       const currentQuery = createQuery({
         data: createRow({ status: "active" }),
         error: null,
@@ -802,7 +953,7 @@ describe("listing.service", () => {
       }
     })
 
-    it("não pausa anúncio de outro usuário", async () => {
+    it("does not pause another user's listing", async () => {
       const query = createQuery({ data: null, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -815,7 +966,7 @@ describe("listing.service", () => {
   })
 
   describe("deleteListing", () => {
-    it("exclui o anúncio e apenas os arquivos do próprio usuário", async () => {
+    it("deletes the listing and only the user's own files", async () => {
       const currentQuery = createQuery({
         data: createRow({
           images: [
@@ -862,7 +1013,7 @@ describe("listing.service", () => {
       expect(result).toEqual({ ok: true, data: { id: listingId } })
     })
 
-    it("não exclui anúncio de outro usuário", async () => {
+    it("does not delete another user's listing", async () => {
       const query = createQuery({ data: null, error: null })
       supabaseMocks.from.mockReturnValue(query)
 
@@ -874,7 +1025,7 @@ describe("listing.service", () => {
       expect(supabaseMocks.remove).not.toHaveBeenCalled()
     })
 
-    it("retorna um erro seguro quando a exclusão falha", async () => {
+    it("returns a safe error when deletion fails", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined)

@@ -232,6 +232,9 @@ psql "$DATABASE_URL" -f migrations/0011_products_catalog_index.sql
 # Seller chat counters in a single round-trip (after 0007).
 psql "$DATABASE_URL" -f migrations/0012_seller_chat_metrics.sql
 
+# Full-text search: generated tsvector, GIN index, synonyms and RPCs (after 0012).
+psql "$DATABASE_URL" -f migrations/0013_full_text_search.sql
+
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
@@ -529,27 +532,26 @@ Review query plans as the dataset grows.
 
 ## 20. Search
 
-The initial implementation can use PostgreSQL capabilities appropriate
-to the MVP.
+Search uses native PostgreSQL full-text search (no vector/embeddings pipeline):
 
-Search should support:
-
-- Product title.
-- Description where appropriate.
-- Category.
-- Price.
-- Location.
-
-Search parameters should preferably be represented in the URL.
+- `products.search_vector` is generated from title (weight A) and description
+  (weight C) with `unaccent` and the `portuguese` configuration, backed by a GIN
+  index.
+- `search_products` and `search_owner_listings` are `SECURITY INVOKER` RPCs;
+  they apply RLS, weight title above description, expand curated aliases from
+  `product_search_synonyms` and fall back to `pg_trgm` similarity only when no
+  FTS match exists.
+- Search parameters stay in the URL. With a term, `sort=relevance` is the
+  default; without one, `sort=recent` remains the default.
 
 Example:
 
 ```text
-/products?q=iphone&category=electronics&sort=recent
+/products?q=iphone&category=celulares&sort=relevance
 ```
 
-For larger datasets, evaluate PostgreSQL full-text search or a dedicated
-search solution.
+For a much larger corpus, re-evaluate relevance tuning or a dedicated search
+solution. Do not add embeddings without a semantic-use case.
 
 ## 21. Pagination
 

@@ -14,7 +14,9 @@ import {
 import { getLocationCities } from "../utils/catalog-options"
 import {
   PRODUCT_SELECT,
+  isProductSearchRow,
   mapProductDetail,
+  mapProductSearchRow,
   mapProductSummary,
   type MapProductOptions,
   type ProductRow,
@@ -52,16 +54,6 @@ function createMapperOptions(): MapProductOptions {
         .getPublicUrl(storagePath).data.publicUrl
     },
   }
-}
-
-/**
- * Sanitiza o termo de busca antes de montar o filtro `or` do PostgREST.
- *
- * Vírgulas e curingas são removidos para impedir que o texto digitado altere a
- * estrutura do filtro.
- */
-function sanitizeSearchTerm(value: string): string {
-  return value.replace(/[,%_()\\*]/g, " ").replace(/\s+/g, " ").trim()
 }
 
 export async function getProductCategories(): Promise<
@@ -162,6 +154,60 @@ export async function getProducts(
 
   try {
     const supabase = getPublicSupabaseClient()
+    const from = (filters.page - 1) * filters.pageSize
+    const cities = getLocationCities(filters.location)
+
+    // Full-text search runs in the database: ranking, synonym expansion and
+    // the total count all come from the same RPC call.
+    if (filters.q.trim()) {
+      const { data, error } = await supabase.rpc("search_products", {
+        p_search_term: filters.q,
+        p_category_slug: filters.category,
+        p_min_price: filters.minPrice,
+        p_max_price: filters.maxPrice,
+        p_cities: cities,
+        p_condition: filters.condition,
+        p_limit: filters.pageSize,
+        p_offset: from,
+        p_sort: filters.sort,
+      })
+
+      if (error) {
+        return failure("getProducts search", error)
+      }
+
+      if (!Array.isArray(data)) {
+        return failure(
+          "getProducts search",
+          new Error("Resposta inesperada da busca"),
+        )
+      }
+
+      const rows = data.filter(isProductSearchRow)
+
+      if (rows.length !== data.length) {
+        return failure("getProducts search", new Error("Linhas de busca inválidas"))
+      }
+
+      const total = rows.length > 0 ? Number(rows[0].total_count ?? 0) : 0
+
+      if (!Number.isFinite(total)) {
+        return failure("getProducts search", new Error("Total de busca inválido"))
+      }
+
+      const options = createMapperOptions()
+
+      return {
+        ok: true,
+        data: {
+          items: rows.map((row) => mapProductSearchRow(row, options)),
+          total,
+          page: filters.page,
+          pageSize: filters.pageSize,
+          totalPages: Math.ceil(total / filters.pageSize),
+        },
+      }
+    }
 
     let categoryId: string | null = null
 
@@ -190,7 +236,6 @@ export async function getProducts(
       }
     }
 
-    const from = (filters.page - 1) * filters.pageSize
     const to = from + filters.pageSize - 1
 
     let query = supabase
@@ -216,18 +261,8 @@ export async function getProducts(
       query = query.lte("price", filters.maxPrice)
     }
 
-    const cities = getLocationCities(filters.location)
-
     if (cities && cities.length > 0) {
       query = query.in("city", cities)
-    }
-
-    const searchTerm = sanitizeSearchTerm(filters.q)
-
-    if (searchTerm) {
-      query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
-      )
     }
 
     switch (filters.sort) {
