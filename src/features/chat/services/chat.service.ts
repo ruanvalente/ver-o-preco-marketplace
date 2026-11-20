@@ -42,6 +42,9 @@ const CONVERSATION_SELECT = `
   seller:profiles!conversations_seller_id_fkey ( id, display_name, avatar_path )
 `;
 
+const MESSAGE_SELECT =
+  "id, conversation_id, sender_id, message_type, content, attachment_path, created_at, read_at";
+
 type ChatConversationRow = {
   conversation_id: string;
   product_id: string;
@@ -445,9 +448,7 @@ export async function getConversationMessages(
   const supabase = await createClient();
   let query = supabase
     .from("messages")
-    .select(
-      "id, conversation_id, sender_id, message_type, content, attachment_path, created_at, read_at",
-    )
+    .select<typeof MESSAGE_SELECT, MessageRow>(MESSAGE_SELECT)
     .eq("conversation_id", conversationId);
 
   if (before) {
@@ -466,7 +467,7 @@ export async function getConversationMessages(
     return { ok: false, error: MESSAGE_LOAD_ERROR };
   }
 
-  const rows = (data ?? []) as MessageRow[];
+  const rows = data ?? [];
   const hasMore = rows.length > CHAT_MESSAGE_PAGE_SIZE;
   const page = rows.slice(0, CHAT_MESSAGE_PAGE_SIZE).reverse();
 
@@ -512,9 +513,7 @@ export async function sendChatMessage(input: {
       content: input.content,
       attachment_path: input.attachmentPath,
     })
-    .select(
-      "id, conversation_id, sender_id, message_type, content, attachment_path, created_at, read_at",
-    )
+    .select<typeof MESSAGE_SELECT, MessageRow>(MESSAGE_SELECT)
     .single();
 
   if (error || !data) {
@@ -522,12 +521,10 @@ export async function sendChatMessage(input: {
     return { ok: false, error: MESSAGE_SAVE_ERROR };
   }
 
-  const message = mapMessage(data as MessageRow);
+  const message = mapMessage(data);
 
   if (message.attachmentPath) {
-    const [signedMessage] = await addSignedImageUrls(supabase, [
-      data as MessageRow,
-    ]);
+    const [signedMessage] = await addSignedImageUrls(supabase, [data]);
     return { ok: true, data: signedMessage };
   }
 
