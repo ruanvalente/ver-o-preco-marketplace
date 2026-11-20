@@ -243,6 +243,10 @@ The seed is idempotent and attaches demo listings to the oldest profile. It
 uses local images under `public/products/` so the catalog works without
 uploading files to Storage.
 
+Apply `migrations/0015_tighten_fuzzy_search.sql` after 0013 once the fuzzy
+fallback needs whole-word matching. It recreates both search RPCs in full, so
+it can be applied on top of 0013 or 0014.
+
 ## 9. Storage
 
 Initial storage areas:
