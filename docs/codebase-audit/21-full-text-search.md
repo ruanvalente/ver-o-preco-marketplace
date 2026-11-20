@@ -645,7 +645,7 @@ Não execute alterações antes dessa aprovação.
 
 # RESOLUÇÃO (2026-11-20)
 
-Plano aprovado pelo usuário e registrado em `docs/plans/016-full-text-search.md`. Issue de acompanhamento: #56 (`audit`, `enhancement`, `P1`), atribuída a `ruanvalente` e assinada por Ruan Valente.
+Plano aprovado pelo usuário e registrado em `docs/plans/016-full-text-search.md`. Issue de acompanhamento: #56 (`audit`, `enhancement`, `P1`), atribuída a `ruanvalente` e assinada por `@ruanvalente`.
 
 Implementação entregue: `migrations/0013_full_text_search.sql` (extensão `unaccent`, coluna gerada `search_vector` com pesos A/C, índice GIN, tabela `product_search_synonyms` com RLS, helper `build_product_search_query` e RPCs `search_products`/`search_owner_listings` como `SECURITY INVOKER`), mapeamento nos serviços de `products` e `listings`, opção `relevance` como padrão quando há `q`, testes Vitest atualizados.
 

@@ -66,7 +66,7 @@ Cenários SQL: `telefone`, `telefones`, `celular`, `smartphone`, `iphone`, `tele
 
 ## 9. Validação e documentação
 
-`bun run typecheck`, `bun run lint`, `bun run test`, `bun run build`; revisão com `reviewer`, `architect` e `security-reviewer`; nota de resolução em `docs/codebase-audit/21-full-text-search.md`. Identidade do responsável obtida via `gh api user` (login `ruanvalente`), assinatura `Signed-off-by: Ruan Valente <contato.ruanvalente@gmail.com>`. Labels: `audit`, `enhancement`, `P1` (já existentes).
+`bun run typecheck`, `bun run lint`, `bun run test`, `bun run build`; revisão com `reviewer`, `architect` e `security-reviewer`; nota de resolução em `docs/codebase-audit/21-full-text-search.md`. Identidade do responsável obtida via `gh api user` (login `ruanvalente`), assinatura `@ruanvalente`. Labels: `audit`, `enhancement`, `P1` (já existentes).
 
 ## 10. Ajustes pós-revisão
 
