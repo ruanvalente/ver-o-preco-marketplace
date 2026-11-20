@@ -8,13 +8,30 @@ Válidos para **toda** feature ou correção de bug. Estes gates não podem ser 
 
 1. **Análise** — investigar código, docs e issues; carregar as skills necessárias. Não criar branch nem tocar em arquivos de implementação.
 2. **Proposta** — apresentar solução, arquivos afetados, riscos e critérios de aceite. Parar e aguardar autorização explícita do usuário.
-3. **Bug primeiro** — se for bug fix (regressão ou comportamento incorreto), criar a issue no GitHub **em inglês**, com título e corpo alinhados à análise, antes de qualquer branch ou código. A issue também passa pela revisão do usuário. Melhorias de auditoria não exigem nova issue: usa-se a issue existente.
+3. **Bug primeiro** — se for bug fix (regressão ou comportamento incorreto), criar a issue no GitHub **em inglês**, com título e corpo alinhados à análise, antes de qualquer branch ou código. O título começa com um prefixo em maiúsculas que identifica o tipo de trabalho, seguido de dois-pontos e de um resumo curto (ver [Prefixos de títulos de issues](#prefixos-de-títulos-de-issues)). A issue também passa pela revisão do usuário. Melhorias de auditoria não exigem nova issue: usa-se a issue existente.
 4. **Branch e implementação** — após a autorização, criar branch a partir de `develop` com nome condizente (`fix/issue-<n>-<slug>` ou `feat/issue-<n>-<slug>`) e implementar somente o escopo aprovado.
 5. **Revisão da implementação** — ao concluir, incluindo os gates de *Validation* abaixo, devolver o trabalho ao usuário. Não commitar, fazer push nem abrir PR neste ponto.
 6. **Commit, PR e fechamento** — somente após o feedback de aprovação da revisão: commit com mensagem **em inglês**, detalhada e objetiva; PR também em inglês; fechar a issue relacionada explicando o que foi entregue.
 7. Push e deploy continuam exigindo confirmação explícita e separada (ver `security.md`).
 
 Os gates abaixo complementam este fluxo: *Context* + *Analysis* correspondem ao passo 1, *Planning* ao passo 2, e *Implementation* a *Documentation* aos passos 4 e 5.
+
+## Prefixos de títulos de issues
+
+Todo título de issue começa com um prefixo em maiúsculas seguido de `:` e de um resumo em inglês. O prefixo identifica o tipo de trabalho entregue, não o estado da issue.
+
+| Prefixo | Tipo de trabalho |
+| --- | --- |
+| `BUG` | Regressão ou comportamento incorreto |
+| `FEAT` | Nova funcionalidade |
+| `REFACTOR` | Mudança interna sem alteração de comportamento |
+| `CI` | Pipeline, build ou automação |
+| `DOC` | Documentação |
+| `TEST` | Testes |
+
+Exemplo: `BUG: Catalog search fails with ambiguous column reference in search RPCs`.
+
+Os labels do GitHub (`bug`, `P1`, etc.) continuam sendo usados normalmente: o prefixo não os substitui. Os nomes das branches mantêm o padrão `fix/`, `feat/`, `docs/` etc. descrito no gate 4 — o prefixo do título não altera a convenção de branches. Títulos e corpos de issues e PRs permanecem em inglês.
 
 ## 1. Context
 
