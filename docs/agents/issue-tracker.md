@@ -4,7 +4,7 @@ Issues e specs deste repo ficam no GitHub Issues. Use o `gh` CLI para todas as o
 
 ## Convenções
 
-- **Criar issue**: `gh issue create --title "..." --body "..."` (use heredoc para corpos com múltiplas linhas).
+- **Criar issue**: `gh issue create --title "..." --body "..."` (use heredoc para corpos com múltiplas linhas). Issues de bug criadas pelo fluxo de aprovação devem ter título e corpo em inglês — ver `docs/ai/workflow.md` (gates de aprovação do usuário).
 - **Ler issue**: `gh issue view <numero> --json number,title,body,labels,comments`.
 - **Listar issues**: `gh issue list --state open --json number,title,labels --jq '.[] | {number, title, labels: [.labels[].name]}'`, com filtros `--label` e `--state` conforme necessário.
 - **Sub-issue**: `gh issue create --parent <pai> ...` ou `gh issue edit <pai> --add-sub-issue <filha>` (`gh` 2.94+). Em versões antigas, use `gh api --method POST repos/<owner>/<repo>/issues/<pai>/sub_issues -F sub_issue_id=<id-do-banco-da-filha>`. Sem sub-issues, coloque `Part of #<pai>` no topo da issue filha.
