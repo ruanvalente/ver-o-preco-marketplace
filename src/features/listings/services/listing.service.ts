@@ -104,7 +104,7 @@ export async function getListingForOwner(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("products")
-      .select(LISTING_SELECT)
+      .select<typeof LISTING_SELECT, ListingRow>(LISTING_SELECT)
       .eq("id", listingId)
       .eq("seller_id", userId)
       .maybeSingle();
@@ -119,10 +119,7 @@ export async function getListingForOwner(
 
     return {
       ok: true,
-      data: mapListing(
-        data as unknown as ListingRow,
-        createMapperOptions(supabase),
-      ),
+      data: mapListing(data, createMapperOptions(supabase)),
     };
   } catch (error) {
     return failure("getListingForOwner", error);
@@ -180,7 +177,7 @@ export async function getListingsForOwner(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("products")
-      .select(LISTING_SELECT)
+      .select<typeof LISTING_SELECT, ListingRow>(LISTING_SELECT)
       .eq("seller_id", userId)
       .neq("status", "removed")
       .order("updated_at", { ascending: false })
@@ -194,9 +191,7 @@ export async function getListingsForOwner(
 
     return {
       ok: true,
-      data: ((data ?? []) as unknown as ListingRow[]).map((row) =>
-        mapListingSummary(row, options),
-      ),
+      data: (data ?? []).map((row) => mapListingSummary(row, options)),
     };
   } catch (error) {
     return failure("getListingsForOwner", error);
@@ -281,7 +276,9 @@ export async function getOwnerListingDashboard(
     const makeListingQuery = () => {
       let query = supabase
         .from("products")
-        .select(LISTING_SELECT, { count: "exact" })
+        .select<typeof LISTING_SELECT, ListingRow>(LISTING_SELECT, {
+          count: "exact",
+        })
         .eq("seller_id", userId)
         .neq("status", "removed");
 
@@ -353,8 +350,8 @@ export async function getOwnerListingDashboard(
           sold: soldCount.count ?? 0,
         },
         page: {
-          items: ((pageResult.data ?? []) as unknown as ListingRow[]).map(
-            (row) => mapListingSummary(row, mapperOptions),
+          items: (pageResult.data ?? []).map((row) =>
+            mapListingSummary(row, mapperOptions),
           ),
           total,
           page,

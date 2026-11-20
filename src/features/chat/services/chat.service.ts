@@ -26,6 +26,22 @@ const CONVERSATION_START_ERROR =
   "Não foi possível iniciar uma conversa para este anúncio.";
 const READ_STATE_ERROR = "Não foi possível atualizar o status de leitura.";
 
+const CONVERSATION_SELECT = `
+  id,
+  buyer_id,
+  seller_id,
+  product:products!conversations_product_id_fkey (
+    id,
+    title,
+    price,
+    city,
+    neighborhood,
+    images:product_images ( storage_path, is_primary, sort_order )
+  ),
+  buyer:profiles!conversations_buyer_id_fkey ( id, display_name, avatar_path ),
+  seller:profiles!conversations_seller_id_fkey ( id, display_name, avatar_path )
+`;
+
 type ChatConversationRow = {
   conversation_id: string;
   product_id: string;
@@ -339,11 +355,11 @@ export async function getChatConversations(
     return { ok: false, error: CHAT_LOAD_ERROR };
   }
 
+  const rows: ChatConversationRow[] = Array.isArray(data) ? data : [];
+
   return {
     ok: true,
-    data: ((data ?? []) as unknown as ChatConversationRow[]).map((row) =>
-      mapConversation(supabase, row),
-    ),
+    data: rows.map((row) => mapConversation(supabase, row)),
   };
 }
 
@@ -393,23 +409,7 @@ export async function getConversation(
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("conversations")
-    .select(
-      `
-        id,
-        buyer_id,
-        seller_id,
-        product:products!conversations_product_id_fkey (
-          id,
-          title,
-          price,
-          city,
-          neighborhood,
-          images:product_images ( storage_path, is_primary, sort_order )
-        ),
-        buyer:profiles!conversations_buyer_id_fkey ( id, display_name, avatar_path ),
-        seller:profiles!conversations_seller_id_fkey ( id, display_name, avatar_path )
-      `,
-    )
+    .select<typeof CONVERSATION_SELECT, ConversationRow>(CONVERSATION_SELECT)
     .eq("id", conversationId)
     .maybeSingle();
 
@@ -422,11 +422,7 @@ export async function getConversation(
     return { ok: true, data: null };
   }
 
-  const details = mapConversationDetails(
-    supabase,
-    data as unknown as ConversationRow,
-    userId,
-  );
+  const details = mapConversationDetails(supabase, data, userId);
 
   return details
     ? { ok: true, data: details }

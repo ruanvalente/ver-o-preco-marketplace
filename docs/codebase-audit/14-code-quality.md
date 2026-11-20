@@ -78,3 +78,7 @@ Uso de feature-first, mappers, services, actions, schemas.
 1. Extrair componentes.
 2. Remover imports.
 3. Definir tipos.
+
+## Resultado da execução (Issue #29 — Phase 14)
+
+> **Atualização (Issue #29 — Phase 14):** os critérios de aceite foram atendidos. `seller-dashboard.tsx` (109 linhas) e `products-catalog.tsx` (161 linhas) já estavam abaixo de 200 linhas; os imports mortos de `profile/*` foram resolvidos na issue #22; `products.service.ts` não continha mais casts (a auditoria estava desatualizada). Os cinco `as unknown as` restantes foram removidos: quatro em consultas `.from()` de `listing.service.ts` e `chat.service.ts` via `.select<Query, Row>()`, mesma convenção do plano 013 e das features de produtos/favoritos; o quinto, no RPC `get_chat_conversations`, virou guarda `Array.isArray`, padrão já usado por `getSellerChatMetrics` — um payload não-array passa a devolver lista vazia em vez de estourar no `.map()`. A tipagem das consultas é em tempo de compilação, sem nova dependência ou mudança no mapeamento. Também foram removidos os três warnings de lint ainda presentes em `src/` (`AuthHeader`, `ShieldCheck` e o `params` não usado em `generateMetadata`). `getChatConversations` passou a ter testes de mapeamento e de payload não-array; os mocks de builder não precisaram de ajuste porque generics são apagados em runtime.

@@ -5,8 +5,7 @@ type ProfilePageProps = {
   params: Promise<{ id: string }>
 }
 
-export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
-  const { id } = await params
+export function generateMetadata(): Metadata {
   return {
     title: "Perfil | Ver-o-Preço",
   }
