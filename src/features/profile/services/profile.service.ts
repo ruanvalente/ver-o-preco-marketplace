@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { mapAuthError } from "@/features/auth/utils/auth-errors";
 import { AVATAR_BUCKET_NAME } from "../constants";
 import type { Profile, ProfileUpdateInput } from "../types/profile.types";
 import { validateProfileUpdate } from "../schemas/profile.schemas";

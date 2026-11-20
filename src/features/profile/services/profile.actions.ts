@@ -37,7 +37,7 @@ export async function updateProfileAction(
     revalidatePath("/");
 
     return { status: "success", message: "Perfil atualizado com sucesso." };
-  } catch (error) {
+  } catch {
     return { status: "error", message: "Não foi possível atualizar o perfil." };
   }
 }
