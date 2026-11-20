@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CHAT_SIGNED_URL_TTL_SECONDS } from "../constants";
 import {
   checkConversationParticipation,
+  getChatConversations,
   getConversationMessages,
   getSellerChatMetrics,
   sendChatMessage,
@@ -68,6 +69,70 @@ function messageRow(overrides: Record<string, unknown> = {}) {
     ...overrides,
   };
 }
+
+function conversationRow(overrides: Record<string, unknown> = {}) {
+  return {
+    conversation_id: conversationId,
+    product_id: "55555555-5555-4555-8555-555555555555",
+    product_title: "Açaí",
+    product_price: "12.50",
+    product_city: "Belém",
+    product_neighborhood: "Ver-o-Peso",
+    product_image_path: null,
+    other_user_id: userId,
+    other_display_name: "  Maria  ",
+    other_avatar_path: null,
+    last_message_id: "66666666-6666-4666-8666-666666666666",
+    last_message_type: "image",
+    last_message_content: null,
+    last_message_sender_id: userId,
+    last_message_created_at: "2026-11-13T14:00:00.000Z",
+    unread_count: "3",
+    updated_at: "2026-11-13T14:01:00.000Z",
+    ...overrides,
+  };
+}
+
+describe("getChatConversations", () => {
+  it("maps RPC rows to chat conversations", async () => {
+    rpcMock.mockResolvedValue({ data: [conversationRow()], error: null });
+    mocks.createClient.mockReturnValue(createMockClient([]));
+
+    const result = await getChatConversations(10, 0);
+
+    expect(result.ok).toBe(true);
+    expect(result).toMatchObject({
+      ok: true,
+      data: [
+        {
+          id: conversationId,
+          participant: { id: userId, displayName: "Maria" },
+          product: {
+            title: "Açaí",
+            price: 12.5,
+            location: "Belém - Ver-o-Peso",
+            imageUrl: null,
+          },
+          lastMessage: { type: "image", content: null },
+          unreadCount: 3,
+        },
+      ],
+    });
+    expect(rpcMock).toHaveBeenCalledWith("get_chat_conversations", {
+      p_limit: 10,
+      p_offset: 0,
+    });
+  });
+
+  it("returns an empty list when the RPC payload is not an array", async () => {
+    rpcMock.mockResolvedValue({ data: { unexpected: true }, error: null });
+    mocks.createClient.mockReturnValue(createMockClient([]));
+
+    const result = await getChatConversations();
+
+    expect(result).toEqual({ ok: true, data: [] });
+  });
+});
 
 describe("chat service image signing", () => {
   beforeEach(() => {

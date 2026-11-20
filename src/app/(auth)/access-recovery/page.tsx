@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { AccessRecoveryPage } from "@/features/auth/components/access-recovery/access-recovery-page";
-import { AuthHeader } from "@/features/auth/components/shared/auth-header";
 
 export const metadata: Metadata = {
   title: "Recuperação de Acesso | Ver-o-Preço",

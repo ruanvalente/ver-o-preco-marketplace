@@ -1,5 +1,3 @@
-import { ShieldCheck } from "lucide-react";
-
 import { HelpCard } from "./help-card";
 import { NextStepPreviewCard } from "./next-step-preview-card";
 import { RecoveryStepCard } from "./recovery-step-card";
