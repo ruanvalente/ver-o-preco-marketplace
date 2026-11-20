@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CHAT_SIGNED_URL_TTL_SECONDS } from "../constants";
 import {
   getConversationMessages,
+  getSellerChatMetrics,
   sendChatMessage,
 } from "../services/chat.service";
 
@@ -210,6 +211,96 @@ describe("chat service image signing", () => {
         data: { messages: [{ imageUrl: null }] },
       });
       expect(createSignedUrlsMock).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe("getSellerChatMetrics", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("loads the three counters with a single RPC", async () => {
+    const client = createMockClient([]);
+    mocks.createClient.mockReturnValue(client);
+    rpcMock.mockResolvedValue({
+      data: [
+        {
+          conversation_count: 3,
+          received_message_count: 7,
+          unread_message_count: 2,
+        },
+      ],
+      error: null,
+    });
+
+    const result = await getSellerChatMetrics(userId);
+
+    expect(result).toEqual({
+      ok: true,
+      data: {
+        conversationCount: 3,
+        receivedMessageCount: 7,
+        unreadMessageCount: 2,
+      },
+    });
+    expect(rpcMock).toHaveBeenCalledTimes(1);
+    expect(rpcMock).toHaveBeenCalledWith("get_seller_chat_metrics", {
+      p_seller_id: userId,
+    });
+    expect(client.from).not.toHaveBeenCalled();
+  });
+
+  it("coerces bigint counters returned as strings", async () => {
+    mocks.createClient.mockReturnValue(createMockClient([]));
+    rpcMock.mockResolvedValue({
+      data: [
+        {
+          conversation_count: "4",
+          received_message_count: "12",
+          unread_message_count: "0",
+        },
+      ],
+      error: null,
+    });
+
+    const result = await getSellerChatMetrics(userId);
+
+    expect(result).toMatchObject({
+      ok: true,
+      data: {
+        conversationCount: 4,
+        receivedMessageCount: 12,
+        unreadMessageCount: 0,
+      },
+    });
+  });
+
+  it("returns zeros when the RPC has no rows", async () => {
+    mocks.createClient.mockReturnValue(createMockClient([]));
+    rpcMock.mockResolvedValue({ data: [], error: null });
+
+    const result = await getSellerChatMetrics(userId);
+
+    expect(result).toEqual({
+      ok: true,
+      data: {
+        conversationCount: 0,
+        receivedMessageCount: 0,
+        unreadMessageCount: 0,
+      },
+    });
+  });
+
+  it("returns a human error when the RPC fails", async () => {
+    mocks.createClient.mockReturnValue(createMockClient([]));
+    rpcMock.mockResolvedValue({ data: null, error: { message: "boom" } });
+
+    const result = await getSellerChatMetrics(userId);
+
+    expect(result).toEqual({
+      ok: false,
+      error: "Não foi possível carregar suas conversas.",
     });
   });
 });

@@ -229,6 +229,9 @@ psql "$DATABASE_URL" -f migrations/0010_chat_signed_url_authorization.sql
 # Composite catalog index for city filters plus newest-first ordering (after 0003).
 psql "$DATABASE_URL" -f migrations/0011_products_catalog_index.sql
 
+# Seller chat counters in a single round-trip (after 0007).
+psql "$DATABASE_URL" -f migrations/0012_seller_chat_metrics.sql
+
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
@@ -369,6 +372,11 @@ seller from an active listing and runs as the caller, so RLS remains in force.
 Participants can still read their product context after its status changes.
 The `get_chat_conversations` function returns a bounded, participant-scoped
 inbox summary including the latest message and unread count.
+
+`get_seller_chat_metrics` in `migrations/0012_seller_chat_metrics.sql` returns
+the seller's conversation, received-message and unread-message counters in a
+single call. It runs as `SECURITY INVOKER`, so RLS stays in force, and checks
+`p_seller_id` against `auth.uid()` inside the function as defense in depth.
 
 `migrations/0008_chat_rls_recursion_fix.sql` replaces the product participant
 policy's inline query of `conversations` with a narrowly scoped boolean helper.

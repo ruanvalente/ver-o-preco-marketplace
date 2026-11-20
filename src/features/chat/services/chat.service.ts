@@ -314,55 +314,31 @@ export async function getChatConversations(
 
 /**
  * Counts seller-side chat activity without returning message contents.
- * The session's RLS policies remain in force alongside the explicit owner
- * filter.
+ * `get_seller_chat_metrics` runs as the caller, so RLS stays in force, and
+ * rechecks the seller id against auth.uid() inside the database.
  */
 export async function getSellerChatMetrics(
   sellerId: string,
 ): Promise<ChatServiceResult<SellerChatMetrics>> {
   try {
     const supabase = await createClient();
-    const [conversations, receivedMessages, unreadMessages] = await Promise.all(
-      [
-        supabase
-          .from("conversations")
-          .select("id", { count: "exact", head: true })
-          .eq("seller_id", sellerId),
-        supabase
-          .from("messages")
-          .select("id, conversations!inner(seller_id)", {
-            count: "exact",
-            head: true,
-          })
-          .eq("conversations.seller_id", sellerId)
-          .neq("sender_id", sellerId),
-        supabase
-          .from("messages")
-          .select("id, conversations!inner(seller_id)", {
-            count: "exact",
-            head: true,
-          })
-          .eq("conversations.seller_id", sellerId)
-          .neq("sender_id", sellerId)
-          .is("read_at", null),
-      ],
-    );
+    const { data, error } = await supabase.rpc("get_seller_chat_metrics", {
+      p_seller_id: sellerId,
+    });
 
-    const failedResult = [conversations, receivedMessages, unreadMessages].find(
-      (result) => result.error,
-    );
-
-    if (failedResult?.error) {
-      console.error("[chat] getSellerChatMetrics", failedResult.error);
+    if (error) {
+      console.error("[chat] getSellerChatMetrics", error);
       return { ok: false, error: CHAT_LOAD_ERROR };
     }
+
+    const metrics = Array.isArray(data) ? data[0] : null;
 
     return {
       ok: true,
       data: {
-        conversationCount: conversations.count ?? 0,
-        receivedMessageCount: receivedMessages.count ?? 0,
-        unreadMessageCount: unreadMessages.count ?? 0,
+        conversationCount: Number(metrics?.conversation_count ?? 0),
+        receivedMessageCount: Number(metrics?.received_message_count ?? 0),
+        unreadMessageCount: Number(metrics?.unread_message_count ?? 0),
       },
     };
   } catch (error) {
