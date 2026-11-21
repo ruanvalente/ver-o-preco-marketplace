@@ -1,26 +1,15 @@
-"use client"
-
-import { Check, Eye, EyeOff, KeyRound, Lock } from "lucide-react"
-import { useState } from "react"
+import Link from "next/link"
+import { Check, Eye, KeyRound, Lock } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
-import { DisconnectDevicesSwitch } from "./disconnect-devices-switch"
-import { PasswordStrength } from "./password-strength"
+import {
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_REQUIREMENTS,
+} from "../../schemas/auth.schemas"
 
 export function NextStepPreviewCard() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [newPassword, setNewPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [disconnect, setDisconnect] = useState(true)
-
-  const passwordsMatch =
-    confirmPassword.length > 0 && newPassword === confirmPassword
-
   return (
     <Card className="rounded-2xl border-border/80 shadow-sm">
       <CardContent className="flex flex-col gap-6 p-6 sm:p-8">
@@ -44,78 +33,43 @@ export function NextStepPreviewCard() {
         </div>
         <div className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="new-password">Nova senha</Label>
-            <div className="relative">
-              <KeyRound
-                aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-              />
-              <Input
-                id="new-password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="new-password"
-                placeholder="••••••••"
-                className="h-12 pl-10 pr-10"
-                value={newPassword}
-                onChange={(event) => setNewPassword(event.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-              >
-                {showPassword ? (
-                  <EyeOff aria-hidden="true" className="size-4" />
-                ) : (
-                  <Eye aria-hidden="true" className="size-4" />
-                )}
-              </button>
+            <span className="text-sm font-medium">Nova senha</span>
+            <div className="flex h-12 items-center gap-2 rounded-lg border border-input px-3 text-sm tracking-widest text-muted-foreground">
+              <KeyRound aria-hidden="true" className="size-4" />
+              <span aria-hidden="true">••••••••</span>
+              <span className="sr-only">Exemplo ilustrativo de senha</span>
             </div>
           </div>
-          <PasswordStrength value={newPassword} />
+          <div className="space-y-1.5">
+            <p className="text-xs font-medium text-muted-foreground">
+              Sua senha precisa ter:
+            </p>
+            <ul className="space-y-1.5">
+              {PASSWORD_REQUIREMENTS.map((requirement) => (
+                <li
+                  key={requirement.id}
+                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                >
+                  <Check aria-hidden="true" className="size-3.5 shrink-0" />
+                  <span>{requirement.label}</span>
+                </li>
+              ))}
+              <li className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Check aria-hidden="true" className="size-3.5 shrink-0" />
+                <span>Máximo de {PASSWORD_MAX_LENGTH} caracteres</span>
+              </li>
+            </ul>
+          </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirmar nova senha</Label>
-            <div className="relative">
-              <Lock
-                aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-              />
-              <Input
-                id="confirm-password"
-                type={showConfirm ? "text" : "password"}
-                autoComplete="new-password"
-                placeholder="••••••••"
-                className="h-12 pl-10 pr-10"
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm((prev) => !prev)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                aria-label={showConfirm ? "Ocultar senha" : "Mostrar senha"}
-              >
-                {showConfirm ? (
-                  <EyeOff aria-hidden="true" className="size-4" />
-                ) : (
-                  <Eye aria-hidden="true" className="size-4" />
-                )}
-              </button>
-              {passwordsMatch ? (
-                <span className="absolute right-10 top-1/2 -translate-y-1/2 text-success-strong">
-                  <Check aria-hidden="true" className="size-4" />
-                </span>
-              ) : null}
+            <span className="text-sm font-medium">Confirmar nova senha</span>
+            <div className="flex h-12 items-center gap-2 rounded-lg border border-input px-3 text-sm tracking-widest text-muted-foreground">
+              <Lock aria-hidden="true" className="size-4" />
+              <span aria-hidden="true">••••••••</span>
+              <span className="sr-only">Exemplo ilustrativo de confirmação de senha</span>
             </div>
           </div>
-          <DisconnectDevicesSwitch
-            checked={disconnect}
-            onCheckedChange={setDisconnect}
-          />
-          <Button className="h-12 w-full gap-2 text-base font-semibold">
-            <Check aria-hidden="true" className="size-4" />
-            Redefinir senha e entrar
+          <Button asChild className="h-12 w-full gap-2 text-base font-semibold">
+            <Link href="/reset-password">Já recebi o link de recuperação</Link>
           </Button>
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
             <span>Padrão OWASP / Supabase Auth</span>
