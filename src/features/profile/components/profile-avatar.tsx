@@ -6,12 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { AVATAR_BUCKET_NAME } from "../constants";
-import {
-  removeObsoleteAvatarsClient,
-  uploadAvatarClient,
-} from "../services/profile-storage.service";
-import { updateAvatarAction } from "../services/profile.actions";
+import { updateAvatarClient } from "../services/profile-storage.service";
 
 type ProfileAvatarProps = {
   userId: string;
@@ -46,31 +41,20 @@ export function ProfileAvatar({
 
     setIsUploading(true);
     try {
-      const result = await uploadAvatarClient(file, userId);
-      if (result.success && result.avatarPath) {
-        const actionResult = await updateAvatarAction(result.avatarPath);
-        if (!actionResult.success) {
-          toast.error(actionResult.error || "Erro ao atualizar o perfil.");
-          return;
-        }
+      const result = await updateAvatarClient(file, userId);
 
-        const cleanupResult = await removeObsoleteAvatarsClient(userId, result.avatarPath);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
 
-        // Get public URL
-        const supabase = (await import("@/lib/supabase/client")).createClient();
-        const { data } = supabase.storage
-          .from(AVATAR_BUCKET_NAME)
-          .getPublicUrl(result.avatarPath);
+      setCurrentAvatarUrl(result.avatarUrl);
+      onAvatarUpdate?.(result.avatarPath);
 
-        setCurrentAvatarUrl(data.publicUrl);
-        onAvatarUpdate?.(result.avatarPath);
-        if (cleanupResult.success) {
-          toast.success("Avatar atualizado com sucesso!");
-        } else {
-          toast.error(cleanupResult.error || "O avatar foi atualizado, mas arquivos antigos permaneceram.");
-        }
+      if (result.cleanupError) {
+        toast.error(result.cleanupError);
       } else {
-        toast.error(result.error || "Erro ao fazer upload da imagem.");
+        toast.success("Avatar atualizado com sucesso!");
       }
     } catch {
       toast.error("Erro ao fazer upload da imagem.");
