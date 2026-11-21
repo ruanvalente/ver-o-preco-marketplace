@@ -51,7 +51,7 @@ describe("ListingForm", () => {
     vi.clearAllMocks()
   })
 
-  it("renderiza as seções e os campos obrigatórios com labels explícitos", () => {
+  it("renders all sections and required fields with explicit labels", () => {
     renderCreateForm()
 
     expect(
@@ -88,7 +88,7 @@ describe("ListingForm", () => {
     expect(screen.getByText("Tudo salvo até aqui.")).toBeInTheDocument()
   })
 
-  it("valida no cliente e não chama o servidor quando o formulário está vazio", async () => {
+  it("validates on the client without calling the server when the form is empty", async () => {
     renderCreateForm()
 
     fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }))
@@ -110,7 +110,7 @@ describe("ListingForm", () => {
     )
   })
 
-  it("envia os campos normalizados para o servidor", async () => {
+  it("sends normalized fields to the server", async () => {
     actionMocks.createListingAction.mockResolvedValue({ status: "idle" })
     renderCreateForm()
 
@@ -136,7 +136,7 @@ describe("ListingForm", () => {
     expect(formData.get("listingId")).toBeNull()
   })
 
-  it("bloqueia a publicação sem imagens antes de chamar o servidor", async () => {
+  it("blocks publishing without images before calling the server", async () => {
     renderCreateForm()
 
     fillRequiredFields()
@@ -150,7 +150,7 @@ describe("ListingForm", () => {
     expect(actionMocks.createListingAction).not.toHaveBeenCalled()
   })
 
-  it("avisa sobre alterações não salvas", () => {
+  it("warns about unsaved changes", () => {
     renderCreateForm()
 
     expect(screen.getByText("Tudo salvo até aqui.")).toBeInTheDocument()
@@ -164,7 +164,29 @@ describe("ListingForm", () => {
     ).toBeInTheDocument()
   })
 
-  it("preenche o formulário de edição e envia o listingId", async () => {
+  it("marks the form as dirty when images are reordered", () => {
+    render(
+      <ListingForm
+        mode="edit"
+        userId={listingFixture.sellerId}
+        categories={categories}
+        listing={listingFixture}
+      />,
+    )
+
+    expect(screen.getByText("Tudo salvo até aqui.")).toBeInTheDocument()
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Mover Parte traseira para cima" }),
+    )
+
+    expect(
+      screen.getByText("Você tem alterações não salvas."),
+    ).toBeInTheDocument()
+    expect(screen.queryByText("Tudo salvo até aqui.")).not.toBeInTheDocument()
+  })
+
+  it("fills the edit form and sends the listingId", async () => {
     actionMocks.updateListingAction.mockResolvedValue({ status: "idle" })
     render(
       <ListingForm
@@ -200,7 +222,7 @@ describe("ListingForm", () => {
     expect(formData.get("listingId")).toBe(listingFixture.id)
   })
 
-  it("oculta a publicação de um anúncio já ativo", () => {
+  it("hides publishing for an already active listing", () => {
     const activeListing: Listing = { ...listingFixture, status: "active" }
 
     render(
@@ -218,7 +240,7 @@ describe("ListingForm", () => {
     expect(screen.getByText("Publicado")).toBeInTheDocument()
   })
 
-  it("exibe o erro do servidor e o atalho para o anúncio salvo", async () => {
+  it("displays the server error and the link to the saved listing", async () => {
     actionMocks.createListingAction.mockResolvedValue({
       status: "error",
       message:
