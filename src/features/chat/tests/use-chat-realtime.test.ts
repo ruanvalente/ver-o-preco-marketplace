@@ -5,6 +5,7 @@ import {
   getRealtimeRetryDelay,
   useChatRealtime,
 } from "../hooks/use-chat-realtime"
+import type { ChatMessage } from "../types/chat.types"
 
 const mocks = vi.hoisted(() => ({
   createClient: vi.fn(),
@@ -67,10 +68,18 @@ function createSupabaseMock() {
 const conversationId = "11111111-1111-4111-8111-111111111111"
 const userId = "22222222-2222-4222-8222-222222222222"
 
-function renderRealtime() {
-  return renderHook(() =>
-    useChatRealtime({ conversationId, userId, onMessage: vi.fn() }),
+function renderRealtime({
+  onMessage = vi.fn(),
+  onHistoryMessage = vi.fn(),
+}: {
+  onMessage?: (message: ChatMessage) => void
+  onHistoryMessage?: (message: ChatMessage) => void
+} = {}) {
+  const view = renderHook(() =>
+    useChatRealtime({ conversationId, userId, onMessage, onHistoryMessage }),
   )
+
+  return { ...view, onMessage, onHistoryMessage }
 }
 
 describe("getRealtimeRetryDelay", () => {
@@ -159,6 +168,35 @@ describe("useChatRealtime reconnect", () => {
       await vi.advanceTimersByTimeAsync(1)
     })
     expect(supabase.channels).toHaveLength(3)
+  })
+
+  it("routes subscription resync messages to the history callback", async () => {
+    supabase.from().limit.mockResolvedValue({
+      data: [
+        {
+          id: "resynced",
+          conversation_id: conversationId,
+          sender_id: "99999999-9999-4999-8999-999999999999",
+          message_type: "text",
+          content: "Histórico recente",
+          attachment_path: null,
+          created_at: "2026-01-01T00:00:00.000Z",
+          read_at: null,
+        },
+      ],
+      error: null,
+    })
+    const { onMessage, onHistoryMessage } = renderRealtime()
+
+    await act(async () => {
+      supabase.channels[0].succeed()
+    })
+
+    expect(onHistoryMessage).toHaveBeenCalledTimes(1)
+    expect(onHistoryMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "resynced", content: "Histórico recente" }),
+    )
+    expect(onMessage).not.toHaveBeenCalled()
   })
 
   it("cancels a pending reconnect on unmount", async () => {

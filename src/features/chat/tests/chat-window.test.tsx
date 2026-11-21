@@ -61,6 +61,7 @@ function createMessage(id: string): ChatMessage {
 
 function renderWindow(overrides: Record<string, unknown> = {}) {
   const addMessage = vi.fn()
+  const addHistoryMessage = vi.fn()
   const markMessagesRead = vi.fn()
   const loadOlderMessages = vi.fn().mockResolvedValue(undefined)
   const captureBeforeLoad = vi.fn()
@@ -75,8 +76,9 @@ function renderWindow(overrides: Record<string, unknown> = {}) {
     historyError: null,
     readError: null,
     isMarkingRead: false,
-    announcement: "",
+    announcedMessageIds: new Set<string>(),
     addMessage,
+    addHistoryMessage,
     markMessagesRead,
     loadOlderMessages,
     ...overrides,
@@ -108,6 +110,7 @@ function renderWindow(overrides: Record<string, unknown> = {}) {
   return {
     ...view,
     addMessage,
+    addHistoryMessage,
     markMessagesRead,
     loadOlderMessages,
     captureBeforeLoad,
@@ -145,6 +148,25 @@ describe("ChatWindow composition", () => {
     expect(screen.getByRole("heading", { name: "Mensagens" })).toBeInTheDocument()
   })
 
+  it("exposes message text in the log instead of a generic status", () => {
+    const incoming = {
+      ...createMessage("incoming"),
+      senderId: conversation.participant.id,
+      content: "Chegou?",
+    }
+    renderWindow({
+      messages: [createMessage("history"), incoming],
+      announcedMessageIds: new Set(["incoming"]),
+    })
+
+    const log = screen.getByRole("log", { name: "Mensagens da conversa" })
+
+    expect(log).toHaveTextContent("Chegou?")
+    expect(screen.queryByRole("status")).toBeNull()
+    expect(log.querySelectorAll("li")[0]).toHaveAttribute("aria-live", "off")
+    expect(log.querySelectorAll("li")[1]).not.toHaveAttribute("aria-live")
+  })
+
   it("passes the message handler to Realtime and the composer", async () => {
     const sent = createMessage("sent")
     mocks.sendChatTextAction.mockResolvedValue({ ok: true, data: sent })
@@ -154,9 +176,13 @@ describe("ChatWindow composition", () => {
       conversationId,
       userId: currentUserId,
       onMessage: expect.any(Function),
+      onHistoryMessage: expect.any(Function),
     })
     expect(mocks.useChatRealtime.mock.calls[0][0].onMessage).toBe(
       harness.addMessage,
+    )
+    expect(mocks.useChatRealtime.mock.calls[0][0].onHistoryMessage).toBe(
+      harness.addHistoryMessage,
     )
 
     fireEvent.change(screen.getByLabelText("Escreva sua mensagem"), {

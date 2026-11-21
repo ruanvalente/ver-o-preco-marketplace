@@ -50,6 +50,7 @@ type UseChatRealtimeOptions = {
   conversationId: string
   userId: string
   onMessage: (message: ChatMessage) => void
+  onHistoryMessage: (message: ChatMessage) => void
 }
 
 function parseMessageRow(
@@ -99,7 +100,7 @@ function mapMessage(row: RealtimeMessageRow, imageUrl: string | null): ChatMessa
 async function loadRecentMessages(
   supabase: ReturnType<typeof createClient>,
   conversationId: string,
-  onMessage: (message: ChatMessage) => void,
+  onHistoryMessage: (message: ChatMessage) => void,
   setConnectionError: (message: string | null) => void,
 ) {
   const { data, error } = await supabase
@@ -154,7 +155,7 @@ async function loadRecentMessages(
   }
 
   for (const row of rows) {
-    onMessage(
+    onHistoryMessage(
       mapMessage(
         row,
         row.attachment_path
@@ -169,12 +170,14 @@ export function useChatRealtime({
   conversationId,
   userId,
   onMessage,
+  onHistoryMessage,
 }: UseChatRealtimeOptions) {
   const [isOnline, setIsOnline] = useState(false)
   const [isConnecting, setIsConnecting] = useState(true)
   const [isOtherTyping, setIsOtherTyping] = useState(false)
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const onMessageRef = useRef(onMessage)
+  const onHistoryMessageRef = useRef(onHistoryMessage)
   const channelRef = useRef<ReturnType<
     ReturnType<typeof createClient>["channel"]
   > | null>(null)
@@ -184,6 +187,10 @@ export function useChatRealtime({
   useEffect(() => {
     onMessageRef.current = onMessage
   }, [onMessage])
+
+  useEffect(() => {
+    onHistoryMessageRef.current = onHistoryMessage
+  }, [onHistoryMessage])
 
   useEffect(() => {
     const supabase = createClient()
@@ -316,7 +323,7 @@ export function useChatRealtime({
             void loadRecentMessages(
               supabase,
               conversationId,
-              onMessageRef.current,
+              onHistoryMessageRef.current,
               setConnectionError,
             ).catch((error: unknown) => {
               console.error("[chat] sync recent messages", error)

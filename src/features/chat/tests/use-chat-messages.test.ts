@@ -92,30 +92,23 @@ describe("useChatMessages", () => {
     ])
   })
 
-  it("announces an incoming message", async () => {
+  it("marks only live incoming messages for announcement", () => {
     const { result } = renderMessages()
 
     act(() => {
       result.current.addMessage(createMessage({ id: "incoming" }))
-    })
-
-    await waitFor(() => {
-      expect(result.current.announcement).toBe("Nova mensagem recebida.")
-    })
-  })
-
-  it("does not announce a message sent by the user", async () => {
-    const { result } = renderMessages()
-
-    act(() => {
+      result.current.addHistoryMessage(createMessage({ id: "history" }))
       result.current.addMessage(
         createMessage({ id: "own", senderId: currentUserId }),
       )
     })
 
-    await new Promise((resolve) => setTimeout(resolve, 10))
-
-    expect(result.current.announcement).toBe("")
+    expect([...result.current.announcedMessageIds]).toEqual(["incoming"])
+    expect(result.current.messages.map((message) => message.id)).toEqual([
+      "history",
+      "incoming",
+      "own",
+    ])
   })
 
   it("does not repeat the receipt while the first unread message is unchanged", async () => {
