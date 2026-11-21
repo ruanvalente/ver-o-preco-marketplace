@@ -1,19 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import { useCallback, useEffect, useRef, useState } from "react"
 import { ArrowRight, MessageCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-import {
-  loadOlderChatMessagesAction,
-  markChatMessagesReadAction,
-} from "../services/chat.actions"
+import { useChatMessages } from "../hooks/use-chat-messages"
 import { useChatRealtime } from "../hooks/use-chat-realtime"
+import { useChatScroll } from "../hooks/use-chat-scroll"
 import type {
   ChatConversation,
-  ChatMessage,
   ChatMessagePage,
   ConversationDetails,
 } from "../types/chat.types"
@@ -37,49 +33,29 @@ export function ChatWindow({
   initialMessagePage,
   currentUserId,
 }: ChatWindowProps) {
-  const [messages, setMessages] = useState(initialMessagePage.messages)
-  const [hasMore, setHasMore] = useState(initialMessagePage.hasMore)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const [historyError, setHistoryError] = useState<string | null>(null)
-  const [readError, setReadError] = useState<string | null>(null)
-  const [isMarkingRead, setIsMarkingRead] = useState(false)
-  const [announcement, setAnnouncement] = useState("")
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const previousCountRef = useRef(initialMessagePage.messages.length)
-  const preserveScrollRef = useRef(false)
-  const scrollMetricsRef = useRef({ top: 0, height: 0 })
-  const readAttemptRef = useRef<string | null>(null)
+  const {
+    messages,
+    hasMore,
+    isLoadingMore,
+    historyError,
+    readError,
+    isMarkingRead,
+    announcement,
+    addMessage,
+    markMessagesRead,
+    loadOlderMessages,
+  } = useChatMessages({
+    conversationId: conversation.id,
+    currentUserId,
+    initialMessagePage,
+  })
 
-  const addMessage = useCallback((message: ChatMessage) => {
-    setMessages((current) => {
-      const existingIndex = current.findIndex((item) => item.id === message.id)
-
-      if (existingIndex >= 0) {
-        const updated = current.slice()
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          ...message,
-          imageUrl: message.imageUrl ?? updated[existingIndex].imageUrl,
-        }
-        return updated
-      }
-
-      return [...current, message].sort(
-        (left, right) =>
-          left.createdAt.localeCompare(right.createdAt) ||
-          left.id.localeCompare(right.id),
-      )
-    })
-
-    if (message.senderId !== currentUserId) {
-      setAnnouncement("")
-      window.setTimeout(
-        () => setAnnouncement("Nova mensagem recebida."),
-        0,
-      )
-    }
-  }, [currentUserId])
+  const {
+    scrollContainerRef,
+    bottomRef,
+    captureBeforeLoad,
+    preserveAfterLoad,
+  } = useChatScroll({ messages })
 
   const realtime = useChatRealtime({
     conversationId: conversation.id,
@@ -87,103 +63,8 @@ export function ChatWindow({
     onMessage: addMessage,
   })
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: "end" })
-  }, [])
-
-  useEffect(() => {
-    if (preserveScrollRef.current && scrollContainerRef.current) {
-      const container = scrollContainerRef.current
-      container.scrollTop =
-        scrollMetricsRef.current.top +
-        (container.scrollHeight - scrollMetricsRef.current.height)
-      preserveScrollRef.current = false
-    } else if (messages.length > previousCountRef.current) {
-      bottomRef.current?.scrollIntoView({ block: "end" })
-    }
-
-    previousCountRef.current = messages.length
-  }, [messages])
-
-  const unreadIncoming = messages.find(
-    (message) => message.senderId !== currentUserId && !message.readAt,
-  )
-
-  const markMessagesRead = useCallback(async () => {
-    setIsMarkingRead(true)
-    setReadError(null)
-    try {
-      const result = await markChatMessagesReadAction(conversation.id)
-
-      if (!result.ok) {
-        setReadError(result.error)
-        readAttemptRef.current = null
-      }
-    } catch (error) {
-      console.error("[chat] mark messages read", error)
-      setReadError("Não foi possível atualizar o status de leitura.")
-      readAttemptRef.current = null
-    } finally {
-      setIsMarkingRead(false)
-    }
-  }, [conversation.id])
-
-  useEffect(() => {
-    if (
-      !unreadIncoming ||
-      readAttemptRef.current === unreadIncoming.id
-    ) {
-      return
-    }
-
-    readAttemptRef.current = unreadIncoming.id
-    void markMessagesRead()
-  }, [markMessagesRead, unreadIncoming])
-
-  async function loadOlderMessages() {
-    const oldestMessage = messages[0]
-
-    if (!oldestMessage || isLoadingMore) {
-      return
-    }
-
-    const container = scrollContainerRef.current
-
-    if (container) {
-      scrollMetricsRef.current = {
-        top: container.scrollTop,
-        height: container.scrollHeight,
-      }
-    }
-
-    setIsLoadingMore(true)
-    setHistoryError(null)
-    try {
-      const result = await loadOlderChatMessagesAction(conversation.id, {
-        createdAt: oldestMessage.createdAt,
-        id: oldestMessage.id,
-      })
-
-      if (!result.ok) {
-        setHistoryError(result.error)
-        return
-      }
-
-      preserveScrollRef.current = true
-      setMessages((current) => {
-        const currentIds = new Set(current.map((message) => message.id))
-        const olderMessages = result.data.messages.filter(
-          (message) => !currentIds.has(message.id),
-        )
-        return [...olderMessages, ...current]
-      })
-      setHasMore(result.data.hasMore)
-    } catch (error) {
-      console.error("[chat] load older messages", error)
-      setHistoryError("Não foi possível carregar mensagens anteriores.")
-    } finally {
-      setIsLoadingMore(false)
-    }
+  function handleLoadOlderMessages() {
+    void loadOlderMessages({ captureBeforeLoad, preserveAfterLoad })
   }
 
   return (
@@ -235,7 +116,7 @@ export function ChatWindow({
                   disabled={isMarkingRead || isLoadingMore}
                   onClick={() => {
                     if (historyError) {
-                      void loadOlderMessages()
+                      handleLoadOlderMessages()
                     }
                     if (readError) {
                       void markMessagesRead()
@@ -254,7 +135,7 @@ export function ChatWindow({
             currentUserId={currentUserId}
             hasMore={hasMore}
             isLoadingMore={isLoadingMore}
-            onLoadMore={() => void loadOlderMessages()}
+            onLoadMore={handleLoadOlderMessages}
           />
           <div className="sr-only" role="status" aria-live="polite">
             {announcement}
