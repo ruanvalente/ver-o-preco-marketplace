@@ -264,9 +264,8 @@ state. The form derives its payload from images whose status is `ready`.
 - Submission is blocked while an upload is in progress or failed.
 - Ordering uses buttons (not drag-and-drop) so it works with keyboard and
   screen readers.
-- Persisted images that are removed are recorded in `removedImagePaths`; the
-  server recomputes the actual removed paths from the database before touching
-  Storage.
+- The form sends only the current `images` payload; the server recomputes the
+  removed paths from the persisted state before touching Storage.
 - Object URLs are revoked when an upload finishes or the component unmounts.
 
 ## 12. Feedback and States

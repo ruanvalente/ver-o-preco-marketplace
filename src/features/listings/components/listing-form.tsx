@@ -198,7 +198,6 @@ export function ListingForm({
 
   const {
     images,
-    removedImagePaths,
     fileError,
     uploadProgress,
     isUploading,
@@ -210,21 +209,13 @@ export function ListingForm({
     moveImage,
     setPrimaryImage,
     clearFileError,
+    getImagesPayload,
   } = useListingImages({ userId, initialImages: listing?.images ?? [] })
 
-  const imagePayload = images
-    .filter((image) => image.status === "ready" && image.storagePath)
-    .map((image, index) => ({
-      storagePath: image.storagePath as string,
-      altText: image.altText.trim() || null,
-      sortOrder: index,
-      isPrimary: image.isPrimary,
-    }))
   const imageSignature = getImageSignature(
     images.filter((image) => image.status === "ready"),
   )
-  const serializedImages = JSON.stringify(imagePayload)
-  const serializedRemovedPaths = JSON.stringify(removedImagePaths)
+  const serializedImages = JSON.stringify(getImagesPayload())
 
   const valuesDirty =
     values.title !== initialValues.title ||
@@ -369,11 +360,6 @@ export function ListingForm({
           defaultValue={defaultIntent}
         />
         <input type="hidden" name="images" value={serializedImages} />
-        <input
-          type="hidden"
-          name="removedImagePaths"
-          value={serializedRemovedPaths}
-        />
         {listing ? (
           <input type="hidden" name="listingId" value={listing.id} />
         ) : null}

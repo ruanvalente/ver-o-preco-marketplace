@@ -133,6 +133,7 @@ describe("ListingForm", () => {
     expect(formData.get("city")).toBe("Belém")
     expect(formData.get("neighborhood")).toBe("Nazaré")
     expect(formData.get("images")).toBe("[]")
+    expect(formData.get("removedImagePaths")).toBeNull()
     expect(formData.get("listingId")).toBeNull()
   })
 
@@ -164,7 +165,8 @@ describe("ListingForm", () => {
     ).toBeInTheDocument()
   })
 
-  it("marks the form as dirty when images are reordered", () => {
+  it("marks the form as dirty and sends the reordered image payload", async () => {
+    actionMocks.updateListingAction.mockResolvedValue({ status: "idle" })
     render(
       <ListingForm
         mode="edit"
@@ -184,6 +186,28 @@ describe("ListingForm", () => {
       screen.getByText("Você tem alterações não salvas."),
     ).toBeInTheDocument()
     expect(screen.queryByText("Tudo salvo até aqui.")).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole("button", { name: "Salvar alterações" }))
+
+    await waitFor(() =>
+      expect(actionMocks.updateListingAction).toHaveBeenCalledTimes(1),
+    )
+
+    const [, formData] = actionMocks.updateListingAction.mock.calls[0]
+    expect(JSON.parse(formData.get("images") as string)).toEqual([
+      {
+        storagePath: `${listingFixture.sellerId}/photo-2.png`,
+        altText: "Parte traseira",
+        sortOrder: 0,
+        isPrimary: false,
+      },
+      {
+        storagePath: `${listingFixture.sellerId}/photo-1.png`,
+        altText: "Foto principal",
+        sortOrder: 1,
+        isPrimary: true,
+      },
+    ])
   })
 
   it("fills the edit form and sends the listingId", async () => {
@@ -220,6 +244,38 @@ describe("ListingForm", () => {
     const [, formData] = actionMocks.updateListingAction.mock.calls[0]
     expect(formData.get("intent")).toBe("save")
     expect(formData.get("listingId")).toBe(listingFixture.id)
+  })
+
+  it("sends the current image payload after removing an image", async () => {
+    actionMocks.updateListingAction.mockResolvedValue({ status: "idle" })
+    render(
+      <ListingForm
+        mode="edit"
+        userId={listingFixture.sellerId}
+        categories={categories}
+        listing={listingFixture}
+      />,
+    )
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remover Parte traseira" }),
+    )
+    fireEvent.click(screen.getByRole("button", { name: "Salvar alterações" }))
+
+    await waitFor(() =>
+      expect(actionMocks.updateListingAction).toHaveBeenCalledTimes(1),
+    )
+
+    const [, formData] = actionMocks.updateListingAction.mock.calls[0]
+    expect(JSON.parse(formData.get("images") as string)).toEqual([
+      {
+        storagePath: `${listingFixture.sellerId}/photo-1.png`,
+        altText: "Foto principal",
+        sortOrder: 0,
+        isPrimary: true,
+      },
+    ])
+    expect(formData.get("removedImagePaths")).toBeNull()
   })
 
   it("hides publishing for an already active listing", () => {

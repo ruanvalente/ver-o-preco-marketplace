@@ -52,7 +52,6 @@ function validForm(overrides: Record<string, string> = {}) {
     city: "Belém",
     neighborhood: "Nazaré",
     images: JSON.stringify([buildImage()]),
-    removedImagePaths: "[]",
     ...overrides,
   })
 }
@@ -109,12 +108,26 @@ describe("validateListingForm", () => {
     }
   })
 
+  it("ignores a legacy removed image paths field", () => {
+    const formData = validForm()
+    formData.set(
+      "removedImagePaths",
+      JSON.stringify([`${sellerId}/imagem-antiga.png`]),
+    )
+
+    const result = validateListingForm(formData)
+
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.data).not.toHaveProperty("removedImagePaths")
+    }
+  })
+
   it("exige os campos obrigatórios", () => {
     const result = validateListingForm(
       buildFormData({
         intent: "draft",
         images: "[]",
-        removedImagePaths: "[]",
       }),
     )
 

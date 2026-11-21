@@ -186,7 +186,6 @@ function validUpdateFormData() {
   formData.set("city", "Belém")
   formData.set("neighborhood", "Nazaré")
   formData.set("images", "[]")
-  formData.set("removedImagePaths", "[]")
   return formData
 }
 

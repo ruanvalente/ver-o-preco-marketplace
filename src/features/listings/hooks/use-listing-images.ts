@@ -37,7 +37,6 @@ type UseListingImagesOptions = {
 
 type UseListingImagesResult = {
   images: ManagedListingImage[]
-  removedImagePaths: string[]
   fileError: string | null
   uploadProgress: UploadProgress | null
   isUploading: boolean
@@ -113,7 +112,6 @@ export function useListingImages({
   const [images, setImages] = useState<ManagedListingImage[]>(() =>
     ensurePrimary(mapInitialImages(initialImages)),
   )
-  const [removedImagePaths, setRemovedImagePaths] = useState<string[]>([])
   const [fileError, setFileError] = useState<string | null>(null)
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(
     null,
@@ -301,15 +299,10 @@ export function useListingImages({
       objectUrlsRef.current.delete(id)
     }
 
-    if (entry.persisted && entry.storagePath) {
-      setRemovedImagePaths((current) =>
-        current.includes(entry.storagePath as string)
-          ? current
-          : [...current, entry.storagePath as string],
-      )
-    } else if (entry.storagePath) {
+    if (!entry.persisted && entry.storagePath) {
       // Arquivo já enviado, mas ainda não persistido no banco: pode ser
-      // removido imediatamente sem afetar nenhum anúncio.
+      // removido imediatamente sem afetar nenhum anúncio. Imagens persistidas
+      // são removidas pelo servidor depois da substituição no banco.
       void deleteListingImage(entry.storagePath)
     }
 
@@ -349,7 +342,7 @@ export function useListingImages({
   }, [])
 
   const getImagesPayload = useCallback((): ListingImageInput[] => {
-    const ready = imagesRef.current.filter(
+    const ready = images.filter(
       (image) => image.status === "ready" && image.storagePath,
     )
 
@@ -359,11 +352,10 @@ export function useListingImages({
       sortOrder: index,
       isPrimary: image.isPrimary,
     }))
-  }, [])
+  }, [images])
 
   return {
     images,
-    removedImagePaths,
     fileError,
     uploadProgress,
     isUploading,
