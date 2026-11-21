@@ -16,6 +16,7 @@ import {
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { ProductImage } from "@/features/products/components/product-image";
 import { CONDITION_LABELS } from "@/features/products/utils/catalog-options";
 import { formatPrice } from "@/features/products/utils/format";
@@ -393,16 +394,16 @@ export function DashboardListings({
                   aria-hidden="true"
                   className="pointer-events-none absolute top-3.5 left-3 size-4 text-muted-foreground"
                 />
-                <select
+                <Select
                   id="seller-listings-sort"
                   name="sort"
                   defaultValue={filters.sort}
-                  className="h-11 w-full min-w-44 appearance-none rounded-md border border-input bg-background pr-3 pl-9 text-sm text-foreground outline-hidden focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="h-11 min-w-44 appearance-none bg-background pr-3 pl-9"
                 >
                   <option value="recent">Mais recentes</option>
                   <option value="price_asc">Menor preço</option>
                   <option value="price_desc">Maior preço</option>
-                </select>
+                </Select>
               </div>
             </div>
             <Button type="submit" variant="outline" className="min-h-11">
