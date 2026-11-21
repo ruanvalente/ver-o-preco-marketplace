@@ -4,6 +4,7 @@ import Link from "next/link"
 import { MessageCircle } from "lucide-react"
 import { useEffect, useId, useState } from "react"
 
+import { getUnreadConversationCount } from "@/features/chat/services/chat-client.service"
 import { createClient } from "@/lib/supabase/client"
 
 import { ChatNotificationBadge } from "./chat-notification-badge"
@@ -17,39 +18,6 @@ type ChatHeaderNotificationsProps = {
    * contador na mesma linha, como os itens do menu mobile (Meus favoritos 2).
    */
   presentation?: "icon" | "inline"
-}
-
-async function getUnreadConversationCount(): Promise<number | null> {
-  const supabase = createClient()
-  let offset = 0
-  let unreadConversations = 0
-
-  while (true) {
-    const { data, error } = await supabase.rpc("get_chat_conversations", {
-      p_limit: 100,
-      p_offset: offset,
-    })
-
-    if (error || !Array.isArray(data)) {
-      console.error("[chat-header] unread count", error ?? data)
-      return null
-    }
-
-    unreadConversations += data.reduce((total, conversation) => {
-      const unreadCount = Number(
-        (conversation as { unread_count?: number | string | null })
-          ?.unread_count ?? 0,
-      )
-
-      return total + (unreadCount > 0 ? 1 : 0)
-    }, 0)
-
-    if (data.length < 100) {
-      return unreadConversations
-    }
-
-    offset += data.length
-  }
 }
 
 export function ChatHeaderNotifications({

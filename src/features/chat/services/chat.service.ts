@@ -17,6 +17,7 @@ import {
   isChatCursorTimestamp,
   isConversationId,
 } from "../schemas/chat.schemas";
+import { countUnreadConversationsPaginated } from "./unread-count.service";
 
 const CHAT_LOAD_ERROR = "Não foi possível carregar suas conversas.";
 const MESSAGE_LOAD_ERROR = "Não foi possível carregar as mensagens.";
@@ -364,6 +365,24 @@ export async function getChatConversations(
     ok: true,
     data: rows.map((row) => mapConversation(supabase, row)),
   };
+}
+
+/**
+ * Server-side unread conversation count. Shared by the shell components so
+ * they cannot drift from the chat module's domain rule or miss pages beyond
+ * the first one. Returns null when the conversation feed is unavailable.
+ */
+export async function getUnreadChatConversationCount(): Promise<number | null> {
+  return countUnreadConversationsPaginated(
+    async (limit, offset) => {
+      const result = await getChatConversations(limit, offset);
+
+      return result.ok
+        ? { ok: true, rows: result.data }
+        : { ok: false, rows: [] };
+    },
+    (conversation) => conversation.unreadCount,
+  );
 }
 
 /**

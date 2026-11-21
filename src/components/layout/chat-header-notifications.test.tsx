@@ -2,7 +2,7 @@ import { act, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 const mocks = vi.hoisted(() => ({
-  rpc: vi.fn(),
+  getUnreadConversationCount: vi.fn(),
   callbacks: [] as Array<() => void>,
   onStatus: null as null | ((status: string) => void),
 }))
@@ -21,11 +21,14 @@ vi.mock("@/lib/supabase/client", () => ({
     }
 
     return {
-      rpc: mocks.rpc,
       channel: () => channel,
       removeChannel: vi.fn().mockResolvedValue("ok"),
     }
   },
+}))
+
+vi.mock("@/features/chat/services/chat-client.service", () => ({
+  getUnreadConversationCount: mocks.getUnreadConversationCount,
 }))
 
 import { ChatHeaderNotifications } from "./chat-header-notifications"
@@ -35,10 +38,7 @@ describe("ChatHeaderNotifications", () => {
     vi.clearAllMocks()
     mocks.callbacks = []
     mocks.onStatus = null
-    mocks.rpc.mockResolvedValue({
-      data: [{ unread_count: 0 }],
-      error: null,
-    })
+    mocks.getUnreadConversationCount.mockResolvedValue(0)
   })
 
   it("reconciles the conversation count after successive realtime messages", async () => {
@@ -49,13 +49,10 @@ describe("ChatHeaderNotifications", () => {
     })
 
     await waitFor(() => {
-      expect(mocks.rpc).toHaveBeenCalledTimes(1)
+      expect(mocks.getUnreadConversationCount).toHaveBeenCalledTimes(1)
     })
 
-    mocks.rpc.mockResolvedValue({
-      data: [{ unread_count: 1 }],
-      error: null,
-    })
+    mocks.getUnreadConversationCount.mockResolvedValue(1)
 
     act(() => {
       mocks.callbacks[0]?.()
@@ -65,10 +62,7 @@ describe("ChatHeaderNotifications", () => {
       expect(screen.getByLabelText("1 conversas com nova mensagem")).toBeInTheDocument()
     })
 
-    mocks.rpc.mockResolvedValue({
-      data: [{ unread_count: 2 }, { unread_count: 1 }],
-      error: null,
-    })
+    mocks.getUnreadConversationCount.mockResolvedValue(2)
 
     act(() => {
       mocks.callbacks[0]?.()
@@ -127,7 +121,7 @@ describe("ChatHeaderNotifications", () => {
     consoleError.mockRestore()
   })
 
-  it("exibe rótulo e contador inline na apresentação usada pelo menu mobile", () => {
+  it("renders the inline label and count used by the mobile menu", () => {
     render(
       <ChatHeaderNotifications
         initialCount={2}
@@ -148,7 +142,7 @@ describe("ChatHeaderNotifications", () => {
     ).not.toBeInTheDocument()
   })
 
-  it("não exibe número na apresentação inline quando não há mensagens não lidas", () => {
+  it("does not render a number in inline presentation when there are no unread messages", () => {
     render(
       <ChatHeaderNotifications
         initialCount={0}
@@ -161,7 +155,20 @@ describe("ChatHeaderNotifications", () => {
     expect(screen.queryByText("0")).not.toBeInTheDocument()
   })
 
-  it("informa quando a contagem inline está indisponível", () => {
+  it("renders no numeric badge in icon presentation when the count is unavailable", () => {
+    render(<ChatHeaderNotifications initialCount={null} />)
+
+    expect(
+      screen.getByRole("link", {
+        name: "Mensagens, contagem indisponível",
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText(/conversas com nova mensagem/),
+    ).not.toBeInTheDocument()
+  })
+
+  it("reports when the inline count is unavailable", () => {
     render(
       <ChatHeaderNotifications
         initialCount={null}
@@ -176,7 +183,7 @@ describe("ChatHeaderNotifications", () => {
     expect(screen.queryByText(/\d/)).not.toBeInTheDocument()
   })
 
-  it("mantém a atualização em tempo real na apresentação inline", async () => {
+  it("keeps realtime updates in the inline presentation", async () => {
     render(
       <ChatHeaderNotifications
         initialCount={0}
@@ -190,13 +197,10 @@ describe("ChatHeaderNotifications", () => {
     })
 
     await waitFor(() => {
-      expect(mocks.rpc).toHaveBeenCalledTimes(1)
+      expect(mocks.getUnreadConversationCount).toHaveBeenCalledTimes(1)
     })
 
-    mocks.rpc.mockResolvedValue({
-      data: [{ unread_count: 2 }, { unread_count: 1 }],
-      error: null,
-    })
+    mocks.getUnreadConversationCount.mockResolvedValue(2)
 
     act(() => {
       mocks.callbacks[0]?.()

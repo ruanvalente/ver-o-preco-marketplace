@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
   getProfile: vi.fn(),
   getFavoriteCount: vi.fn(),
-  getChatConversations: vi.fn(),
+  getUnreadChatConversationCount: vi.fn(),
 }))
 
 vi.mock("next/server", () => ({
@@ -21,7 +21,7 @@ vi.mock("@/features/favorites/services/favorites.service", () => ({
   getFavoriteCount: mocks.getFavoriteCount,
 }))
 vi.mock("@/features/chat/services/chat.service", () => ({
-  getChatConversations: mocks.getChatConversations,
+  getUnreadChatConversationCount: mocks.getUnreadChatConversationCount,
 }))
 vi.mock("@/features/auth/services/auth.actions", () => ({
   logoutAction: vi.fn(),
@@ -48,7 +48,7 @@ describe("MarketplaceAccountArea", () => {
       updatedAt: "2026-11-01T00:00:00.000Z",
     })
     mocks.getFavoriteCount.mockResolvedValue({ ok: true, data: 2 })
-    mocks.getChatConversations.mockResolvedValue({ ok: true, data: [] })
+    mocks.getUnreadChatConversationCount.mockResolvedValue(0)
 
     render(await MarketplaceAccountArea())
 
