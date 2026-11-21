@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
 
 import type {
   ProductCategorySummary,
@@ -23,9 +24,6 @@ type ProductFiltersFormProps = {
   categories: ProductCategorySummary[]
   idPrefix?: string
 }
-
-const selectClassName =
-  "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm text-foreground shadow-xs outline-hidden focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 
 /**
  * Formulário de filtros do catálogo.
@@ -64,11 +62,11 @@ export function ProductFiltersForm({
 
         <div className="space-y-2">
           <Label htmlFor={`${idPrefix}-category`}>Categoria</Label>
-          <select
+          <Select
             id={`${idPrefix}-category`}
             name="category"
             defaultValue={filters.category ?? ""}
-            className={selectClassName}
+            autoComplete="off"
           >
             <option value="">Todas as categorias</option>
             {categories.map((category) => (
@@ -76,16 +74,16 @@ export function ProductFiltersForm({
                 {category.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor={`${idPrefix}-condition`}>Condição</Label>
-          <select
+          <Select
             id={`${idPrefix}-condition`}
             name="condition"
             defaultValue={filters.condition ?? ""}
-            className={selectClassName}
+            autoComplete="off"
           >
             <option value="">Qualquer condição</option>
             {PRODUCT_CONDITION_OPTIONS.map((option) => (
@@ -93,7 +91,7 @@ export function ProductFiltersForm({
                 {option.label}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <div className="space-y-2">
@@ -137,11 +135,11 @@ export function ProductFiltersForm({
 
         <div className="space-y-2">
           <Label htmlFor={`${idPrefix}-location`}>Localização</Label>
-          <select
+          <Select
             id={`${idPrefix}-location`}
             name="location"
             defaultValue={filters.location ?? ""}
-            className={selectClassName}
+            autoComplete="off"
           >
             <option value="">Todo o Pará</option>
             {LOCATION_OPTIONS.map((option) => (
@@ -149,7 +147,7 @@ export function ProductFiltersForm({
                 {option.label}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </fieldset>
 

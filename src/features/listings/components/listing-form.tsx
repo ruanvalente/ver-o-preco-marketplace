@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { FormAlert } from "@/features/auth/components/form-alert"
 import { PARA_MUNICIPALITIES } from "@/features/auth/data/para-municipalities"
@@ -84,8 +85,7 @@ const FIELD_ORDER = [
 ] as const
 
 const INPUT_CLASS = "h-11 rounded-lg bg-surface-container-low"
-const SELECT_CLASS =
-  "h-11 w-full appearance-none rounded-lg border border-input bg-surface-container-low px-3 pr-10 text-base text-foreground shadow-xs outline-hidden transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
+const SELECT_VARIANT_CLASS = "h-11 appearance-none rounded-lg bg-surface-container-low pr-10"
 
 function createInitialValues(listing?: Listing): ListingFormValues {
   if (!listing) {
@@ -484,7 +484,7 @@ export function ListingForm({
                 error={errors.categoryId}
               >
                 <div className="relative">
-                  <select
+                  <Select
                     id="categoryId"
                     name="categoryId"
                     value={values.categoryId}
@@ -496,7 +496,7 @@ export function ListingForm({
                     aria-describedby={
                       errors.categoryId ? "categoryId-error" : undefined
                     }
-                    className={SELECT_CLASS}
+                    className={SELECT_VARIANT_CLASS}
                   >
                     <option value="" disabled>
                       Selecione uma categoria
@@ -506,7 +506,7 @@ export function ListingForm({
                         {category.name}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                   <span
                     aria-hidden="true"
                     className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
@@ -523,7 +523,7 @@ export function ListingForm({
                 error={errors.condition}
               >
                 <div className="relative">
-                  <select
+                  <Select
                     id="condition"
                     name="condition"
                     value={values.condition}
@@ -538,7 +538,7 @@ export function ListingForm({
                     aria-describedby={
                       errors.condition ? "condition-error" : undefined
                     }
-                    className={SELECT_CLASS}
+                    className={SELECT_VARIANT_CLASS}
                   >
                     <option value="" disabled>
                       Selecione a condição
@@ -548,7 +548,7 @@ export function ListingForm({
                         {option.label}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                   <span
                     aria-hidden="true"
                     className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
@@ -636,7 +636,7 @@ export function ListingForm({
               error={errors.city}
             >
               <div className="relative">
-                <select
+                <Select
                   id="city"
                   name="city"
                   value={values.city}
@@ -644,7 +644,7 @@ export function ListingForm({
                   required
                   aria-invalid={errors.city ? true : undefined}
                   aria-describedby={errors.city ? "city-error" : undefined}
-                  className={SELECT_CLASS}
+                  className={SELECT_VARIANT_CLASS}
                 >
                   <option value="" disabled>
                     Selecione o município
@@ -654,7 +654,7 @@ export function ListingForm({
                       {municipality}
                     </option>
                   ))}
-                </select>
+                </Select>
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"

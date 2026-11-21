@@ -63,6 +63,19 @@ describe("DashboardListings", () => {
     ).toHaveAttribute("href", "/dashboard?page=2")
   })
 
+  it("keeps the sort control a labeled native select", () => {
+    render(
+      <DashboardListings
+        result={{ ok: true, data: dashboardData() }}
+        filters={filters}
+      />,
+    )
+
+    const sort = screen.getByRole("combobox", { name: "Ordenar por" })
+    expect(sort.tagName).toBe("SELECT")
+    expect(sort).toHaveValue("recent")
+  })
+
   it("distinguishes a status filter with no listings from a search with no results", () => {
     const emptyResult = {
       ok: true as const,
