@@ -40,8 +40,9 @@ export function ChatWindow({
     historyError,
     readError,
     isMarkingRead,
-    announcement,
+    announcedMessageIds,
     addMessage,
+    addHistoryMessage,
     markMessagesRead,
     loadOlderMessages,
   } = useChatMessages({
@@ -61,6 +62,7 @@ export function ChatWindow({
     conversationId: conversation.id,
     userId: currentUserId,
     onMessage: addMessage,
+    onHistoryMessage: addHistoryMessage,
   })
 
   function handleLoadOlderMessages() {
@@ -132,14 +134,12 @@ export function ChatWindow({
             containerRef={scrollContainerRef}
             bottomRef={bottomRef}
             messages={messages}
+            announcedMessageIds={announcedMessageIds}
             currentUserId={currentUserId}
             hasMore={hasMore}
             isLoadingMore={isLoadingMore}
             onLoadMore={handleLoadOlderMessages}
           />
-          <div className="sr-only" role="status" aria-live="polite">
-            {announcement}
-          </div>
           {realtime.isOtherTyping ? (
             <p className="px-4 pb-2 text-xs text-muted-foreground" aria-hidden="true">
               {conversation.participant.displayName} está digitando…

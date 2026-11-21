@@ -13,6 +13,7 @@ import type { ChatMessage } from "../types/chat.types"
 
 type MessageListProps = {
   messages: ChatMessage[]
+  announcedMessageIds: ReadonlySet<string>
   currentUserId: string
   hasMore: boolean
   isLoadingMore: boolean
@@ -158,6 +159,7 @@ function PrivateChatImage({
 
 export function MessageList({
   messages,
+  announcedMessageIds,
   currentUserId,
   hasMore,
   isLoadingMore,
@@ -183,25 +185,31 @@ export function MessageList({
         </div>
       ) : null}
 
-      {messages.length === 0 ? (
-        <div className="flex h-full min-h-48 items-center justify-center">
-          <p className="max-w-xs text-center text-sm text-muted-foreground">
-            Esta conversa ainda não tem mensagens. Envie uma mensagem para
-            começar.
-          </p>
-        </div>
-      ) : (
-        <ol
-          aria-label="Mensagens da conversa"
-          aria-live="off"
-          className="mx-auto flex w-full max-w-3xl flex-col gap-3"
-        >
-          {messages.map((message) => {
+      <ol
+        role="log"
+        aria-label="Mensagens da conversa"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-busy={isLoadingMore}
+        className="mx-auto flex h-full w-full max-w-3xl flex-col gap-3"
+      >
+        {messages.length === 0 ? (
+          <li className="flex h-full min-h-48 items-center justify-center">
+            <p className="max-w-xs text-center text-sm text-muted-foreground">
+              Esta conversa ainda não tem mensagens. Envie uma mensagem para
+              começar.
+            </p>
+          </li>
+        ) : (
+          messages.map((message) => {
             const isOwnMessage = message.senderId === currentUserId
 
             return (
               <li
                 key={message.id}
+                aria-live={
+                  announcedMessageIds.has(message.id) ? undefined : "off"
+                }
                 className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
               >
                 <article
@@ -250,9 +258,9 @@ export function MessageList({
                 </article>
               </li>
             )
-          })}
-        </ol>
-      )}
+          })
+        )}
+      </ol>
       <div ref={bottomRef} aria-hidden="true" />
     </div>
   )

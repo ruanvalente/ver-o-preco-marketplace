@@ -36,6 +36,20 @@ describe("ProductFiltersForm", () => {
     expect(location).toHaveValue("belem")
   })
 
+  it("keeps a visible focus ring on every native select", () => {
+    renderFilters()
+
+    for (const name of ["Categoria", "Condição", "Localização"]) {
+      const select = screen.getByRole("combobox", { name })
+
+      expect(select).toHaveClass(
+        "focus-visible:border-ring",
+        "focus-visible:ring-[3px]",
+        "focus-visible:ring-ring/50",
+      )
+    }
+  })
+
   it("keeps the GET form that writes filters into the URL", () => {
     renderFilters()
 
