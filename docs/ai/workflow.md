@@ -40,7 +40,7 @@ Obter fatos antes de planejar.
 - Ler `AGENTS.md`, `PRODUCT.md` e `DESIGN.md` conforme a natureza da tarefa.
 - Para código Next.js, ler o guia correspondente em `node_modules/next/dist/docs/`.
 - Para mudança de schema, ler `migrations/` e `docs/architecture/supabase.md`.
-- Carregar skills **por necessidade explícita**, não o catálogo inteiro (ver [`README.md`](README.md)).
+- Usar as skills e MCPs disponíveis **sempre que a tarefa se beneficiar deles**: carregar apenas as skills relevantes (não o catálogo inteiro, ver [`README.md`](README.md)); consultar Context7 para dúvidas de bibliotecas/APIs e o MCP do Supabase dentro da política de permissões (`security.md`). Registrar no plano quais skills/MCPs foram usados — ou por que não foram necessários.
 - Verificar `git status --short` para não sobrescrever trabalho do usuário.
 
 **Saída:** entendimento do estado real, com caminhos de arquivo.
