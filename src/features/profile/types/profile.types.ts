@@ -30,9 +30,14 @@ export type ProfileActionState = {
 
 export const initialProfileState: ProfileActionState = { status: "idle" };
 
-export type ProfileAvatarUploadResult = {
-  success: boolean;
-  avatarPath?: string;
-  avatarUrl?: string;
-  error?: string;
-};
+export type ProfileAvatarUploadResult =
+  | {
+      success: true;
+      avatarPath: string;
+      avatarUrl: string;
+      cleanupError?: string;
+    }
+  | {
+      success: false;
+      error: string;
+    };

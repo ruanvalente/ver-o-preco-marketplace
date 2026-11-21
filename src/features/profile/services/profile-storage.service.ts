@@ -2,6 +2,8 @@ import { createClient as createBrowserClient } from "@/lib/supabase/client";
 
 import { AVATAR_BUCKET_NAME } from "../constants";
 import { isAvatarPathForUser, validateAvatarFile } from "../schemas/profile.schemas";
+import type { ProfileAvatarUploadResult } from "../types/profile.types";
+import { updateAvatarAction } from "./profile.actions";
 
 const avatarExtensionsByMimeType: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -116,5 +118,55 @@ export async function removeObsoleteAvatarsClient(
   } catch (error) {
     console.error("Error cleaning up old avatars:", error);
     return { success: false, error: "O avatar foi atualizado, mas não foi possível remover arquivos antigos." };
+  }
+}
+
+export async function updateAvatarClient(
+  file: File,
+  userId: string
+): Promise<ProfileAvatarUploadResult> {
+  try {
+    const uploadResult = await uploadAvatarClient(file, userId);
+
+    if (!uploadResult.success || !uploadResult.avatarPath) {
+      return {
+        success: false,
+        error: uploadResult.error || "Erro ao fazer upload da imagem.",
+      };
+    }
+
+    const actionResult = await updateAvatarAction(uploadResult.avatarPath);
+
+    if (!actionResult.success) {
+      return {
+        success: false,
+        error: actionResult.error || "Erro ao atualizar o perfil.",
+      };
+    }
+
+    const cleanupResult = await removeObsoleteAvatarsClient(
+      userId,
+      uploadResult.avatarPath
+    );
+
+    const supabase = createBrowserClient();
+    const { data } = supabase.storage
+      .from(AVATAR_BUCKET_NAME)
+      .getPublicUrl(uploadResult.avatarPath);
+
+    return {
+      success: true,
+      avatarPath: uploadResult.avatarPath,
+      avatarUrl: data.publicUrl,
+      ...(cleanupResult.success
+        ? {}
+        : {
+            cleanupError:
+              cleanupResult.error ||
+              "O avatar foi atualizado, mas arquivos antigos permaneceram.",
+          }),
+    };
+  } catch {
+    return { success: false, error: "Erro ao fazer upload da imagem." };
   }
 }
