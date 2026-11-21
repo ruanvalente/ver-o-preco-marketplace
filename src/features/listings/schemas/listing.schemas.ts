@@ -211,34 +211,6 @@ function parseImages(rawValue: string): ListingImageInput[] | string {
   return images
 }
 
-function parseRemovedImagePaths(rawValue: string): string[] | string {
-  if (!rawValue.trim()) {
-    return []
-  }
-
-  let parsed: unknown
-
-  try {
-    parsed = JSON.parse(rawValue)
-  } catch {
-    return "Não foi possível ler as imagens removidas."
-  }
-
-  if (!Array.isArray(parsed)) {
-    return "Não foi possível ler as imagens removidas."
-  }
-
-  const paths = parsed.filter(
-    (path): path is string => typeof path === "string" && path.length > 0,
-  )
-
-  if (paths.length !== parsed.length) {
-    return "Não foi possível ler as imagens removidas."
-  }
-
-  return Array.from(new Set(paths))
-}
-
 /**
  * Validates the listing form on both client and server.
  *
@@ -332,17 +304,7 @@ export function validateListingForm(
     errors.images = imagesResult
   }
 
-  const removedPathsResult = parseRemovedImagePaths(
-    readField(formData, "removedImagePaths"),
-  )
-
-  if (typeof removedPathsResult === "string") {
-    errors.form = removedPathsResult
-  }
-
   const images = typeof imagesResult === "string" ? [] : imagesResult
-  const removedImagePaths =
-    typeof removedPathsResult === "string" ? [] : removedPathsResult
 
   if (intent === "publish" && images.length === 0) {
     errors.images = "Adicione pelo menos uma imagem para publicar o anúncio."
@@ -367,7 +329,6 @@ export function validateListingForm(
         neighborhood: neighborhood || null,
       },
       images,
-      removedImagePaths,
     },
   }
 }

@@ -110,7 +110,6 @@ export type ListingFormData = {
   intent: ListingFormIntent
   input: ListingInput
   images: ListingImageInput[]
-  removedImagePaths: string[]
 }
 
 export type ListingActionState = {
