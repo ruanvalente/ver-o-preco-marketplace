@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getCurrentUser } from "@/features/auth/services/session.service";
-import { getChatConversations } from "@/features/chat/services/chat.service";
+import { getUnreadChatConversationCount } from "@/features/chat/services/chat.service";
 import { getFavoriteCount } from "@/features/favorites/services/favorites.service";
 import { getProfile } from "@/features/profile/services/profile.service";
 import { LogoutButton } from "@/features/auth/components/logout-button";
@@ -32,29 +32,6 @@ function getInitials(name: string): string {
   }
 
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-}
-
-async function getUnreadChatConversationCount(): Promise<number | null> {
-  let unreadCount = 0
-  let offset = 0
-
-  while (true) {
-    const result = await getChatConversations(100, offset)
-
-    if (!result.ok) {
-      return null
-    }
-
-    unreadCount += result.data.filter(
-      (conversation) => conversation.unreadCount > 0,
-    ).length
-
-    if (result.data.length < 100) {
-      return unreadCount
-    }
-
-    offset += result.data.length
-  }
 }
 
 /**

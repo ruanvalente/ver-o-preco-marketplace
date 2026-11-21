@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CHAT_SIGNED_URL_TTL_SECONDS } from "../constants";
+import {
+  CHAT_CONVERSATION_PAGE_SIZE,
+  CHAT_SIGNED_URL_TTL_SECONDS,
+} from "../constants";
 import {
   checkConversationParticipation,
   getChatConversations,
   getConversationMessages,
   getSellerChatMetrics,
+  getUnreadChatConversationCount,
   sendChatMessage,
 } from "../services/chat.service";
 
@@ -131,6 +135,41 @@ describe("getChatConversations", () => {
     const result = await getChatConversations();
 
     expect(result).toEqual({ ok: true, data: [] });
+  });
+});
+
+describe("getUnreadChatConversationCount", () => {
+  beforeEach(() => {
+    rpcMock.mockReset();
+  });
+
+  it("counts unread conversations beyond the first one hundred", async () => {
+    const fullPage = () =>
+      Array.from({ length: CHAT_CONVERSATION_PAGE_SIZE }, () =>
+        conversationRow({ unread_count: "1" }),
+      );
+    rpcMock
+      .mockResolvedValueOnce({ data: fullPage(), error: null })
+      .mockResolvedValueOnce({ data: fullPage(), error: null })
+      .mockResolvedValueOnce({
+        data: [conversationRow({ unread_count: "1" })],
+        error: null,
+      });
+    mocks.createClient.mockReturnValue(createMockClient([]));
+
+    const result = await getUnreadChatConversationCount();
+
+    expect(result).toBe(2 * CHAT_CONVERSATION_PAGE_SIZE + 1);
+    expect(rpcMock).toHaveBeenCalledTimes(3);
+  });
+
+  it("returns null when the conversation RPC fails", async () => {
+    rpcMock.mockResolvedValue({ data: null, error: new Error("rpc down") });
+    mocks.createClient.mockReturnValue(createMockClient([]));
+
+    const result = await getUnreadChatConversationCount();
+
+    expect(result).toBeNull();
   });
 });
 

@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
   getProfile: vi.fn(),
   getFavoriteCount: vi.fn(),
-  getChatConversations: vi.fn(),
+  getUnreadChatConversationCount: vi.fn(),
 }))
 
 vi.mock("next/server", () => ({
@@ -21,7 +21,7 @@ vi.mock("@/features/favorites/services/favorites.service", () => ({
   getFavoriteCount: mocks.getFavoriteCount,
 }))
 vi.mock("@/features/chat/services/chat.service", () => ({
-  getChatConversations: mocks.getChatConversations,
+  getUnreadChatConversationCount: mocks.getUnreadChatConversationCount,
 }))
 vi.mock("@/lib/supabase/client", () => ({
   createClient: () => {
@@ -43,7 +43,7 @@ import { Sheet } from "@/components/ui/sheet"
 import { MarketplaceMobileAccount } from "./marketplace-mobile-account"
 
 describe("MarketplaceMobileAccount", () => {
-  it("exibe a quantidade de conversas não lidas ao lado de Chat, como em Meus favoritos", async () => {
+  it("shows the unread conversation count next to Chat, like Meus favoritos", async () => {
     mocks.getCurrentUser.mockResolvedValue({
       id: "seller-id",
       email: "ana@example.com",
@@ -52,10 +52,7 @@ describe("MarketplaceMobileAccount", () => {
       displayName: "Ana Souza",
     })
     mocks.getFavoriteCount.mockResolvedValue({ ok: true, data: 2 })
-    mocks.getChatConversations.mockResolvedValue({
-      ok: true,
-      data: [{ unreadCount: 2 }, { unreadCount: 1 }],
-    })
+    mocks.getUnreadChatConversationCount.mockResolvedValue(2)
 
     render(<Sheet>{await MarketplaceMobileAccount()}</Sheet>)
 
@@ -71,7 +68,7 @@ describe("MarketplaceMobileAccount", () => {
     ).not.toBeInTheDocument()
   })
 
-  it("não exibe contadores quando não há favoritos nem mensagens não lidas", async () => {
+  it("hides counters when there are no favorites or unread messages", async () => {
     mocks.getCurrentUser.mockResolvedValue({
       id: "seller-id",
       email: "ana@example.com",
@@ -80,7 +77,7 @@ describe("MarketplaceMobileAccount", () => {
       displayName: "Ana Souza",
     })
     mocks.getFavoriteCount.mockResolvedValue({ ok: true, data: 0 })
-    mocks.getChatConversations.mockResolvedValue({ ok: true, data: [] })
+    mocks.getUnreadChatConversationCount.mockResolvedValue(0)
 
     render(<Sheet>{await MarketplaceMobileAccount()}</Sheet>)
 
