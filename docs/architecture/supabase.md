@@ -235,6 +235,9 @@ psql "$DATABASE_URL" -f migrations/0012_seller_chat_metrics.sql
 # Full-text search: generated tsvector, GIN index, synonyms and RPCs (after 0012).
 psql "$DATABASE_URL" -f migrations/0013_full_text_search.sql
 
+# Qualify the matches CTE columns in both search RPCs (after 0013).
+psql "$DATABASE_URL" -f migrations/0014_fix_search_ambiguous_id.sql
+
 # Development seed (requires at least one profile).
 psql "$DATABASE_URL" -f seeds/0001_products.sql
 ```
@@ -242,6 +245,10 @@ psql "$DATABASE_URL" -f seeds/0001_products.sql
 The seed is idempotent and attaches demo listings to the oldest profile. It
 uses local images under `public/products/` so the catalog works without
 uploading files to Storage.
+
+Apply `migrations/0015_tighten_fuzzy_search.sql` after 0013 once the fuzzy
+fallback needs whole-word matching. It recreates both search RPCs in full, so
+it can be applied on top of 0013 or 0014.
 
 ## 9. Storage
 
